@@ -1,5 +1,15 @@
 package com.ujjallamichhane.ridesharing.api
 
-interface CustomerApi {
+import com.ujjallamichhane.ridesharing.entity.Customer
+import com.ujjallamichhane.ridesharing.response.LoginResponse
+import retrofit2.Response
+import retrofit2.http.Body
+import retrofit2.http.POST
 
+interface CustomerApi {
+    //Register Customer
+    @POST("client/insert")
+    suspend fun registerCustomer(
+        @Body customer: Customer
+    ): Response<LoginResponse>
 }
