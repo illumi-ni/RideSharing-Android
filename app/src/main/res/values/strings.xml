@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">RideSharing</string>
+    <string name="login_text">Already have an account? <u>LogIn</u></string>
 </resources>
