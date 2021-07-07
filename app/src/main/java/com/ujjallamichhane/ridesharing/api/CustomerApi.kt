@@ -8,7 +8,7 @@ import retrofit2.http.POST
 
 interface CustomerApi {
     //Register Customer
-    @POST("client/insert")
+    @POST("customer/insert")
     suspend fun registerCustomer(
         @Body customer: Customer
     ): Response<LoginResponse>
