@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">RideSharing</string>
-    <string name="login_text">Already have an account? <u>LogIn</u></string>
+    <string name="login_text">No account? <u>Create an account</u></string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
