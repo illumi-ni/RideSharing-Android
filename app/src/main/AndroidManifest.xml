@@ -14,8 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RideSharing"
         android:usesCleartextTraffic="true">
+        <activity android:name=".SignInOTP"></activity>
+        <activity android:name=".SignInActivity" >
 
-        <activity android:name=".SignInActivity"></activity>
+        </activity>
         <activity android:name=".SignUpActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

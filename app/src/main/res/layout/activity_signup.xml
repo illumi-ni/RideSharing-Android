@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_margin="10dp"
-                android:text="@string/login_text"
+                android:text=""
                 android:textSize="18sp"/>
         </LinearLayout>
 

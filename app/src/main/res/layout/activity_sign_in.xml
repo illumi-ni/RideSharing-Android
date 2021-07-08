@@ -1,87 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<RelativeLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".SignInActivity">
 
-    <ImageView
-        android:id="@+id/logo"
-        android:layout_width="match_parent"
-        android:layout_height="105dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginBottom="50dp"
-        android:src="@drawable/ridesharinglogo" />
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Enter mobile number to login"
-        android:textSize="28sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginBottom="25dp"
-        android:layout_below="@id/logo"/>
-    <TextView
-        android:id="@+id/text2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Please enter your mobile number to get the verification code"
-        android:textSize="20sp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@id/text"/>
-
     <LinearLayout
-        android:id="@+id/linear1"
+        android:id="@+id/pfContainer"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="15dp"
-        android:layout_below="@id/text2">
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
-       <EditText
-            android:id="@+id/etContactSignIn"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:padding="16dp"
-           android:inputType="number"
-            android:background="@drawable/shape"
-            android:hint="Phone "
-            android:textSize="20sp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="15dp"/>
-
-        <Button
-            android:id="@+id/btnSignin"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:padding="7dp"
-            android:text="Sign Up"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            app:backgroundTint="#01949A" />
-
-        <TextView
-            android:id="@+id/tvLogIn"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_margin="10dp"
-            android:text="@string/login_text"
-            android:textSize="18sp"/>
+            />
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
     </LinearLayout>
 
-
 </RelativeLayout>
+</ScrollView>

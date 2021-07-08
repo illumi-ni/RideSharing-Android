@@ -1,8 +1,14 @@
 package com.ujjallamichhane.ridesharing
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.view.View
 import android.widget.*
+import androidx.core.text.set
+import androidx.core.text.toSpannable
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import kotlinx.coroutines.CoroutineScope
@@ -43,6 +49,16 @@ class SignUpActivity : AppCompatActivity() {
         btnSignUp.setOnClickListener {
             customerSignup()
         }
+
+        val text = "Already have an account? Login here.".toSpannable()
+        text[text.length-11 until text.length+1] = object: ClickableSpan(){
+            override fun onClick(widget: View) {
+                val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        tvLogIn.movementMethod = LinkMovementMethod()
+        tvLogIn.text = text
     }
     private fun checkGender(){
         group.setOnCheckedChangeListener{group, checkedId ->

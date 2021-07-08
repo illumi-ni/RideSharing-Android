@@ -1,0 +1,54 @@
+package com.ujjallamichhane.ridesharing.fragments
+
+import android.content.Intent
+import android.os.Bundle
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import androidx.core.text.set
+import androidx.core.text.toSpannable
+import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.SignUpActivity
+
+class CustomerSignInFragment : Fragment() {
+    private lateinit var etEmailSignIn:EditText
+    private lateinit var btnSignIn:Button
+    private lateinit var tvSignUp:TextView
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_customer_sign_in, container, false)
+
+        etEmailSignIn = view.findViewById(R.id.etEmailSignIn)
+        btnSignIn = view.findViewById(R.id.btnSignIn)
+        tvSignUp = view.findViewById(R.id.tvSignUp)
+
+        val text = "Did not get the code? Resend Code".toSpannable()
+        text[text.length-12 until text.length+1] = object: ClickableSpan(){
+            override fun onClick(widget: View) {
+                val intent = Intent(context, SignUpActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        tvSignUp.movementMethod = LinkMovementMethod()
+        tvSignUp.text = text
+        return view
+    }
+
+    companion object {
+
+    }
+}
