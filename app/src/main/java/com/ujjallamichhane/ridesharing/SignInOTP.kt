@@ -15,5 +15,7 @@ class SignInOTP : AppCompatActivity() {
 
         txtEmail = findViewById(R.id.txtEmail)
         etOTP = findViewById(R.id.etOTP)
+
+
     }
 }

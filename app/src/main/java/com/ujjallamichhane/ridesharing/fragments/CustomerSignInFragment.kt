@@ -11,10 +11,17 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.SignUpActivity
+import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class CustomerSignInFragment : Fragment() {
     private lateinit var etEmailSignIn:EditText
@@ -45,6 +52,33 @@ class CustomerSignInFragment : Fragment() {
         }
         tvSignUp.movementMethod = LinkMovementMethod()
         tvSignUp.text = text
+
+        btnSignIn.setOnClickListener {
+            val email = etEmailSignIn.text.toString()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val customerRepository = CustomerRepository()
+                    val response = customerRepository.loginCustomer(email)
+                    if (response.success == true){
+                        withContext(Dispatchers.Main){
+                            Toast.makeText(
+                                    context,
+                                    "Verification code sent",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }catch(ex: Exception){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(
+                                context,
+                                ex.toString(),
+                                Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
         return view
     }
 
