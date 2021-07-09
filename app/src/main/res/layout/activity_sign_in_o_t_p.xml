@@ -43,8 +43,21 @@
             android:textSize="25sp"
            android:layout_margin="25dp"/>
 
+        <Button
+            android:id="@+id/btnVerify"
+            android:layout_width="match_parent"
+            android:layout_height="65dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:padding="7dp"
+            android:text="Verify"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:backgroundTint="#01949A" />
+
         <TextView
-            android:id="@+id/txt1"
+            android:id="@+id/txtResend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
