@@ -15,4 +15,14 @@ class CustomerRepository
             rideshareApi.registerCustomer(customer)
         }
     }
+    suspend fun loginCustomer(email: String):LoginResponse{
+        return apiRequest {
+            rideshareApi.loginCustomer(email)
+        }
+    }
+    suspend fun verifyOtp(otp: String):LoginResponse{
+        return apiRequest {
+            rideshareApi.verifyOtp(otp)
+        }
+    }
 }

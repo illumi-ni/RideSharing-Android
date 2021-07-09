@@ -11,10 +11,18 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.SignInOTP
 import com.ujjallamichhane.ridesharing.SignUpActivity
+import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
 
 class CustomerSignInFragment : Fragment() {
     private lateinit var etEmailSignIn:EditText
@@ -36,8 +44,8 @@ class CustomerSignInFragment : Fragment() {
         btnSignIn = view.findViewById(R.id.btnSignIn)
         tvSignUp = view.findViewById(R.id.tvSignUp)
 
-        val text = "Did not get the code? Resend Code".toSpannable()
-        text[text.length-12 until text.length+1] = object: ClickableSpan(){
+        val text = "No account? Create one".toSpannable()
+        text[text.length-10 until text.length+1] = object: ClickableSpan(){
             override fun onClick(widget: View) {
                 val intent = Intent(context, SignUpActivity::class.java)
                 startActivity(intent)
@@ -45,6 +53,38 @@ class CustomerSignInFragment : Fragment() {
         }
         tvSignUp.movementMethod = LinkMovementMethod()
         tvSignUp.text = text
+
+        btnSignIn.setOnClickListener {
+            val email = etEmailSignIn.text.toString()
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val customerRepository = CustomerRepository()
+                    val response = customerRepository.loginCustomer(email)
+                    if (response.success == true) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(
+                                    context,
+                                    "Verification code sent",
+                                    Toast.LENGTH_LONG
+                            ).show()
+                        }
+                        val intent = Intent(context, SignInOTP::class.java)
+                        context!!.startActivity(intent)
+                    }
+                } catch (ex: Exception) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                                context,
+                                ex.toString(),
+                                Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+
+
+            }
+
+        }
         return view
     }
 
