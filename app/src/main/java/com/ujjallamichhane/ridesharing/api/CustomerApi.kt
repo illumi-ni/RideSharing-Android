@@ -20,5 +20,11 @@ interface CustomerApi {
     suspend fun loginCustomer(
             @Field("email") email: String
     ): Response<LoginResponse>
+    
+    @FormUrlEncoded
+    @POST("verifyotp")
+    suspend fun verifyOtp(
+            @Field("otp") otp: String
+    ): Response<LoginResponse>
 
 }

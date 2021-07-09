@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.core.text.set
 import androidx.core.text.toSpannable
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.SignInOTP
 import com.ujjallamichhane.ridesharing.SignUpActivity
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import kotlinx.coroutines.CoroutineScope
@@ -43,8 +44,8 @@ class CustomerSignInFragment : Fragment() {
         btnSignIn = view.findViewById(R.id.btnSignIn)
         tvSignUp = view.findViewById(R.id.tvSignUp)
 
-        val text = "Did not get the code? Resend Code".toSpannable()
-        text[text.length-12 until text.length+1] = object: ClickableSpan(){
+        val text = "No account? Create one".toSpannable()
+        text[text.length-10 until text.length+1] = object: ClickableSpan(){
             override fun onClick(widget: View) {
                 val intent = Intent(context, SignUpActivity::class.java)
                 startActivity(intent)
@@ -59,8 +60,8 @@ class CustomerSignInFragment : Fragment() {
                 try {
                     val customerRepository = CustomerRepository()
                     val response = customerRepository.loginCustomer(email)
-                    if (response.success == true){
-                        withContext(Dispatchers.Main){
+                    if (response.success == true) {
+                        withContext(Dispatchers.Main) {
                             Toast.makeText(
                                     context,
                                     "Verification code sent",
@@ -68,16 +69,20 @@ class CustomerSignInFragment : Fragment() {
                             ).show()
                         }
                     }
-                }catch(ex: Exception){
-                    withContext(Dispatchers.Main){
+                } catch (ex: Exception) {
+                    withContext(Dispatchers.Main) {
                         Toast.makeText(
                                 context,
                                 ex.toString(),
-                                Toast.LENGTH_SHORT
+                                Toast.LENGTH_LONG
                         ).show()
                     }
                 }
+
+                val intent = Intent(context, SignInOTP::class.java)
+                context!!.startActivity(intent)
             }
+
         }
         return view
     }
