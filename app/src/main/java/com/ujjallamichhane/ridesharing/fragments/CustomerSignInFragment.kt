@@ -67,6 +67,8 @@ class CustomerSignInFragment : Fragment() {
                                     "Verification code sent",
                                     Toast.LENGTH_LONG
                             ).show()
+                            val intent = Intent(context, SignInOTP::class.java)
+                            context!!.startActivity(intent)
                         }
                     }
                 } catch (ex: Exception) {
@@ -79,8 +81,7 @@ class CustomerSignInFragment : Fragment() {
                     }
                 }
 
-                val intent = Intent(context, SignInOTP::class.java)
-                context!!.startActivity(intent)
+
             }
 
         }
