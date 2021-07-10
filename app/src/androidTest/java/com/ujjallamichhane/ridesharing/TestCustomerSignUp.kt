@@ -23,16 +23,21 @@ class TestCustomerSignUp {
         onView(withId(R.id.etFullName))
                 .perform(ViewActions.typeText("Emma Watson"))
         Thread.sleep(1000)
+
         onView(withId(R.id.etEmail))
                 .perform(ViewActions.typeText("emma@gmail.com"))
         Thread.sleep(1000)
+
         onView(withId(R.id.etContact))
                 .perform(ViewActions.typeText("9828991002"))
         Thread.sleep(1000)
+
         closeSoftKeyboard()
+
         onView(withId(R.id.rbFemale))
                 .perform(click())
         Thread.sleep(1000)
+
         onView(withId(R.id.rbFemale))
                 .check(matches(isChecked()));
 

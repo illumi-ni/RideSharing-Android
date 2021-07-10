@@ -33,7 +33,7 @@ class TestSendOTP {
             .perform(ViewActions.click())
         Thread.sleep(5000)
 
-        onView(withId(R.id.container))
+        onView(withId(R.id.OTPcontainer))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 }
