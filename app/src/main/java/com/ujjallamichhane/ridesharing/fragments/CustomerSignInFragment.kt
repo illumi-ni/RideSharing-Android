@@ -51,6 +51,7 @@ class CustomerSignInFragment : Fragment() {
                 startActivity(intent)
             }
         }
+
         tvSignUp.movementMethod = LinkMovementMethod()
         tvSignUp.text = text
 
@@ -69,7 +70,7 @@ class CustomerSignInFragment : Fragment() {
                             ).show()
                         }
                         val intent = Intent(context, SignInOTP::class.java)
-                        context!!.startActivity(intent)
+                        requireContext().startActivity(intent)
                     }
                 } catch (ex: Exception) {
                     withContext(Dispatchers.Main) {
@@ -80,10 +81,7 @@ class CustomerSignInFragment : Fragment() {
                         ).show()
                     }
                 }
-
-
             }
-
         }
         return view
     }

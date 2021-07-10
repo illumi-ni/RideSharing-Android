@@ -93,6 +93,8 @@ class SignUpActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                         ).show()
                     }
+                    val intent = Intent(this@SignUpActivity, SignInActivity::class.java)
+                    startActivity(intent)
                 }
             }catch(ex: Exception){
                 withContext(Dispatchers.Main){
@@ -104,6 +106,5 @@ class SignUpActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }

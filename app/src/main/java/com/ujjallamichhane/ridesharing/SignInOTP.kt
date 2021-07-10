@@ -71,10 +71,6 @@ class SignInOTP : AppCompatActivity() {
                     }
                 }
             }
-
         }
-
-
-
     }
 }
