@@ -60,7 +60,7 @@ class CustomerSignInFragment : Fragment() {
             CoroutineScope(Dispatchers.IO).launch {
                 try {
                     val customerRepository = CustomerRepository()
-                    val response = customerRepository.loginCustomer(email)
+                    val response = customerRepository.sendOTP(email)
                     if (response.success == true) {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(

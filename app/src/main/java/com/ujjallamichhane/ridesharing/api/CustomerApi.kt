@@ -17,7 +17,7 @@ interface CustomerApi {
 
     @FormUrlEncoded
     @POST("sendotp")
-    suspend fun loginCustomer(
+    suspend fun sendOTP(
             @Field("email") email: String
     ): Response<LoginResponse>
     
