@@ -1,5 +1,6 @@
 package com.ujjallamichhane.ridesharing.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,7 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 class DriverSignInFragment : Fragment() {
     private lateinit var etEmailDriver: EditText
@@ -30,7 +38,5 @@ class DriverSignInFragment : Fragment() {
         return view
     }
 
-    companion object {
 
-    }
 }
