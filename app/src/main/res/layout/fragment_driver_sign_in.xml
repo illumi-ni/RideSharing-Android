@@ -1,14 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.DriverSignInFragment">
 
-
-    <TextView
+    <ImageView
+        android:id="@+id/logo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Driver" />
+        android:layout_height="105dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="30dp"
+        android:src="@drawable/ridesharinglogo" />
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Enter Email Address and Password to login"
+        android:textSize="25sp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@id/logo"/>
 
-</FrameLayout>
+    <EditText
+        android:id="@+id/etEmailDriver"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:padding="16dp"
+        android:background="@drawable/shape"
+        android:hint="Enter email"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        android:layout_below="@id/text3"/>
+
+    <EditText
+        android:id="@+id/etPwdDriver"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:padding="16dp"
+        android:background="@drawable/shape"
+        android:hint="Enter password"
+        android:inputType="textPassword"
+        android:textSize="20sp"
+        android:layout_margin="20dp"
+        android:layout_below="@id/etEmailDriver"/>
+
+    <Button
+        android:id="@+id/btnDriverSignIn"
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="7dp"
+        android:text="Sign In"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:backgroundTint="#01949A"
+        android:layout_below="@+id/etPwdDriver"/>
+    <TextView
+        android:id="@+id/tvtxt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_margin="10dp"
+        android:text="Login and enjoy the app"
+        android:textSize="18sp"
+        android:layout_below="@+id/btnDriverSignIn"/>
+</RelativeLayout>
