@@ -9,12 +9,16 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.ujjallamichhane.ridesharing.DashboardActivity
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import com.ujjallamichhane.ridesharing.repository.DriverRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.IOException
 
 class DriverSignInFragment : Fragment() {
@@ -35,8 +39,41 @@ class DriverSignInFragment : Fragment() {
         etPwdDriver = view.findViewById(R.id.etPwdDriver)
         btnDriverSignIn = view.findViewById(R.id.btnDriverSignIn)
 
+
+        btnDriverSignIn.setOnClickListener {
+            val email = etEmailDriver.text.toString()
+            val password = etPwdDriver.text.toString()
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val driverRepository = DriverRepository()
+                    val response = driverRepository.checkDriver(email, password)
+
+                    if (response.success == true) {
+
+                        ServiceBuilder.token = "Bearer ${response.token}"
+
+//                        val user: Driver = response.data!!
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "${response.driverData}", Toast.LENGTH_SHORT).show()
+                        }
+                        startActivity(Intent(context, DashboardActivity::class.java))
+
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Invalid login credentials", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                } catch (ex: IOException) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
+
         return view
     }
-
 
 }
