@@ -1,9 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.MapsFragment" >
-</fragment>
+
+    <fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <EditText
+        android:id="@+id/setLocation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Set location on map"
+        android:layout_margin="10dp"
+        android:elevation="5dp"
+        android:background="@drawable/bg_round"
+        android:clickable="true"
+        android:drawableStart="@drawable/ic_pin"
+        android:padding="10dp"
+        android:enabled="false"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="30dp"
+       android:src="@drawable/ic_location"
+        android:backgroundTint="@color/white"/>
+
+</RelativeLayout>

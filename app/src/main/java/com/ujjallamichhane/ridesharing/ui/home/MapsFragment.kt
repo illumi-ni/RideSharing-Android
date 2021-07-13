@@ -17,6 +17,8 @@ import com.ujjallamichhane.ridesharing.R
 
 class MapsFragment : Fragment() {
 
+
+
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
