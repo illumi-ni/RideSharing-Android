@@ -58,7 +58,7 @@ class SignInOTP : AppCompatActivity() {
                                     Toast.LENGTH_LONG
                             ).show()
                         }
-                        val intent = Intent(this@SignInOTP, DashboardActivity::class.java)
+                        val intent = Intent(this@SignInOTP, CustomerBottomNav::class.java)
                         startActivity(intent)
                     }
                 }catch(ex: Exception){
