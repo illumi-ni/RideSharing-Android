@@ -27,4 +27,9 @@ interface CustomerApi {
             @Field("otp") otp: String
     ): Response<LoginResponse>
 
+    @FormUrlEncoded
+    @POST("checkEmail")
+    suspend fun checkEmail(
+        @Field("email") email: String
+    ): Response<LoginResponse>
 }

@@ -1,5 +1,6 @@
 package com.ujjallamichhane.ridesharing.api
 
+import com.ujjallamichhane.ridesharing.entity.Customer
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -12,9 +13,7 @@ object ServiceBuilder {
 //        "http://localhost:90/"
 
     var token: String? = null
-    var profileimg: String? = null
-    var fullname: String? = null
-    var contact: String? = null
+    var customer: Customer? = null
     var email: String? = null
 
     private val okHttp = OkHttpClient.Builder()

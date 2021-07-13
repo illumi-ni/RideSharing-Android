@@ -25,4 +25,10 @@ class CustomerRepository
             rideshareApi.verifyOtp(otp)
         }
     }
+
+    suspend fun checkEmail(email: String):LoginResponse{
+        return apiRequest {
+            rideshareApi.checkEmail(email)
+        }
+    }
 }

@@ -24,6 +24,7 @@ class SignInOTP : AppCompatActivity() {
     private lateinit var txtResend: TextView
     private lateinit var etOTP: EditText
     private lateinit var btnVerify: Button
+    private var userEmail: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,7 @@ class SignInOTP : AppCompatActivity() {
                     val customerRepository = CustomerRepository()
                     val response = customerRepository.verifyOtp(otp)
                     if (response.success == true){
+                        userEmail = response.customerData?.email.toString()
                         withContext(Dispatchers.Main){
                             Toast.makeText(
                                     this@SignInOTP,
@@ -58,6 +60,7 @@ class SignInOTP : AppCompatActivity() {
                                     Toast.LENGTH_LONG
                             ).show()
                         }
+                        saveSharedPref()
                         val intent = Intent(this@SignInOTP, CustomerBottomNav::class.java)
                         startActivity(intent)
                     }
@@ -72,5 +75,14 @@ class SignInOTP : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun saveSharedPref(){
+        val email = userEmail
+        val sharedPref = getSharedPreferences("UserPreferences", AppCompatActivity.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+
+        editor.putString("email", email)
+        editor.apply()
     }
 }
