@@ -1,23 +1,46 @@
 package com.ujjallamichhane.ridesharing.ui.home
 
-import androidx.fragment.app.Fragment
-
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.EditText
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
+import com.google.android.libraries.places.api.Places
+
 
 class MapsFragment : Fragment() {
 
+    //Declaring the needed Variables
+    private lateinit var btnCurrentLocation: FloatingActionButton
+    private lateinit var etHello: EditText
 
+    private val pERMISSION_ID = 42
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
+    lateinit var mMap: GoogleMap
+
+    var currentLocation: LatLng = LatLng(20.5, 78.9)
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -29,17 +52,122 @@ class MapsFragment : Fragment() {
          * install it inside the SupportMapFragment. This method will only be triggered once the
          * user has installed Google Play services and returned to the app.
          */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        mMap = googleMap
+        getLocation()
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_maps, container, false)
+
+        val view = inflater.inflate(R.layout.fragment_maps, container, false)
+        btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
+        etHello = view.findViewById(R.id.setLocation)
+        btnCurrentLocation.setOnClickListener {
+            getLocation()
+        }
+
+        val ai: ApplicationInfo = requireContext().packageManager
+            .getApplicationInfo(requireContext().packageName, PackageManager.GET_META_DATA)
+        val value = ai.metaData["com.google.android.geo.API_KEY"]
+        val apiKey = value.toString()
+
+        // Initializing the Places API with the help of our API_KEY
+        if (!Places.isInitialized()) {
+            Places.initialize(requireContext(), apiKey)
+        }
+
+        // Initializing fused location client
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
+        return view
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+
+                mFusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
+                    val location: Location? = task.result
+                    if (location == null) {
+                        requestNewLocationData()
+                    } else {
+                        currentLocation = LatLng(location.latitude, location.longitude)
+                        mMap.clear()
+                        mMap.addMarker(MarkerOptions().position(currentLocation))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+                    }
+                }
+            } else {
+                Toast.makeText(requireContext(), "Turn on location", Toast.LENGTH_LONG).show()
+                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+                startActivity(intent)
+            }
+        } else {
+            requestPermissions()
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun requestNewLocationData() {
+        val mLocationRequest = LocationRequest()
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        mLocationRequest.interval = 0
+        mLocationRequest.fastestInterval = 0
+        mLocationRequest.numUpdates = 1
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+        mFusedLocationClient.requestLocationUpdates(
+            mLocationRequest, mLocationCallback,
+            Looper.myLooper()
+        )
+    }
+
+    private val mLocationCallback = object : LocationCallback() {
+        override fun onLocationResult(locationResult: LocationResult) {
+            val mLastLocation: Location = locationResult.lastLocation
+            currentLocation = LatLng(mLastLocation.latitude, mLastLocation.longitude)
+        }
+    }
+
+    private fun isLocationEnabled(): Boolean {
+        val locationManager =
+            requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+            LocationManager.NETWORK_PROVIDER
+        )
+    }
+
+    // Check if location permissions are
+    // granted to the application
+    private fun checkPermissions(): Boolean {
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+            return true
+        }
+        return false
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        if (requestCode == pERMISSION_ID) {
+            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                getLocation()
+            }
+        }
+    }
+
+    private fun requestPermissions() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            pERMISSION_ID
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
