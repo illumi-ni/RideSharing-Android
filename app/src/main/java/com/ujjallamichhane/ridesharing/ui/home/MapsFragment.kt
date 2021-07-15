@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -23,11 +26,14 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
 import com.google.android.libraries.places.api.Places
+import kotlinx.coroutines.currentCoroutineContext
+import java.io.IOException
+import java.util.*
 
 
 class MapsFragment : Fragment() {
@@ -39,9 +45,13 @@ class MapsFragment : Fragment() {
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mMap: GoogleMap
+    var geo: Geocoder? = null
+    var etSetLocation: EditText? = null
+    var currentMarker: Marker? = null
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
 
+    @SuppressLint("SetTextI18n")
     private val callback = OnMapReadyCallback { googleMap ->
         /**
          * Manipulates the map once available.
@@ -55,18 +65,25 @@ class MapsFragment : Fragment() {
 
         mMap = googleMap
         getLocation()
-    }
 
+        mMap.setOnCameraChangeListener { cameraPosition ->
+            if (currentMarker == null) {
+                currentMarker = mMap.addMarker(MarkerOptions().position(cameraPosition.target))
+
+            } else {
+                currentMarker!!.position = cameraPosition.target
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
-        etHello = view.findViewById(R.id.setLocation)
+        etHello = view.findViewById(R.id.etSetLocation)
         btnCurrentLocation.setOnClickListener {
             getLocation()
         }
@@ -91,7 +108,6 @@ class MapsFragment : Fragment() {
     private fun getLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-
                 mFusedLocationClient.lastLocation.addOnCompleteListener(requireActivity()) { task ->
                     val location: Location? = task.result
                     if (location == null) {
@@ -99,8 +115,12 @@ class MapsFragment : Fragment() {
                     } else {
                         currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.clear()
-                        mMap.addMarker(MarkerOptions().position(currentLocation))
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 16F))
+//                        mMap.addMarker(
+//                            MarkerOptions().position(currentLocation).icon(
+//                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+//                            )
+//                        )
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
                     }
                 }
             } else {
@@ -146,15 +166,25 @@ class MapsFragment : Fragment() {
     // Check if location permissions are
     // granted to the application
     private fun checkPermissions(): Boolean {
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             return true
         }
         return false
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         if (requestCode == pERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLocation()
@@ -165,7 +195,10 @@ class MapsFragment : Fragment() {
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             requireActivity(),
-            arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
             pERMISSION_ID
         )
     }
