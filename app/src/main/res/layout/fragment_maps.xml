@@ -14,16 +14,18 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
     <EditText
-        android:id="@+id/etSetLocation"
+        android:id="@+id/etHello"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:hint="Set location on map"
         android:layout_margin="10dp"
         android:elevation="5dp"
         android:background="@drawable/bg_round"
-        android:clickable="true"
+        android:focusable="false"
         android:drawableStart="@drawable/ic_pin"
-        android:padding="10dp"/>
+        android:padding="10dp"
+        android:maxLines="1"
+        android:inputType="text"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCurrentLocation"
@@ -37,12 +39,10 @@
         android:backgroundTint="@color/white"/>
 
     <ImageView
-        android:id="@+id/pin"
+        android:id="@+id/lollipop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@null"
-        android:layout_marginBottom="5dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_lollipop" />
+        android:src="@drawable/ic_lollipop"
+        android:layout_centerInParent="true"/>
 
 </RelativeLayout>

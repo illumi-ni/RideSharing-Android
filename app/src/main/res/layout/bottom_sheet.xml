@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/etSetLocation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Address"
+        android:layout_margin="10dp"
+        android:elevation="5dp"
+        android:background="@drawable/bg_round"
+        android:enabled="false"
+        android:focusable="false"
+        android:drawableStart="@drawable/ic_pin"
+        android:padding="10dp"
+        android:maxLines="1"
+        android:inputType="text"/>
+
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#000"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="Confirm Address"
+        android:textColor="#fff" />
+
+</LinearLayout>

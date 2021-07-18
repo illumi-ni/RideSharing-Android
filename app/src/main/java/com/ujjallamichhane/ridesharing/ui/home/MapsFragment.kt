@@ -6,8 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
-import android.graphics.drawable.BitmapDrawable
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
@@ -17,9 +18,11 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -27,11 +30,10 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory.fromResource
+import com.google.android.libraries.places.api.Places
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
-import com.google.android.libraries.places.api.Places
-import kotlinx.coroutines.currentCoroutineContext
 import java.io.IOException
 import java.util.*
 
@@ -41,15 +43,20 @@ class MapsFragment : Fragment() {
     //Declaring the needed Variables
     private lateinit var btnCurrentLocation: FloatingActionButton
     private lateinit var etHello: EditText
+    private lateinit var etSetLocation: EditText
+    private lateinit var btnConfirm: Button
 
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mMap: GoogleMap
     var geo: Geocoder? = null
-    var etSetLocation: EditText? = null
+
     var currentMarker: Marker? = null
+    var addresses: List<Address>? = null
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
+    var cameraPos: LatLng = LatLng(0.0, 0.0)
+
 
     @SuppressLint("SetTextI18n")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -65,15 +72,6 @@ class MapsFragment : Fragment() {
 
         mMap = googleMap
         getLocation()
-
-        mMap.setOnCameraChangeListener { cameraPosition ->
-            if (currentMarker == null) {
-                currentMarker = mMap.addMarker(MarkerOptions().position(cameraPosition.target))
-
-            } else {
-                currentMarker!!.position = cameraPosition.target
-            }
-        }
     }
 
     override fun onCreateView(
@@ -83,9 +81,14 @@ class MapsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
-        etHello = view.findViewById(R.id.etSetLocation)
+        etHello = view.findViewById(R.id.etHello)
+
         btnCurrentLocation.setOnClickListener {
             getLocation()
+        }
+
+        etHello.setOnClickListener {
+            any()
         }
 
         val ai: ApplicationInfo = requireContext().packageManager
@@ -115,12 +118,13 @@ class MapsFragment : Fragment() {
                     } else {
                         currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.clear()
-//                        mMap.addMarker(
-//                            MarkerOptions().position(currentLocation).icon(
-//                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-//                            )
-//                        )
+                        mMap.addMarker(
+                            MarkerOptions().position(currentLocation).icon(
+                                BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
+                            )
+                        )
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
+                        currentMarker = null;
                     }
                 }
             } else {
@@ -208,4 +212,79 @@ class MapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
+
+    fun any () {
+        mMap.setOnCameraChangeListener { cameraPosition ->
+            if (currentMarker == null) {
+                currentMarker = mMap.addMarker(
+                    MarkerOptions().position(cameraPosition.target).visible(false)
+//                        .icon(BitmapFromVector(requireContext(), R.drawable.ic_lollipop))
+                )
+            }
+            else {
+                currentMarker!!.position = cameraPosition.target
+                cameraPos = LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
+
+
+                geo = Geocoder(requireContext(), Locale.getDefault())
+
+                // Address found using the Geocoder.
+                try {
+                    // Using getFromLocation() returns an array of Addresses for the area immediately
+                    // surrounding the given latitude and longitude. The results are a best guess and are
+                    // not guaranteed to be accurate.
+                    addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
+                    val address: String = addresses!![0].getAddressLine(0)
+                    etHello.setText(address)
+                    showBottomSheetDialog(address)
+
+                } catch (e: IOException) {
+                    Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
+                }
+
+            }
+        }
+    }
+
+    private fun showBottomSheetDialog(address: String){
+        val dialog = BottomSheetDialog(requireContext())
+        // on below line we are inflating a layout file which we have created.
+        val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
+        etSetLocation = view.findViewById(R.id.etSetLocation)
+        btnConfirm = view.findViewById(R.id.btnConfirm)
+        etSetLocation.setText(address)
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
+//    private fun BitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
+//        // below line is use to generate a drawable.
+//        val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+//
+//        // below line is use to set bounds to our vector drawable.
+//        vectorDrawable!!.setBounds(
+//            0,
+//            0,
+//            vectorDrawable.intrinsicWidth,
+//            vectorDrawable.intrinsicHeight
+//        )
+//
+//        // below line is use to create a bitmap for our
+//        // drawable which we have added.
+//        val bitmap = Bitmap.createBitmap(
+//            vectorDrawable.intrinsicWidth,
+//            vectorDrawable.intrinsicHeight,
+//            Bitmap.Config.ARGB_8888
+//        )
+//
+//        // below line is use to add bitmap in our canvas.
+//        val canvas = Canvas(bitmap)
+//
+//        // below line is use to draw our
+//        // vector drawable in canvas.
+//        vectorDrawable.draw(canvas)
+//
+//        // after generating our bitmap we are returning our bitmap.
+//        return BitmapDescriptorFactory.fromBitmap(bitmap)
+//    }
 }
