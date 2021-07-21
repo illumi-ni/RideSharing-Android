@@ -6,11 +6,11 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceBuilder {
-//    const val BASE_URL =
-//        "http://192.168.137.169:90"
+    const val BASE_URL =
+        "http://192.168.137.169:90"
 
-        const val BASE_URL =
-        "http://10.0.2.2:90/"
+//        const val BASE_URL =
+//        "http://10.0.2.2:90/"
 
     var token: String? = null
     var customer: Customer? = null

@@ -41,7 +41,6 @@
         <activity
             android:name=".CustomerBottomNav"
             android:label="@string/title_activity_cutomer_bottom_nav" />
-        <activity android:name=".DashboardActivity" />
         <activity android:name=".SignInOTP" />
         <activity android:name=".SignInActivity" />
         <activity android:name=".SignUpActivity"/>

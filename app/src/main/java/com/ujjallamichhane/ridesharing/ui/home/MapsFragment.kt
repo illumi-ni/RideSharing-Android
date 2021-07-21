@@ -20,7 +20,6 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,7 +29,11 @@ import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.maps.android.SphericalUtil
+import com.maps.route.extensions.drawRouteOnMap
+import com.maps.route.extensions.moveCameraOnMap
 import com.ujjallamichhane.ridesharing.R
+import io.reactivex.rxjava3.disposables.Disposable
 import java.io.IOException
 import java.util.*
 
@@ -54,12 +57,17 @@ class MapsFragment : Fragment() {
 
     var currentMarker: Marker? = null
     var currentDialog: BottomSheetDialog? = null
+
     var addresses: List<Address>? = null
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
     var cameraPos: LatLng = LatLng(0.0, 0.0)
 
-    var distance: Double = 0.0
+    private var apiKey: String = ""
+
+    var disposable: Disposable? = null
+
+//    var distance: Double = 0.0
 
 
     @SuppressLint("SetTextI18n")
@@ -100,7 +108,7 @@ class MapsFragment : Fragment() {
         val ai: ApplicationInfo = requireContext().packageManager
             .getApplicationInfo(requireContext().packageName, PackageManager.GET_META_DATA)
         val value = ai.metaData["com.google.android.geo.API_KEY"]
-        val apiKey = value.toString()
+        apiKey = value.toString()
 
         // Initializing the Places API with the help of our API_KEY
         if (!Places.isInitialized()) {
@@ -221,7 +229,7 @@ class MapsFragment : Fragment() {
         mapFragment?.getMapAsync(callback)
     }
 
-    fun any () {
+    fun any() {
         mMap.setOnCameraMoveListener {
             val position = mMap.cameraPosition.target
             if (currentMarker == null) {
@@ -229,8 +237,7 @@ class MapsFragment : Fragment() {
                     MarkerOptions().position(position).visible(false)
 //                        .icon(BitmapFromVector(requireContext(), R.drawable.ic_lollipop))
                 )
-            }
-            else {
+            } else {
                 currentMarker!!.position = position
                 cameraPos = LatLng(position.latitude, position.longitude)
             }
@@ -243,7 +250,7 @@ class MapsFragment : Fragment() {
                 addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
                 val address: String = addresses!![0].getAddressLine(0)
 //                    etHello.setText(address)
-                    showBottomSheetDialog(address)
+                showBottomSheetDialog(address)
 
             } catch (e: IOException) {
                 Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
@@ -251,8 +258,8 @@ class MapsFragment : Fragment() {
         }
     }
 
-    private fun showBottomSheetDialog(address: String){
-        if(currentDialog == null) {
+    private fun showBottomSheetDialog(address: String) {
+        if (currentDialog == null) {
             currentDialog = BottomSheetDialog(requireContext())
             // on below line we are inflating a layout file which we have created.
             val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
@@ -266,41 +273,45 @@ class MapsFragment : Fragment() {
             currentDialog!!.show()
             btnConfirm.setOnClickListener {
                 currentDialog!!.dismiss()
-
                 sendRequestBottomSheet()
             }
-        }
-        else{
+        } else {
             currentDialog = null
             showBottomSheetDialog(address)
         }
     }
 
-    private fun sendRequestBottomSheet(){
-            currentDialog = BottomSheetDialog(requireContext())
-            val view = layoutInflater.inflate(R.layout.send_request, null)
-            tvDistance = view.findViewById(R.id.tvDistance)
-            tvPrice = view.findViewById(R.id.tvPrice)
-            btnRequest = view.findViewById(R.id.btnRequest)
+    private fun sendRequestBottomSheet() {
+        currentDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.send_request, null)
+        tvDistance = view.findViewById(R.id.tvDistance)
+        tvPrice = view.findViewById(R.id.tvPrice)
+        btnRequest = view.findViewById(R.id.btnRequest)
 
-            currentDialog!!.setContentView(view)
-            currentDialog!!.show()
+        currentDialog!!.setContentView(view)
+        currentDialog!!.show()
 
+        val distance = SphericalUtil.computeDistanceBetween(currentLocation, cameraPos)
+        tvDistance.text = distance.toString()
+        btnRequest.setOnClickListener {
+            drawRoute()
+        }
     }
 
-//    private fun calculateDistance(){
-//
-//        getLocation()
-//
-//        val locationA = Location("")
-//        locationA.latitude = main_Latitude
-//        locationA.longitude = main_Longitude
-//        val locationB = Location("")
-//        locationB.latitude = sub_Latitude
-//        locationB.longitude = sub_Longitude
-//        distance = (locationA.distanceTo(locationB) / 1000).toDouble()
-//        kmeter.setText(distance.toString())
-//        Toast.makeText(getApplicationContext(), "" + distance, Toast.LENGTH_LONG).show()
-//        var distance: Double
-//    }
+    fun drawRoute() {
+        mMap.run {
+            disposable = drawRouteOnMap(
+                apiKey,
+                source = currentLocation,
+                destination = cameraPos,
+                context = requireContext()
+            )
+        }
+    }
+
+    override fun onDestroy() {
+        disposable?.dispose()
+        super.onDestroy()
+
+    }
 }
