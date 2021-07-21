@@ -6,8 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -18,12 +16,11 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -44,7 +41,11 @@ class MapsFragment : Fragment() {
     private lateinit var btnCurrentLocation: FloatingActionButton
     private lateinit var etHello: EditText
     private lateinit var etSetLocation: EditText
+    private lateinit var tvDistance: TextView
+    private lateinit var tvPrice: TextView
     private lateinit var btnConfirm: Button
+    private lateinit var btnRequest: Button
+    private lateinit var lollipop: ImageView
 
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -52,10 +53,13 @@ class MapsFragment : Fragment() {
     var geo: Geocoder? = null
 
     var currentMarker: Marker? = null
+    var currentDialog: BottomSheetDialog? = null
     var addresses: List<Address>? = null
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
     var cameraPos: LatLng = LatLng(0.0, 0.0)
+
+    var distance: Double = 0.0
 
 
     @SuppressLint("SetTextI18n")
@@ -82,6 +86,7 @@ class MapsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_maps, container, false)
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
         etHello = view.findViewById(R.id.etHello)
+        lollipop = view.findViewById(R.id.lollipop)
 
         btnCurrentLocation.setOnClickListener {
             getLocation()
@@ -89,6 +94,7 @@ class MapsFragment : Fragment() {
 
         etHello.setOnClickListener {
             any()
+            lollipop.isVisible = true
         }
 
         val ai: ApplicationInfo = requireContext().packageManager
@@ -124,7 +130,9 @@ class MapsFragment : Fragment() {
                             )
                         )
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
-                        currentMarker = null;
+                        currentMarker = null
+
+
                     }
                 }
             } else {
@@ -214,77 +222,85 @@ class MapsFragment : Fragment() {
     }
 
     fun any () {
-        mMap.setOnCameraChangeListener { cameraPosition ->
+        mMap.setOnCameraMoveListener {
+            val position = mMap.cameraPosition.target
             if (currentMarker == null) {
                 currentMarker = mMap.addMarker(
-                    MarkerOptions().position(cameraPosition.target).visible(false)
+                    MarkerOptions().position(position).visible(false)
 //                        .icon(BitmapFromVector(requireContext(), R.drawable.ic_lollipop))
                 )
             }
             else {
-                currentMarker!!.position = cameraPosition.target
-                cameraPos = LatLng(cameraPosition.target.latitude, cameraPosition.target.longitude)
+                currentMarker!!.position = position
+                cameraPos = LatLng(position.latitude, position.longitude)
+            }
+        }
 
+        mMap.setOnCameraIdleListener {
+            geo = Geocoder(requireContext(), Locale.getDefault())
 
-                geo = Geocoder(requireContext(), Locale.getDefault())
-
-                // Address found using the Geocoder.
-                try {
-                    // Using getFromLocation() returns an array of Addresses for the area immediately
-                    // surrounding the given latitude and longitude. The results are a best guess and are
-                    // not guaranteed to be accurate.
-                    addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
-                    val address: String = addresses!![0].getAddressLine(0)
-                    etHello.setText(address)
+            try {
+                addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
+                val address: String = addresses!![0].getAddressLine(0)
+//                    etHello.setText(address)
                     showBottomSheetDialog(address)
 
-                } catch (e: IOException) {
-                    Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
-                }
-
+            } catch (e: IOException) {
+                Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
     private fun showBottomSheetDialog(address: String){
-        val dialog = BottomSheetDialog(requireContext())
-        // on below line we are inflating a layout file which we have created.
-        val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
-        etSetLocation = view.findViewById(R.id.etSetLocation)
-        btnConfirm = view.findViewById(R.id.btnConfirm)
-        etSetLocation.setText(address)
-        dialog.setContentView(view)
-        dialog.show()
+        if(currentDialog == null) {
+            currentDialog = BottomSheetDialog(requireContext())
+            // on below line we are inflating a layout file which we have created.
+            val view = layoutInflater.inflate(R.layout.bottom_sheet, null)
+            etSetLocation = view.findViewById(R.id.etSetLocation)
+            btnConfirm = view.findViewById(R.id.btnConfirm)
+
+
+            etSetLocation.setText(address)
+
+            currentDialog!!.setContentView(view)
+            currentDialog!!.show()
+            btnConfirm.setOnClickListener {
+                currentDialog!!.dismiss()
+
+                sendRequestBottomSheet()
+            }
+        }
+        else{
+            currentDialog = null
+            showBottomSheetDialog(address)
+        }
     }
 
-//    private fun BitmapFromVector(context: Context, vectorResId: Int): BitmapDescriptor? {
-//        // below line is use to generate a drawable.
-//        val vectorDrawable = ContextCompat.getDrawable(context, vectorResId)
+    private fun sendRequestBottomSheet(){
+            currentDialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.send_request, null)
+            tvDistance = view.findViewById(R.id.tvDistance)
+            tvPrice = view.findViewById(R.id.tvPrice)
+            btnRequest = view.findViewById(R.id.btnRequest)
+
+            currentDialog!!.setContentView(view)
+            currentDialog!!.show()
+
+    }
+
+//    private fun calculateDistance(){
 //
-//        // below line is use to set bounds to our vector drawable.
-//        vectorDrawable!!.setBounds(
-//            0,
-//            0,
-//            vectorDrawable.intrinsicWidth,
-//            vectorDrawable.intrinsicHeight
-//        )
+//        getLocation()
 //
-//        // below line is use to create a bitmap for our
-//        // drawable which we have added.
-//        val bitmap = Bitmap.createBitmap(
-//            vectorDrawable.intrinsicWidth,
-//            vectorDrawable.intrinsicHeight,
-//            Bitmap.Config.ARGB_8888
-//        )
-//
-//        // below line is use to add bitmap in our canvas.
-//        val canvas = Canvas(bitmap)
-//
-//        // below line is use to draw our
-//        // vector drawable in canvas.
-//        vectorDrawable.draw(canvas)
-//
-//        // after generating our bitmap we are returning our bitmap.
-//        return BitmapDescriptorFactory.fromBitmap(bitmap)
+//        val locationA = Location("")
+//        locationA.latitude = main_Latitude
+//        locationA.longitude = main_Longitude
+//        val locationB = Location("")
+//        locationB.latitude = sub_Latitude
+//        locationB.longitude = sub_Longitude
+//        distance = (locationA.distanceTo(locationB) / 1000).toDouble()
+//        kmeter.setText(distance.toString())
+//        Toast.makeText(getApplicationContext(), "" + distance, Toast.LENGTH_LONG).show()
+//        var distance: Double
 //    }
 }

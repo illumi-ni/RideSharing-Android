@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Distance calculated"
+        android:textSize="18sp"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rs.0.00"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp" />
+
+    <Button
+        android:id="@+id/btnRequest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="#000"
+        android:foreground="?attr/selectableItemBackground"
+        android:text="Send Request"
+        android:textColor="#fff"
+        android:layout_below="@+id/tvPrice"/>
+
+</RelativeLayout>
