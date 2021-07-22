@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -20,6 +21,9 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.directions.route.*
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -30,15 +34,13 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.SphericalUtil
-import com.maps.route.extensions.drawRouteOnMap
-import com.maps.route.extensions.moveCameraOnMap
 import com.ujjallamichhane.ridesharing.R
 import io.reactivex.rxjava3.disposables.Disposable
 import java.io.IOException
 import java.util.*
 
 
-class MapsFragment : Fragment() {
+class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener{
 
     //Declaring the needed Variables
     private lateinit var btnCurrentLocation: FloatingActionButton
@@ -62,6 +64,7 @@ class MapsFragment : Fragment() {
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
     var cameraPos: LatLng = LatLng(0.0, 0.0)
+    private var polylines: List<Polyline>? = null
 
     private var apiKey: String = ""
 
@@ -273,6 +276,7 @@ class MapsFragment : Fragment() {
             currentDialog!!.show()
             btnConfirm.setOnClickListener {
                 currentDialog!!.dismiss()
+                Findroutes(currentLocation, cameraPos);
                 sendRequestBottomSheet()
             }
         } else {
@@ -292,26 +296,93 @@ class MapsFragment : Fragment() {
         currentDialog!!.show()
 
         val distance = SphericalUtil.computeDistanceBetween(currentLocation, cameraPos)
-        tvDistance.text = distance.toString()
+        tvDistance.text = distance.toString() + "m"
         btnRequest.setOnClickListener {
-            drawRoute()
+//            Findroutes(currentLocation, cameraPos);
         }
     }
 
-    fun drawRoute() {
-        mMap.run {
-            disposable = drawRouteOnMap(
-                apiKey,
-                source = currentLocation,
-                destination = cameraPos,
-                context = requireContext()
-            )
+    // function to find Routes.
+    fun Findroutes(Start: LatLng?, End: LatLng?) {
+        if (Start == null || End == null) {
+            Toast.makeText(context, "Unable to get location", Toast.LENGTH_LONG).show()
+        } else {
+            val routing :Routing = Routing.Builder()
+                .travelMode(AbstractRouting.TravelMode.DRIVING)
+                .withListener(this)
+                .alternativeRoutes(true)
+                .waypoints(Start, End)
+                .key("AIzaSyCfDFflWpAZ96jzSn3bcIGsxsl_r0LsC10") //also define your api key here.
+                .build()
+            routing.execute()
         }
     }
 
-    override fun onDestroy() {
-        disposable?.dispose()
-        super.onDestroy()
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        Findroutes(currentLocation, cameraPos);
+    }
+
+    override fun onRoutingFailure(e: RouteException) {
+//        val parentLayout: View = requireView().findViewById(android.R.id.content)
+//        val snackbar: Snackbar = Snackbar.make(requireActivity(), e.toString(), Snackbar.LENGTH_LONG)
+//        snackbar.show()
+//        Findroutes(start,end);
+
+        Toast.makeText(context, "" + e.toString(), Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onRoutingStart() {
+        Toast.makeText(context, "Finding Route...", Toast.LENGTH_LONG).show();
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onRoutingSuccess(route: ArrayList<Route>?, shortestRouteIndex: Int) {
+        val center = CameraUpdateFactory.newLatLng(currentLocation)
+        val zoom = CameraUpdateFactory.zoomTo(16f)
+        polylines = ArrayList()
+        if (polylines != null) {
+            (polylines as ArrayList<Polyline>).clear()
+        }
+        val polyOptions = PolylineOptions()
+//        var polylineStartLatLng: LatLng? = null
+//        var polylineEndLatLng: LatLng? = null
+
+        //add route(s) to the map using polyline
+        //add route(s) to the map using polyline
+        for (i in 0 until route!!.size) {
+            if (i == shortestRouteIndex) {
+                polyOptions.color(Color.BLUE)
+                polyOptions.width(7f)
+                polyOptions.addAll(route.get(shortestRouteIndex).getPoints())
+                val polyline = mMap.addPolyline(polyOptions)
+                currentLocation = polyline.points[0]
+                val k = polyline.points.size
+                cameraPos = polyline.points[k - 1]
+                (polylines as ArrayList<Polyline>).add(polyline)
+            } else {
+            }
+        }
+
+        //Add Marker on route starting position
+
+
+        //Add Marker on route starting position
+//        val startMarker = MarkerOptions()
+//        startMarker.position(currentLocation)
+//        startMarker.title("My Location")
+//
+//
+//        //Add Marker on route ending position
+//
+//        //Add Marker on route ending position
+//        val endMarker = MarkerOptions()
+//        endMarker.position(cameraPos)
+//        endMarker.title("Destination")
 
     }
+
+    override fun onRoutingCancelled() {
+        Findroutes(currentLocation, cameraPos);
+    }
+
 }
