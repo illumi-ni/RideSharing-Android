@@ -1,4 +1,4 @@
-package com.ujjallamichhane.ridesharing.ui.home
+package com.ujjallamichhane.ridesharing.ui.customer.home
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -38,6 +38,7 @@ import com.ujjallamichhane.ridesharing.R
 import io.reactivex.rxjava3.disposables.Disposable
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener{
@@ -61,10 +62,11 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     var currentDialog: BottomSheetDialog? = null
 
     var addresses: List<Address>? = null
+    var destination: String = ""
 
     var currentLocation: LatLng = LatLng(20.5, 78.9)
     var cameraPos: LatLng = LatLng(0.0, 0.0)
-    private var polylines: List<Polyline>? = null
+    private var polylines: ArrayList<Polyline>? = null
 
     private var apiKey: String = ""
 
@@ -94,7 +96,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_maps, container, false)
+        val view = inflater.inflate(R.layout.fragment_customer_maps, container, false)
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
         etHello = view.findViewById(R.id.etHello)
         lollipop = view.findViewById(R.id.lollipop)
@@ -135,11 +137,12 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                     } else {
                         currentLocation = LatLng(location.latitude, location.longitude)
                         mMap.clear()
-                        mMap.addMarker(
+                        val marker = mMap.addMarker(
                             MarkerOptions().position(currentLocation).icon(
                                 BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)
-                            )
+                            ).title("Current location")
                         )
+                        marker.showInfoWindow()
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
                         currentMarker = null
 
@@ -237,9 +240,11 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             val position = mMap.cameraPosition.target
             if (currentMarker == null) {
                 currentMarker = mMap.addMarker(
-                    MarkerOptions().position(position).visible(false)
+                    MarkerOptions().position(position).visible(false).title(destination)
 //                        .icon(BitmapFromVector(requireContext(), R.drawable.ic_lollipop))
                 )
+                currentMarker!!.showInfoWindow()
+
             } else {
                 currentMarker!!.position = position
                 cameraPos = LatLng(position.latitude, position.longitude)
@@ -251,9 +256,9 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
             try {
                 addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
-                val address: String = addresses!![0].getAddressLine(0)
+                destination = addresses!![0].getAddressLine(0)
 //                    etHello.setText(address)
-                showBottomSheetDialog(address)
+                showBottomSheetDialog(destination)
 
             } catch (e: IOException) {
                 Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
@@ -288,7 +293,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private fun sendRequestBottomSheet() {
         currentDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.send_request, null)
-        tvDistance = view.findViewById(R.id.tvDistance)
+//        tvDistance = view.findViewById(R.id.tvDistance)
         tvPrice = view.findViewById(R.id.tvPrice)
         btnRequest = view.findViewById(R.id.btnRequest)
 
@@ -296,7 +301,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         currentDialog!!.show()
 
         val distance = SphericalUtil.computeDistanceBetween(currentLocation, cameraPos)
-        tvDistance.text = distance.toString() + "m"
+//        tvDistance.text = distance.toString() + "m"
         btnRequest.setOnClickListener {
 //            Findroutes(currentLocation, cameraPos);
         }
@@ -318,7 +323,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         }
     }
 
-    override fun onConnectionFailed(p0: ConnectionResult) {
+    override fun onConnectionFailed(connectionResult: ConnectionResult) {
         Findroutes(currentLocation, cameraPos);
     }
 
@@ -337,17 +342,10 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     @SuppressLint("ResourceType")
     override fun onRoutingSuccess(route: ArrayList<Route>?, shortestRouteIndex: Int) {
-        val center = CameraUpdateFactory.newLatLng(currentLocation)
-        val zoom = CameraUpdateFactory.zoomTo(16f)
         polylines = ArrayList()
-        if (polylines != null) {
-            (polylines as ArrayList<Polyline>).clear()
-        }
+        polylines!!.clear()
         val polyOptions = PolylineOptions()
-//        var polylineStartLatLng: LatLng? = null
-//        var polylineEndLatLng: LatLng? = null
 
-        //add route(s) to the map using polyline
         //add route(s) to the map using polyline
         for (i in 0 until route!!.size) {
             if (i == shortestRouteIndex) {
@@ -358,26 +356,10 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                 currentLocation = polyline.points[0]
                 val k = polyline.points.size
                 cameraPos = polyline.points[k - 1]
-                (polylines as ArrayList<Polyline>).add(polyline)
+                polylines!!.add(polyline)
             } else {
             }
         }
-
-        //Add Marker on route starting position
-
-
-        //Add Marker on route starting position
-//        val startMarker = MarkerOptions()
-//        startMarker.position(currentLocation)
-//        startMarker.title("My Location")
-//
-//
-//        //Add Marker on route ending position
-//
-//        //Add Marker on route ending position
-//        val endMarker = MarkerOptions()
-//        endMarker.position(cameraPos)
-//        endMarker.title("Destination")
 
     }
 

@@ -1,4 +1,4 @@
-package com.ujjallamichhane.ridesharing.ui.settings
+package com.ujjallamichhane.ridesharing.ui.customer.settings
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +21,7 @@ class SettingsFragment : Fragment() {
     ): View? {
         settingsViewModel =
             ViewModelProvider(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
+        val root = inflater.inflate(R.layout.fragment_customer_settings, container, false)
         val textView: TextView = root.findViewById(R.id.text_notifications)
         settingsViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it

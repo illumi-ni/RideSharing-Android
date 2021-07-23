@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.ujjallamichhane.ridesharing.ui.home.MapsFragment"
+        android:name="com.ujjallamichhane.ridesharing.ui.customer.home.MapsFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_customer_maps" />
 
     <fragment
         android:id="@+id/navigation_rides"
-        android:name="com.ujjallamichhane.ridesharing.ui.rides.RidesFragment"
+        android:name="com.ujjallamichhane.ridesharing.ui.customer.rides.RidesFragment"
         android:label="@string/title_rides"
-        tools:layout="@layout/fragment_rides" />
+        tools:layout="@layout/fragment_customer_rides" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.ujjallamichhane.ridesharing.ui.settings.SettingsFragment"
+        android:name="com.ujjallamichhane.ridesharing.ui.customer.settings.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_customer_settings" />
 </navigation>

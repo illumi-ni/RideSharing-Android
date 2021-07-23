@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.ujjallamichhane.ridesharing.CustomerBottomNav
+import com.ujjallamichhane.ridesharing.DriverButtomNavActivity
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Driver
@@ -57,7 +58,7 @@ class DriverSignInFragment : Fragment() {
                         withContext(Dispatchers.Main) {
                             Toast.makeText(context, "${response.driverData}", Toast.LENGTH_SHORT).show()
                         }
-                        startActivity(Intent(context, CustomerBottomNav::class.java))
+                        startActivity(Intent(context, DriverButtomNavActivity::class.java))
 
                     } else {
                         withContext(Dispatchers.Main) {

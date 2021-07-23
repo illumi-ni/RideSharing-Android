@@ -7,4 +7,9 @@
     <string name="title_home">Home</string>
     <string name="title_rides">Rides</string>
     <string name="title_settings">Settings</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">Hello Square World!</string>
 </resources>

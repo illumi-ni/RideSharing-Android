@@ -5,7 +5,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.MapsFragment" >
+    tools:context=".ui.customer.home.MapsFragment" >
 
     <fragment
         android:id="@+id/map"

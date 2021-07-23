@@ -1,4 +1,4 @@
-package com.ujjallamichhane.ridesharing.ui.rides
+package com.ujjallamichhane.ridesharing.ui.customer.rides
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,7 +21,7 @@ class RidesFragment : Fragment() {
     ): View? {
         ridesViewModel =
             ViewModelProvider(this).get(RidesViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_rides, container, false)
+        val root = inflater.inflate(R.layout.fragment_customer_rides, container, false)
         val textView: TextView = root.findViewById(R.id.text_dashboard)
         ridesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
