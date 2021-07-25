@@ -1,21 +1,27 @@
 package com.ujjallamichhane.ridesharing.ui.driver.driverHome
 
-import androidx.fragment.app.Fragment
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import android.widget.LinearLayout
+import androidx.annotation.NonNull
+import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
 
+
 class DriverMapsFragment : Fragment() {
+
+    private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -37,7 +43,15 @@ class DriverMapsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_driver_maps, container, false)
+        val view =  inflater.inflate(R.layout.fragment_driver_maps, container, false)
+        val llBottomSheet = view.findViewById(R.id.bottom_sheet) as LinearLayout
+        bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
+        bottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehavior!!.setBottomSheetCallback(object : BottomSheetCallback() {
+            override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {}
+            override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
+        })
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -45,4 +59,7 @@ class DriverMapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
+
+
+
 }

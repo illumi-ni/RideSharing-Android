@@ -146,7 +146,6 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
                         currentMarker = null
 
-
                     }
                 }
             } else {
