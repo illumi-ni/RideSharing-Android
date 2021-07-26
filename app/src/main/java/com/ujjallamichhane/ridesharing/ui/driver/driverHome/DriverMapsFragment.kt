@@ -22,6 +22,7 @@ import com.ujjallamichhane.ridesharing.R
 class DriverMapsFragment : Fragment() {
 
     private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    var currentDialog: BottomSheetDialog? = null
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -51,6 +52,8 @@ class DriverMapsFragment : Fragment() {
             override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {}
             override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
         })
+
+
         return view
     }
 
@@ -59,7 +62,4 @@ class DriverMapsFragment : Fragment() {
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
-
-
-
 }

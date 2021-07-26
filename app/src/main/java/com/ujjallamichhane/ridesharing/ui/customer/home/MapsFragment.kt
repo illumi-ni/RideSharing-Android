@@ -302,7 +302,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         val distance = SphericalUtil.computeDistanceBetween(currentLocation, cameraPos)
 //        tvDistance.text = distance.toString() + "m"
         btnRequest.setOnClickListener {
-//            Findroutes(currentLocation, cameraPos);
+            requestAcceptedBottomSheet()
         }
     }
 
@@ -364,6 +364,20 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     override fun onRoutingCancelled() {
         Findroutes(currentLocation, cameraPos);
+    }
+
+    //Bottom sheet for inviting passengers
+    private fun requestAcceptedBottomSheet(){
+        if (currentDialog == null) {
+            currentDialog = BottomSheetDialog(requireContext())
+            // on below line we are inflating a layout file which we have created.
+            val view = layoutInflater.inflate(R.layout.invite_passengers, null)
+            currentDialog!!.setContentView(view)
+            currentDialog!!.show()
+
+        } else {
+            currentDialog = null
+        }
     }
 
 }
