@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceBuilder {
 //    const val BASE_URL =
-//        "http://192.168.137.169:90"
+//        "http://192.168.137.233:90"
 
         const val BASE_URL =
         "http://10.0.2.2:90/"

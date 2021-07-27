@@ -2,6 +2,8 @@ package com.ujjallamichhane.ridesharing.ui.customer.home
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Dialog
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
@@ -31,11 +33,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.SphericalUtil
 import com.ujjallamichhane.ridesharing.R
-import io.reactivex.rxjava3.disposables.Disposable
 import java.io.IOException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -43,11 +45,9 @@ import kotlin.collections.ArrayList
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener{
 
-    //Declaring the needed Variables
     private lateinit var btnCurrentLocation: FloatingActionButton
-    private lateinit var etHello: EditText
+    private lateinit var etSetOnMap: EditText
     private lateinit var etSetLocation: EditText
-    private lateinit var tvDistance: TextView
     private lateinit var tvPrice: TextView
     private lateinit var btnConfirm: Button
     private lateinit var btnRequest: Button
@@ -58,22 +58,19 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     lateinit var mMap: GoogleMap
     var geo: Geocoder? = null
 
-    var currentMarker: Marker? = null
-    var currentDialog: BottomSheetDialog? = null
+    private var currentMarker: Marker? = null
+    private var currentDialog: Dialog? = null
 
-    var addresses: List<Address>? = null
-    var destination: String = ""
+    private var addresses: List<Address>? = null
+    private var destination: String = ""
 
-    var currentLocation: LatLng = LatLng(20.5, 78.9)
-    var cameraPos: LatLng = LatLng(0.0, 0.0)
+    private var currentLocation: LatLng = LatLng(20.5, 78.9)
+    private var cameraPos: LatLng = LatLng(0.0, 0.0)
     private var polylines: ArrayList<Polyline>? = null
 
     private var apiKey: String = ""
 
-    var disposable: Disposable? = null
-
-//    var distance: Double = 0.0
-
+    private var distance: Double = 0.0
 
     @SuppressLint("SetTextI18n")
     private val callback = OnMapReadyCallback { googleMap ->
@@ -98,14 +95,16 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     ): View? {
         val view = inflater.inflate(R.layout.fragment_customer_maps, container, false)
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
-        etHello = view.findViewById(R.id.etHello)
+        etSetOnMap = view.findViewById(R.id.etHello)
         lollipop = view.findViewById(R.id.lollipop)
 
+        //get current location and move camera
         btnCurrentLocation.setOnClickListener {
             getLocation()
         }
 
-        etHello.setOnClickListener {
+        //set destination on map
+        etSetOnMap.setOnClickListener {
             any()
             lollipop.isVisible = true
         }
@@ -126,6 +125,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         return view
     }
 
+    //get current location as per the device's location
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         if (checkPermissions()) {
@@ -180,6 +180,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         }
     }
 
+    //check if location is enabled on the device
     private fun isLocationEnabled(): Boolean {
         val locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -234,6 +235,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         mapFragment?.getMapAsync(callback)
     }
 
+
     fun any() {
         mMap.setOnCameraMoveListener {
             val position = mMap.cameraPosition.target
@@ -256,16 +258,20 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             try {
                 addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
                 destination = addresses!![0].getAddressLine(0)
-//                    etHello.setText(address)
-                showBottomSheetDialog(destination)
+                confirmDestination(destination)
 
             } catch (e: IOException) {
-                Toast.makeText(requireContext(), "${e.toString()}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "$e",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
 
-    private fun showBottomSheetDialog(address: String) {
+    //bottom sheet for destination confirmation
+    private fun confirmDestination(destination: String) {
         if (currentDialog == null) {
             currentDialog = BottomSheetDialog(requireContext())
             // on below line we are inflating a layout file which we have created.
@@ -273,41 +279,25 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             etSetLocation = view.findViewById(R.id.etSetLocation)
             btnConfirm = view.findViewById(R.id.btnConfirm)
 
-
-            etSetLocation.setText(address)
+            etSetLocation.setText(destination)
 
             currentDialog!!.setContentView(view)
             currentDialog!!.show()
+
             btnConfirm.setOnClickListener {
                 currentDialog!!.dismiss()
-                Findroutes(currentLocation, cameraPos);
-                sendRequestBottomSheet()
+
+                //finds shortest route and draws a route on map
+                findroutes(currentLocation, cameraPos)
             }
         } else {
             currentDialog = null
-            showBottomSheetDialog(address)
+            confirmDestination(destination)
         }
     }
 
-    private fun sendRequestBottomSheet() {
-        currentDialog = BottomSheetDialog(requireContext())
-        val view = layoutInflater.inflate(R.layout.send_request, null)
-//        tvDistance = view.findViewById(R.id.tvDistance)
-        tvPrice = view.findViewById(R.id.tvPrice)
-        btnRequest = view.findViewById(R.id.btnRequest)
-
-        currentDialog!!.setContentView(view)
-        currentDialog!!.show()
-
-        val distance = SphericalUtil.computeDistanceBetween(currentLocation, cameraPos)
-//        tvDistance.text = distance.toString() + "m"
-        btnRequest.setOnClickListener {
-            requestAcceptedBottomSheet()
-        }
-    }
-
-    // function to find Routes.
-    fun Findroutes(Start: LatLng?, End: LatLng?) {
+    // function to find Routes
+    private fun findroutes(Start: LatLng?, End: LatLng?) {
         if (Start == null || End == null) {
             Toast.makeText(context, "Unable to get location", Toast.LENGTH_LONG).show()
         } else {
@@ -323,20 +313,22 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     }
 
     override fun onConnectionFailed(connectionResult: ConnectionResult) {
-        Findroutes(currentLocation, cameraPos);
+        findroutes(currentLocation, cameraPos);
     }
 
     override fun onRoutingFailure(e: RouteException) {
-//        val parentLayout: View = requireView().findViewById(android.R.id.content)
-//        val snackbar: Snackbar = Snackbar.make(requireActivity(), e.toString(), Snackbar.LENGTH_LONG)
-//        snackbar.show()
-//        Findroutes(start,end);
-
         Toast.makeText(context, "" + e.toString(), Toast.LENGTH_SHORT).show()
     }
 
     override fun onRoutingStart() {
-        Toast.makeText(context, "Finding Route...", Toast.LENGTH_LONG).show();
+        currentDialog = ProgressDialog.show(context, "",
+            "Finding shortest route. Please wait...",
+            true
+        )
+    }
+
+    override fun onRoutingCancelled() {
+        findroutes(currentLocation, cameraPos)
     }
 
     @SuppressLint("ResourceType")
@@ -350,23 +342,41 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             if (i == shortestRouteIndex) {
                 polyOptions.color(Color.BLUE)
                 polyOptions.width(7f)
-                polyOptions.addAll(route.get(shortestRouteIndex).getPoints())
+                polyOptions.addAll(route[shortestRouteIndex].points)
                 val polyline = mMap.addPolyline(polyOptions)
                 currentLocation = polyline.points[0]
                 val k = polyline.points.size
                 cameraPos = polyline.points[k - 1]
                 polylines!!.add(polyline)
+
+                distance = SphericalUtil.computeLength(polyline.points)
+
+                currentDialog?.dismiss()
+                sendRequestBottomSheet()
             } else {
             }
         }
-
     }
 
-    override fun onRoutingCancelled() {
-        Findroutes(currentLocation, cameraPos);
+    //bottom sheet for sending ride request after confirming destination and route
+    //and viewing price and distance
+    private fun sendRequestBottomSheet() {
+        currentDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.send_request, null)
+        tvPrice = view.findViewById(R.id.tvPrice)
+        btnRequest = view.findViewById(R.id.btnRequest)
+
+        tvPrice.text = distance.toString()
+
+        currentDialog!!.setContentView(view)
+        currentDialog!!.show()
+
+        btnRequest.setOnClickListener {
+            currentDialog = null
+            requestAcceptedBottomSheet()
+        }
     }
 
-    //Bottom sheet for inviting passengers
     private fun requestAcceptedBottomSheet(){
         if (currentDialog == null) {
             currentDialog = BottomSheetDialog(requireContext())
@@ -379,5 +389,4 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             currentDialog = null
         }
     }
-
 }
