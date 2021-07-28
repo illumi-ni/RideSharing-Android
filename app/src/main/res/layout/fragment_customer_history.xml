@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.CustomerHistoryFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="History"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvViewHistory"
         android:layout_width="match_parent"

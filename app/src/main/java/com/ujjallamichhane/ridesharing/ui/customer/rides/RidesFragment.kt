@@ -13,6 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.adapter.ViewPagerAdapter
+import com.ujjallamichhane.ridesharing.fragments.CustomerHistoryFragment
+import com.ujjallamichhane.ridesharing.fragments.CustomerScheduledRideFragment
 import com.ujjallamichhane.ridesharing.fragments.CustomerSignInFragment
 import com.ujjallamichhane.ridesharing.fragments.DriverSignInFragment
 
@@ -52,7 +54,7 @@ class RidesFragment : Fragment() {
         lstTitle.add("History")
         lstTitle.add("Scheduled")
         lstFragments = ArrayList<Fragment>()
-        lstFragments.add(CustomerSignInFragment())
-        lstFragments.add(DriverSignInFragment())
+        lstFragments.add(CustomerHistoryFragment())
+        lstFragments.add(CustomerScheduledRideFragment())
     }
 }
