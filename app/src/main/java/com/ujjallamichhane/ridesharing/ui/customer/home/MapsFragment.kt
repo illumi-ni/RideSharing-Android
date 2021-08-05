@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.directions.route.*
+import com.directions.route.Route
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
@@ -33,17 +34,23 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.maps.android.SphericalUtil
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.entity.RideRequest
+import okhttp3.*
+import okio.*
+import org.json.JSONObject
 import java.io.IOException
 import java.util.*
+import java.util.Objects.toString
 import kotlin.collections.ArrayList
 
 
-class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener{
+class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener {
 
     private lateinit var btnCurrentLocation: FloatingActionButton
     private lateinit var etSetOnMap: EditText
@@ -301,7 +308,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         if (Start == null || End == null) {
             Toast.makeText(context, "Unable to get location", Toast.LENGTH_LONG).show()
         } else {
-            val routing :Routing = Routing.Builder()
+            val routing: Routing = Routing.Builder()
                 .travelMode(AbstractRouting.TravelMode.DRIVING)
                 .withListener(this)
                 .alternativeRoutes(true)
@@ -321,7 +328,8 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     }
 
     override fun onRoutingStart() {
-        currentDialog = ProgressDialog.show(context, "",
+        currentDialog = ProgressDialog.show(
+            context, "",
             "Finding shortest route. Please wait...",
             true
         )
@@ -372,12 +380,21 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         currentDialog!!.show()
 
         btnRequest.setOnClickListener {
-            currentDialog = null
-            requestAcceptedBottomSheet()
+
+            val client = OkHttpClient()
+            val request: Request = Request.Builder().url("ws://10.0.2.2:90/").build()
+
+            val listener = EchoWebSocketListener()
+
+            var ws: WebSocket = client.newWebSocket(request, listener)
+            client.dispatcher().executorService().shutdown()
+
+//            currentDialog = null
+//            requestAcceptedBottomSheet()
         }
     }
 
-    private fun requestAcceptedBottomSheet(){
+    private fun requestAcceptedBottomSheet() {
         if (currentDialog == null) {
             currentDialog = BottomSheetDialog(requireContext())
             // on below line we are inflating a layout file which we have created.
@@ -387,6 +404,44 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
         } else {
             currentDialog = null
+        }
+    }
+
+    class EchoWebSocketListener : WebSocketListener() {
+        override fun onOpen(webSocket: WebSocket, response: Response?) {
+            val rideRequest = RideRequest(
+                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
+                date = "today", time = "now", distance = "100", price = "200"
+            ).toString()
+
+            val fullname: String = "Ujjal"
+
+            val ride = JSONObject("""{"userType" = "customer","fullname" = "$fullname", "phone" = "0987", "from" = "Here", "to" = "There",
+                "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
+
+            webSocket.send(ride)
+            webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
+        }
+
+        override fun onMessage(webSocket: WebSocket, text: String) {
+            println("Receiving: $text")
+        }
+
+        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
+            println("Receiving: " + bytes.hex())
+        }
+
+        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+            webSocket.close(NORMAL_CLOSURE_STATUS, null)
+            println("Closing: $code $reason")
+        }
+
+        override fun onFailure(webSocket: WebSocket?, t: Throwable, response: Response?) {
+            t.printStackTrace()
+        }
+
+        companion object {
+            private const val NORMAL_CLOSURE_STATUS = 1000
         }
     }
 }
