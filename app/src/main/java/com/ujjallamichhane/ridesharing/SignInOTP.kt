@@ -77,12 +77,13 @@ class SignInOTP : AppCompatActivity() {
         }
     }
 
+
     private fun saveSharedPref(){
         val email = userEmail
         val sharedPref = getSharedPreferences("UserPreferences", AppCompatActivity.MODE_PRIVATE)
         val editor = sharedPref.edit()
 
-        editor.putString("email", email)
+        editor.putString("userEmail", email)
         editor.apply()
     }
 }

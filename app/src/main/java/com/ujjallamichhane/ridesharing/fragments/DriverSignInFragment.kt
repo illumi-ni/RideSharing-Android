@@ -1,26 +1,25 @@
 package com.ujjallamichhane.ridesharing.fragments
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.ujjallamichhane.ridesharing.CustomerBottomNav
+import androidx.fragment.app.Fragment
 import com.ujjallamichhane.ridesharing.DriverButtomNavActivity
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
-import com.ujjallamichhane.ridesharing.entity.Driver
-import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import com.ujjallamichhane.ridesharing.repository.DriverRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.IOException
+
 
 class DriverSignInFragment : Fragment() {
     private lateinit var etEmailDriver: EditText
@@ -53,6 +52,7 @@ class DriverSignInFragment : Fragment() {
                     if (response.success == true) {
 
                         ServiceBuilder.token = "Bearer ${response.token}"
+                        saveSharedPref()
 
 //                        val user: Driver = response.data!!
                         withContext(Dispatchers.Main) {
@@ -75,6 +75,17 @@ class DriverSignInFragment : Fragment() {
         }
 
         return view
+    }
+
+    private fun saveSharedPref(){
+        val email = etEmailDriver.text.toString()
+        val password = etPwdDriver.text.toString()
+        val sharedPref: SharedPreferences = requireContext().getSharedPreferences("UserPreferences", 0)
+        val editor = sharedPref.edit()
+
+        editor.putString("driverEmail", email)
+        editor.putString("driverPassword", password)
+        editor.apply()
     }
 
 }

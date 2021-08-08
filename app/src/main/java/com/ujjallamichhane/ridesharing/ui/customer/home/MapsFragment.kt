@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
@@ -33,7 +34,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.android.libraries.places.api.Places
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.maps.android.SphericalUtil
@@ -51,6 +51,8 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var tvPrice: TextView
     private lateinit var btnConfirm: Button
     private lateinit var btnRequest: Button
+    private lateinit var btnInvite: Button
+    private lateinit var btnCancel: Button
     private lateinit var lollipop: ImageView
 
     private val pERMISSION_ID = 42
@@ -377,7 +379,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         }
     }
 
-    private fun requestAcceptedBottomSheet(){
+    private fun requestAcceptedBottomSheet() {
         if (currentDialog == null) {
             currentDialog = BottomSheetDialog(requireContext())
             // on below line we are inflating a layout file which we have created.
@@ -385,8 +387,27 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             currentDialog!!.setContentView(view)
             currentDialog!!.show()
 
-        } else {
-            currentDialog = null
-        }
+            btnInvite = view.findViewById(R.id.btnInvite)
+            btnCancel = view.findViewById(R.id.btnCancel)
+
+            btnInvite.setOnClickListener {
+                currentDialog!!.dismiss()
+                val myDialog = ProgressDialog(context)
+                myDialog.setMessage("Waiting for other passengers to join in the ride...")
+                myDialog.setButton(
+                    DialogInterface.BUTTON_NEGATIVE, "Cancel"
+                ) { dialog, which -> dialog.dismiss() }
+                myDialog.setButton(
+                    DialogInterface.BUTTON_POSITIVE, "Ready to go"
+                ) { dialog, which ->
+                    // your code
+                }
+                myDialog.show()
+
+            }
+
+            } else {
+                currentDialog = null
+            }
     }
 }

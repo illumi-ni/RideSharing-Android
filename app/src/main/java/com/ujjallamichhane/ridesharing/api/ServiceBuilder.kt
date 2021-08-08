@@ -1,6 +1,7 @@
 package com.ujjallamichhane.ridesharing.api
 
 import com.ujjallamichhane.ridesharing.entity.Customer
+import com.ujjallamichhane.ridesharing.entity.Driver
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,7 +15,9 @@ object ServiceBuilder {
 
     var token: String? = null
     var customer: Customer? = null
+    var driver: Driver? = null
     var email: String? = null
+    var password: String? = null
 
     private val okHttp = OkHttpClient.Builder()
     private val retrofitBuilder = Retrofit.Builder()

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:cardCornerRadius="1dp"
+        app:cardElevation="20dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/linear1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/imgCalender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_calendar"
+                    android:layout_margin="10dp"/>
+
+                <TextView
+                    android:id="@+id/tvPickUpDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/imgCalender"
+                    android:layout_margin="5dp"
+                    android:text="Jan 1 2021, 6:00 AM"
+                    android:textSize="20dp"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/linear1"
+                android:paddingLeft="10dp">
+
+                <ImageView
+                    android:id="@+id/imglocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="85dp"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/ic_round"/>
+
+                <TextView
+                    android:id="@+id/pickUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="5dp"
+                    android:text="PickUp"
+                    android:textSize="16sp"
+                    android:layout_toRightOf="@id/imglocation"/>
+
+                <TextView
+                    android:id="@+id/tvPickUpLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Kumaripati, Lalitpur"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_toRightOf="@id/imglocation"
+                    android:layout_below="@id/pickUp"/>
+
+                <TextView
+                    android:id="@+id/destination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginStart="5dp"
+                    android:text="Destination"
+                    android:textSize="16sp"
+                    android:layout_toRightOf="@id/imglocation"
+                    android:layout_below="@id/tvPickUpLocation"/>
+
+                <TextView
+                    android:id="@+id/tvDestination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:text="Bagbazar, Kathmandu"
+                    android:textSize="16sp"
+                    android:textColor="@color/black"
+                    android:layout_toRightOf="@id/imglocation"
+                    android:layout_below="@+id/destination"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relative2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_below="@+id/relative1">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#e6e6e6" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgCustomer"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    android:src="@drawable/noimg"
+                    android:layout_margin="5dp"/>
+
+                <TextView
+                    android:id="@+id/tvDriversNme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_toRightOf="@+id/imgCustomer"
+                    android:text="Ujjal Lamichhane"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                    android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="#e6e6e6"
+                    android:layout_below="@+id/imgCustomer"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/linearFare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="20dp"
+                android:layout_below="@+id/relative2">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fare"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rs 00"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/linearDistance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_below="@id/relative2"
+                android:layout_marginLeft="30dp"
+                android:layout_toRightOf="@+id/linearFare">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="00km"
+                    android:textStyle="bold"
+                    android:textSize="18sp"
+                    android:layout_margin="5dp"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnAcceptRequest"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accept Ride Request"
+                android:layout_margin="10dp"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/linearDistance"/>
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
