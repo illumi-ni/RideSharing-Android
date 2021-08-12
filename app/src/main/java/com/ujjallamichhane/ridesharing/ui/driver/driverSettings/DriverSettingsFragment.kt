@@ -21,11 +21,12 @@ class DriverSettingsFragment : Fragment() {
   ): View? {
     driverSettingsViewModel =
             ViewModelProvider(this).get(DriverSettingsViewModel::class.java)
-    val root = inflater.inflate(R.layout.fragment_driver_settings, container, false)
-    val textView: TextView = root.findViewById(R.id.text_notifications)
-    driverSettingsViewModel.text.observe(viewLifecycleOwner, Observer {
-      textView.text = it
-    })
-    return root
+    val view = inflater.inflate(R.layout.fragment_driver_settings, container, false)
+//    val textView: TextView = root.findViewById(R.id.text_notifications)
+//    driverSettingsViewModel.text.observe(viewLifecycleOwner, Observer {
+//      textView.text = it
+//    })
+
+    return view
   }
 }

@@ -1,22 +1,221 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.customer.settings.SettingsFragment">
 
-    <TextView
-        android:id="@+id/text_notifications"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardProf"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="20dp">
+            <ImageView
+                android:id="@+id/imgCustProfile"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:src="@drawable/noimg"
+                android:layout_marginTop="20dp"/>
+            <TextView
+                android:id="@+id/customerName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Customer Name"
+                android:textSize="20sp"
+                android:textColor="#000"
+                android:layout_toEndOf="@+id/imgCustProfile"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_centerHorizontal="true"/>
+            <TextView
+                android:id="@+id/customerPhone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="+977 0000000"
+                android:textSize="20sp"
+                android:textColor="#000"
+                android:layout_toEndOf="@+id/imgCustProfile"
+                android:layout_below="@+id/customerName"
+                android:layout_marginLeft="20dp"
+                android:layout_centerHorizontal="true"/>
+        </RelativeLayout>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/imgInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_info"
+        android:layout_below="@+id/cardProf"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvEditProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Edit Profile"
+        android:layout_below="@id/cardProf"
+        android:layout_toEndOf="@+id/imgInfo"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:textColor="#232323"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next"
+        android:layout_below="@+id/cardProf"
+        android:layout_alignEnd="@id/tvEditProfile"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvEditProfile"
+        android:background="#aaa"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgBell"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_bell"
+        android:layout_below="@+id/view1"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvNotification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Notifications"
+        android:layout_below="@id/view1"
+        android:layout_toEndOf="@+id/imgInfo"
+        android:textSize="20sp"
+        android:textColor="#232323"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next"
+        android:layout_below="@+id/view1"
+        android:layout_alignEnd="@id/tvNotification"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvNotification"
+        android:background="#aaa"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_payment"
+        android:layout_below="@+id/view2"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvPayment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Payment Options"
+        android:layout_below="@id/view2"
+        android:layout_toEndOf="@+id/imgInfo"
+        android:textSize="20sp"
+        android:textColor="#232323"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next"
+        android:layout_below="@+id/view2"
+        android:layout_alignEnd="@id/tvPayment"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvPayment"
+        android:background="#aaa"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgShareLoc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_share"
+        android:layout_below="@+id/view3"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvShareLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Share Location"
+        android:layout_below="@id/view3"
+        android:layout_toEndOf="@+id/imgInfo"
+        android:textSize="20sp"
+        android:textColor="#232323"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next"
+        android:layout_below="@+id/view3"
+        android:layout_alignEnd="@id/tvPayment"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
+    <View
+        android:id="@+id/view4"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvShareLocation"
+        android:background="#aaa"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <ImageView
+        android:id="@+id/imgLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_logout"
+        android:layout_below="@+id/view4"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/tvLogout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Logout"
+        android:layout_below="@id/view4"
+        android:layout_toEndOf="@+id/imgInfo"
+        android:textSize="20sp"
+        android:textColor="#232323"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_next"
+        android:layout_below="@+id/view4"
+        android:layout_alignEnd="@id/tvPayment"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"/>
+    <View
+        android:id="@+id/view5"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tvLogout"
+        android:background="#aaa"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
+
+</RelativeLayout>
