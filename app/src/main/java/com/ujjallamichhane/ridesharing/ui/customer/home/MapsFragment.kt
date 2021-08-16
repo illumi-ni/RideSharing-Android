@@ -17,6 +17,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +27,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.directions.route.*
 import com.directions.route.Route
+import com.github.nkzawa.socketio.client.Socket
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
@@ -49,6 +51,8 @@ import java.io.IOException
 import java.util.*
 import java.util.Objects.toString
 import kotlin.collections.ArrayList
+import com.github.nkzawa.socketio.client.IO
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener {
@@ -62,6 +66,16 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var btnInvite: Button
     private lateinit var btnCancel: Button
     private lateinit var lollipop: ImageView
+
+
+    lateinit var mSocket: Socket;
+    lateinit var userName: String;
+    lateinit var roomName: String;
+
+
+
+
+
 
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -131,6 +145,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
         // Initializing fused location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+
 
         return view
     }
@@ -382,18 +397,31 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
 
+        // The following lines connects the Android app to the server.
+        ServiceBuilder.setSocket()
+        ServiceBuilder.establishConnection()
+        val mSocket = ServiceBuilder.getSocket()
+
         btnRequest.setOnClickListener {
 
-            val client = OkHttpClient()
-            val request: Request = Request.Builder().url("ws://10.0.2.2:90/").build()
+//            val ride = JSONObject("""{"userType" = "customer","fullname" = "name", "phone" = "0987", "from" = "Here", "to" = "There",
+//               "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
+//
+//            val data = RideRequest(
+//                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
+//                date = "today", time = "now", distance = "100", price = "200"
+//            )
 
-            val listener = EchoWebSocketListener()
+            val gson: Gson = Gson()
+//            val jsonData = gson.toJson(ride) // Gson changes data object to Json type.
 
-            var ws: WebSocket = client.newWebSocket(request, listener)
-            client.dispatcher().executorService().shutdown()
+            val data = gson.toJson(RideRequest(
+                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
+                date = "today", time = "now", distance = "100", price = "200"
+            ))
 
-//            currentDialog = null
-//            requestAcceptedBottomSheet()
+            mSocket.emit("message", data)
+
         }
     }
 
@@ -424,46 +452,66 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
             }
 
-            } else {
-                currentDialog = null
-            }
+        } else {
+            currentDialog = null
+        }
     }
 
-    class EchoWebSocketListener : WebSocketListener() {
-        override fun onOpen(webSocket: WebSocket, response: Response?) {
-            val rideRequest = RideRequest(
-                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
-                date = "today", time = "now", distance = "100", price = "200"
-            ).toString()
 
-            val fullname: String = "Ujjal"
 
-            val ride = JSONObject("""{"userType" = "customer","fullname" = "$fullname", "phone" = "0987", "from" = "Here", "to" = "There",
-                "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
+//    class EchoWebSocketListener : WebSocketListener() {
+//        override fun onOpen(webSocket: WebSocket, response: Response?) {
+//            val rideRequest = RideRequest(
+//                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
+//                date = "today", time = "now", distance = "100", price = "200"
+//            ).toString()
+//
+//            val fullname: String = "Ujjal"
+//
+//            val ride = JSONObject("""{"userType" = "customer","fullname" = "$fullname", "phone" = "0987", "from" = "Here", "to" = "There",
+//                "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
+//
+//            webSocket.send(ride)
+//            webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
+//        }
+//
+//        override fun onMessage(webSocket: WebSocket, text: String) {
+//            println("Receiving: $text")
+//        }
+//
+//        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
+//            println("Receiving: " + bytes.hex())
+//        }
+//
+//        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+//            webSocket.close(NORMAL_CLOSURE_STATUS, null)
+//            println("Closing: $code $reason")
+//        }
+//
+//        override fun onFailure(webSocket: WebSocket?, t: Throwable, response: Response?) {
+//            t.printStackTrace()
+//        }
+//   private fun openwebSocket(){
+//    //! Connect to web server
+//    try {
+//        //! Configure library options
+//        val options = IO.Options()
+//        options.reconnection = true
+//        options.forceNew = true
+//        //This address is the way you can connect to localhost with AVD(Android Virtual Device)
+//        mSocket = IO.socket("http://10.0.2.2:90/", options) // emulator loopback address
+//    } catch (e: Exception) {
+//        e.printStackTrace()
+//        Log.d("Failure", "Failed to connect to server")
+//    }
+//    Log.d("Connected", "socket ID:${mSocket.id()}")
+//    mSocket.connect()
+//
+//   }
 
-            webSocket.send(ride)
-            webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
-        }
-
-        override fun onMessage(webSocket: WebSocket, text: String) {
-            println("Receiving: $text")
-        }
-
-        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
-            println("Receiving: " + bytes.hex())
-        }
-
-        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-            webSocket.close(NORMAL_CLOSURE_STATUS, null)
-            println("Closing: $code $reason")
-        }
-
-        override fun onFailure(webSocket: WebSocket?, t: Throwable, response: Response?) {
-            t.printStackTrace()
-        }
 
         companion object {
             private const val NORMAL_CLOSURE_STATUS = 1000
         }
     }
-}
+

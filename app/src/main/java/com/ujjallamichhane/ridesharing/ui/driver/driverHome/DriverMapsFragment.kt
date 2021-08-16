@@ -1,4 +1,5 @@
 package com.ujjallamichhane.ridesharing.ui.driver.driverHome
+
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Dialog
@@ -17,10 +18,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.test.core.app.ApplicationProvider
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -32,8 +36,22 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCa
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.ujjallamichhane.ridesharing.DriverButtomNavActivity
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.entity.RideRequest
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
+import retrofit2.Response
 
 class DriverMapsFragment : Fragment() {
+
     private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
     private lateinit var btnCurrentLocation: FloatingActionButton
     private lateinit var btnAcceptRequest: Button
@@ -43,6 +61,14 @@ class DriverMapsFragment : Fragment() {
     private var currentMarker: Marker? = null
     private var currentLocation: LatLng = LatLng(20.5, 78.9)
     private var currentDialog: Dialog? = null
+    private lateinit var onlineSwitch: SwitchCompat
+    private lateinit var tvPickUpDate: TextView
+    private lateinit var tvPickUpLocation: TextView
+    private lateinit var tvDestination: TextView
+    private lateinit var tvDriversName: TextView
+    private lateinit var tvFare: TextView
+    private lateinit var tvDistance: TextView
+    private var mSocket : Socket? = null
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -62,33 +88,55 @@ class DriverMapsFragment : Fragment() {
 //        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
 //        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view =  inflater.inflate(R.layout.fragment_driver_maps, container, false)
+        val view = inflater.inflate(R.layout.fragment_driver_maps, container, false)
         val llBottomSheet = view.findViewById(R.id.bottom_sheet) as LinearLayout
         btnCurrentLocation = view.findViewById(R.id.btnCurrentLocation)
+        onlineSwitch = view.findViewById(R.id.onlineSwitch)
         bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet)
         bottomSheetBehavior!!.state = BottomSheetBehavior.STATE_COLLAPSED
         bottomSheetBehavior!!.setBottomSheetCallback(object : BottomSheetCallback() {
             override fun onStateChanged(@NonNull bottomSheet: View, newState: Int) {}
             override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
         })
+
+//        requestRideBottomSheet()
+
         // Initializing fused location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         btnCurrentLocation.setOnClickListener {
             getLocation()
-            requestRideBottomSheet()
+
         }
+
+        onlineSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // The following lines connects the Android app to the server.
+                ServiceBuilder.setSocket()
+                ServiceBuilder.establishConnection()
+                mSocket = ServiceBuilder.getSocket()
+                requestRideBottomSheet()
+                Toast.makeText(context, "Checked", Toast.LENGTH_SHORT).show()
+
+            } else {
+                Toast.makeText(context, "Not", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         return view
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
     }
+
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         if (checkPermissions()) {
@@ -119,6 +167,7 @@ class DriverMapsFragment : Fragment() {
             requestPermissions()
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun requestNewLocationData() {
         val mLocationRequest = LocationRequest()
@@ -132,12 +181,14 @@ class DriverMapsFragment : Fragment() {
             Looper.myLooper()
         )
     }
+
     private val mLocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation: Location = locationResult.lastLocation
             currentLocation = LatLng(mLastLocation.latitude, mLastLocation.longitude)
         }
     }
+
     //check if location is enabled on the device
     private fun isLocationEnabled(): Boolean {
         val locationManager =
@@ -146,6 +197,7 @@ class DriverMapsFragment : Fragment() {
             LocationManager.NETWORK_PROVIDER
         )
     }
+
     private fun checkPermissions(): Boolean {
         if (ActivityCompat.checkSelfPermission(
                 requireContext(),
@@ -160,6 +212,7 @@ class DriverMapsFragment : Fragment() {
         }
         return false
     }
+
     private fun requestPermissions() {
         ActivityCompat.requestPermissions(
             requireActivity(),
@@ -170,6 +223,7 @@ class DriverMapsFragment : Fragment() {
             pERMISSION_ID
         )
     }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
@@ -188,5 +242,33 @@ class DriverMapsFragment : Fragment() {
         val view = layoutInflater.inflate(R.layout.request_ride, null)
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
+
+        tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
+        tvDestination = view.findViewById(R.id.tvDestination)
+        tvDriversName = view.findViewById(R.id.tvDriversNme)
+        tvFare = view.findViewById(R.id.tvFare)
+        tvDistance = view.findViewById(R.id.tvDistance)
+        tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
+
+        mSocket!!.on("broadcast") { args ->
+            CoroutineScope(Dispatchers.IO).launch {
+                if (args[0] != null) {
+                    val counter = args[0] as JSONObject
+
+                    val gson: Gson = Gson()
+                    val data = gson.fromJson(counter.toString(), RideRequest::class.java)
+
+                    tvPickUpDate.setText(data.date)
+                    tvPickUpLocation.setText(data.from)
+                    tvDestination.setText(data.to)
+                    tvDriversName.setText(data.fullname)
+                    tvFare.setText(data.price)
+                    tvDistance.setText(data.distance)
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "${data}", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
     }
 }

@@ -151,6 +151,7 @@
                     android:textSize="18sp"
                     android:layout_margin="5dp"/>
                 <TextView
+                    android:id="@+id/tvFare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rs 00"
@@ -176,6 +177,7 @@
                     android:textSize="18sp"
                     android:layout_margin="5dp"/>
                 <TextView
+                    android:id="@+id/tvDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00km"
