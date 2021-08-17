@@ -2,11 +2,9 @@ package com.ujjallamichhane.ridesharing.api
 
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.response.LoginResponse
+import com.ujjallamichhane.ridesharing.response.UpdateCustomerResponse
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface CustomerApi {
     //Register Customer
@@ -32,4 +30,9 @@ interface CustomerApi {
     suspend fun checkEmail(
         @Field("email") email: String
     ): Response<LoginResponse>
+
+    @GET("customer/single")
+    suspend fun getCustomerDetails(
+        @Header("Authorization") token: String
+    ): Response<UpdateCustomerResponse>
 }

@@ -5,6 +5,7 @@ import com.ujjallamichhane.ridesharing.api.RideSharingApiRequest
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.response.LoginResponse
+import com.ujjallamichhane.ridesharing.response.UpdateCustomerResponse
 
 class CustomerRepository
     :RideSharingApiRequest(){
@@ -29,6 +30,12 @@ class CustomerRepository
     suspend fun checkEmail(email: String):LoginResponse{
         return apiRequest {
             rideshareApi.checkEmail(email)
+        }
+    }
+
+    suspend fun getCustomerDetails(): UpdateCustomerResponse {
+        return apiRequest {
+            rideshareApi.getCustomerDetails(ServiceBuilder.token!!)
         }
     }
 }

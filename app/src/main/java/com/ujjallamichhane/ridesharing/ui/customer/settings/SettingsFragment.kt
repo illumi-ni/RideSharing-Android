@@ -13,6 +13,8 @@ import com.ujjallamichhane.ridesharing.R
 class SettingsFragment : Fragment() {
 
     private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var tvEditProfile: TextView
+    private lateinit var tvLogout: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,7 +28,13 @@ class SettingsFragment : Fragment() {
 //        settingsViewModel.text.observe(viewLifecycleOwner, Observer {
 //            textView.text = it
 //        })
-        
+        tvEditProfile = view.findViewById(R.id.tvEditProfile)
+        tvLogout = view.findViewById(R.id.tvLogout)
+
+        tvEditProfile.setOnClickListener {
+
+        }
+
 
 
         return view
