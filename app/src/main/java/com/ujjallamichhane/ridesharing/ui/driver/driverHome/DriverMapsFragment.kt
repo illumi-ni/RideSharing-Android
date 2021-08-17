@@ -13,6 +13,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import retrofit2.Response
+import java.lang.Exception
 
 class DriverMapsFragment : Fragment() {
 
@@ -120,7 +122,8 @@ class DriverMapsFragment : Fragment() {
                 ServiceBuilder.setSocket()
                 ServiceBuilder.establishConnection()
                 mSocket = ServiceBuilder.getSocket()
-                requestRideBottomSheet()
+
+//                requestRideBottomSheet()
                 Toast.makeText(context, "Checked", Toast.LENGTH_SHORT).show()
 
             } else {
@@ -232,12 +235,12 @@ class DriverMapsFragment : Fragment() {
         if (requestCode == pERMISSION_ID) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                 getLocation()
-
             }
         }
     }
 
     private fun requestRideBottomSheet() {
+        Log.d("Request Ride", "True")
         currentDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.request_ride, null)
         currentDialog!!.setContentView(view)
@@ -250,23 +253,32 @@ class DriverMapsFragment : Fragment() {
         tvDistance = view.findViewById(R.id.tvDistance)
         tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
 
-        mSocket!!.on("broadcast") { args ->
-            CoroutineScope(Dispatchers.IO).launch {
-                if (args[0] != null) {
-                    val counter = args[0] as JSONObject
+        if(ServiceBuilder.driver!=null){
+            Log.d("Request RIde", ServiceBuilder.driver!!._id.toString())
+            mSocket!!.on("driver_"+ServiceBuilder.driver!!._id.toString()) { args ->
+                try {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        Log.d("Request ride", args.toString())
+                        if (args[0] != null) {
+                            val counter = args[0] as JSONObject
+                            val gson: Gson = Gson()
+                            val data = gson.fromJson(counter.toString(), RideRequest::class.java)
 
-                    val gson: Gson = Gson()
-                    val data = gson.fromJson(counter.toString(), RideRequest::class.java)
-
-                    tvPickUpDate.setText(data.date)
-                    tvPickUpLocation.setText(data.from)
-                    tvDestination.setText(data.to)
-                    tvDriversName.setText(data.fullname)
-                    tvFare.setText(data.price)
-                    tvDistance.setText(data.distance)
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "${data}", Toast.LENGTH_LONG).show()
+                            withContext(Dispatchers.Main) {
+                                Log.d("Request Ride", data.toString())
+                                tvPickUpDate.text = data.date
+                                tvPickUpLocation.text = data.from
+                                tvDestination.text = data.to
+                                tvDriversName.text = data.fullname
+                                tvFare.text = data.price
+                                tvDistance.text = data.distance
+                                Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     }
+
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
