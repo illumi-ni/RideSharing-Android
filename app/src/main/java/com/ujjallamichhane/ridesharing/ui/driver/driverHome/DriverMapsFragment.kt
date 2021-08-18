@@ -107,8 +107,6 @@ class DriverMapsFragment : Fragment() {
             override fun onSlide(@NonNull bottomSheet: View, slideOffset: Float) {}
         })
 
-//        requestRideBottomSheet()
-
         // Initializing fused location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
         btnCurrentLocation.setOnClickListener {
@@ -123,7 +121,7 @@ class DriverMapsFragment : Fragment() {
                 ServiceBuilder.establishConnection()
                 mSocket = ServiceBuilder.getSocket()
 
-//                requestRideBottomSheet()
+                requestRideBottomSheet()
                 Toast.makeText(context, "Checked", Toast.LENGTH_SHORT).show()
 
             } else {
@@ -240,31 +238,31 @@ class DriverMapsFragment : Fragment() {
     }
 
     private fun requestRideBottomSheet() {
-        Log.d("Request Ride", "True")
-        currentDialog = BottomSheetDialog(requireContext())
-        val view = layoutInflater.inflate(R.layout.request_ride, null)
-        currentDialog!!.setContentView(view)
-        currentDialog!!.show()
-
-        tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
-        tvDestination = view.findViewById(R.id.tvDestination)
-        tvDriversName = view.findViewById(R.id.tvDriversNme)
-        tvFare = view.findViewById(R.id.tvFare)
-        tvDistance = view.findViewById(R.id.tvDistance)
-        tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
-
         if(ServiceBuilder.driver!=null){
-            Log.d("Request RIde", ServiceBuilder.driver!!._id.toString())
+            Log.d("Request Ride", ServiceBuilder.driver!!._id.toString())
             mSocket!!.on("driver_"+ServiceBuilder.driver!!._id.toString()) { args ->
                 try {
                     CoroutineScope(Dispatchers.IO).launch {
                         Log.d("Request ride", args.toString())
                         if (args[0] != null) {
                             val counter = args[0] as JSONObject
-                            val gson: Gson = Gson()
+                            val gson = Gson()
                             val data = gson.fromJson(counter.toString(), RideRequest::class.java)
 
                             withContext(Dispatchers.Main) {
+                                Log.d("Request Ride", "True")
+                                currentDialog = BottomSheetDialog(requireContext())
+                                val view = layoutInflater.inflate(R.layout.request_ride, null)
+                                currentDialog!!.setContentView(view)
+                                currentDialog!!.show()
+
+                                tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
+                                tvDestination = view.findViewById(R.id.tvDestination)
+                                tvDriversName = view.findViewById(R.id.tvDriversNme)
+                                tvFare = view.findViewById(R.id.tvFare)
+                                tvDistance = view.findViewById(R.id.tvDistance)
+                                tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
+
                                 Log.d("Request Ride", data.toString())
                                 tvPickUpDate.text = data.date
                                 tvPickUpLocation.text = data.from

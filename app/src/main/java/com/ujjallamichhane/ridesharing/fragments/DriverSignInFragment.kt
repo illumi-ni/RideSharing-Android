@@ -28,7 +28,6 @@ class DriverSignInFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,12 +51,9 @@ class DriverSignInFragment : Fragment() {
                     if (response.success == true) {
 
                         ServiceBuilder.token = "Bearer ${response.token}"
+                        ServiceBuilder.driver = response.driverData
                         saveSharedPref()
 
-//                        val user: Driver = response.data!!
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(context, "${response.driverData}", Toast.LENGTH_SHORT).show()
-                        }
                         startActivity(Intent(context, DriverButtomNavActivity::class.java))
 
                     } else {

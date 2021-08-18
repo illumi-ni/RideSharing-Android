@@ -67,15 +67,9 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var btnCancel: Button
     private lateinit var lollipop: ImageView
 
-
     lateinit var mSocket: Socket;
     lateinit var userName: String;
     lateinit var roomName: String;
-
-
-
-
-
 
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -403,25 +397,15 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         val mSocket = ServiceBuilder.getSocket()
 
         btnRequest.setOnClickListener {
-
-//            val ride = JSONObject("""{"userType" = "customer","fullname" = "name", "phone" = "0987", "from" = "Here", "to" = "There",
-//               "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
-//
-//            val data = RideRequest(
-//                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
-//                date = "today", time = "now", distance = "100", price = "200"
-//            )
-
             val gson: Gson = Gson()
-//            val jsonData = gson.toJson(ride) // Gson changes data object to Json type.
-
-            val data = gson.toJson(RideRequest(
-                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
-                date = "today", time = "now", distance = "100", price = "200"
-            ))
+            val data = gson.toJson(
+                RideRequest(
+                    fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
+                    date = "today", time = "now", distance = "100", price = "200"
+                )
+            )
 
             mSocket.emit("message", data)
-
         }
     }
 
@@ -457,61 +441,8 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         }
     }
 
-
-
-//    class EchoWebSocketListener : WebSocketListener() {
-//        override fun onOpen(webSocket: WebSocket, response: Response?) {
-//            val rideRequest = RideRequest(
-//                fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
-//                date = "today", time = "now", distance = "100", price = "200"
-//            ).toString()
-//
-//            val fullname: String = "Ujjal"
-//
-//            val ride = JSONObject("""{"userType" = "customer","fullname" = "$fullname", "phone" = "0987", "from" = "Here", "to" = "There",
-//                "date" = "today", "time" = "now", "distance" = "100", "price" = "200"}""").toString()
-//
-//            webSocket.send(ride)
-//            webSocket.close(NORMAL_CLOSURE_STATUS, "Goodbye!")
-//        }
-//
-//        override fun onMessage(webSocket: WebSocket, text: String) {
-//            println("Receiving: $text")
-//        }
-//
-//        override fun onMessage(webSocket: WebSocket?, bytes: ByteString) {
-//            println("Receiving: " + bytes.hex())
-//        }
-//
-//        override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-//            webSocket.close(NORMAL_CLOSURE_STATUS, null)
-//            println("Closing: $code $reason")
-//        }
-//
-//        override fun onFailure(webSocket: WebSocket?, t: Throwable, response: Response?) {
-//            t.printStackTrace()
-//        }
-//   private fun openwebSocket(){
-//    //! Connect to web server
-//    try {
-//        //! Configure library options
-//        val options = IO.Options()
-//        options.reconnection = true
-//        options.forceNew = true
-//        //This address is the way you can connect to localhost with AVD(Android Virtual Device)
-//        mSocket = IO.socket("http://10.0.2.2:90/", options) // emulator loopback address
-//    } catch (e: Exception) {
-//        e.printStackTrace()
-//        Log.d("Failure", "Failed to connect to server")
-//    }
-//    Log.d("Connected", "socket ID:${mSocket.id()}")
-//    mSocket.connect()
-//
-//   }
-
-
-        companion object {
-            private const val NORMAL_CLOSURE_STATUS = 1000
-        }
+    companion object {
+        private const val NORMAL_CLOSURE_STATUS = 1000
     }
+}
 

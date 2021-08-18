@@ -12,6 +12,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.text.set
 import androidx.core.text.toSpannable
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,6 +54,7 @@ class SignInOTP : AppCompatActivity() {
                     val response = customerRepository.verifyOtp(otp)
                     if (response.success == true){
                         userEmail = response.customerData?.email.toString()
+                        ServiceBuilder.customer = response.customerData
                         withContext(Dispatchers.Main){
                             Toast.makeText(
                                     this@SignInOTP,
