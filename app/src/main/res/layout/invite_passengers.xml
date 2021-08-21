@@ -52,12 +52,12 @@
                         android:id="@+id/tvDriversNme"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Ujjal Lamichhane"
-                        android:textSize="18sp"
-                        android:layout_toRightOf="@+id/imgDriver"
-                        android:layout_marginTop="15dp"
                         android:layout_marginLeft="10dp"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
+                        android:layout_marginTop="15dp"
+                        android:layout_toRightOf="@+id/imgDriver"
+                        android:text="Ujjal Lamichhane"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                        android:textSize="18sp" />
 
                     <ImageView
                         android:id="@+id/imgRating"

@@ -27,7 +27,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.directions.route.*
 import com.directions.route.Route
-import com.github.nkzawa.socketio.client.Socket
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.location.*
@@ -51,8 +50,18 @@ import java.io.IOException
 import java.util.*
 import java.util.Objects.toString
 import kotlin.collections.ArrayList
-import com.github.nkzawa.socketio.client.IO
+
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.entity.Driver
+import io.socket.client.Socket
+import io.socket.emitter.Emitter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.Exception
+import android.R.attr.name
+import java.text.DateFormat
 
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener {
@@ -66,10 +75,16 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var btnInvite: Button
     private lateinit var btnCancel: Button
     private lateinit var lollipop: ImageView
+    private lateinit var imgDriver: ImageView
+    private lateinit var tvDriversName: TextView
+    private lateinit var imgRating: ImageView
+    private lateinit var tvPhone: TextView
+    private lateinit var tvFare: TextView
+    private lateinit var tvCarNo: TextView
+    private lateinit var tvColor: TextView
+
 
     lateinit var mSocket: Socket;
-    lateinit var userName: String;
-    lateinit var roomName: String;
 
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
@@ -81,13 +96,13 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     private var addresses: List<Address>? = null
     private var destination: String = ""
+    private var pickUp: String = ""
 
     private var currentLocation: LatLng = LatLng(20.5, 78.9)
     private var cameraPos: LatLng = LatLng(0.0, 0.0)
     private var polylines: ArrayList<Polyline>? = null
 
     private var apiKey: String = ""
-
     private var distance: Double = 0.0
 
     @SuppressLint("SetTextI18n")
@@ -140,6 +155,13 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         // Initializing fused location client
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
+        ServiceBuilder.setSocket()
+        ServiceBuilder.establishConnection()
+        mSocket = ServiceBuilder.getSocket()
+
+        if (ServiceBuilder.customer != null) {
+            mSocket.on("accepted", requestAccept)
+        }
 
         return view
     }
@@ -165,6 +187,22 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 18F))
                         currentMarker = null
 
+                        try {
+                            geo = Geocoder(requireContext(), Locale.getDefault())
+                            addresses = geo!!.getFromLocation(
+                                currentLocation.latitude,
+                                currentLocation.longitude,
+                                1
+                            )
+                            pickUp = addresses!![0].getAddressLine(0)
+
+                        } catch (e: IOException) {
+                            Toast.makeText(
+                                requireContext(),
+                                "$e",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             } else {
@@ -275,7 +313,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             geo = Geocoder(requireContext(), Locale.getDefault())
 
             try {
-                addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 1)
+                addresses = geo!!.getFromLocation(cameraPos.latitude, cameraPos.longitude, 2)
                 destination = addresses!![0].getAddressLine(0)
                 confirmDestination(destination)
 
@@ -369,11 +407,12 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                 cameraPos = polyline.points[k - 1]
                 polylines!!.add(polyline)
 
-                distance = SphericalUtil.computeLength(polyline.points)
+                distance = SphericalUtil.computeLength(polyline.points)/1000
 
                 currentDialog?.dismiss()
                 sendRequestBottomSheet()
             } else {
+
             }
         }
     }
@@ -385,11 +424,12 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         val view = layoutInflater.inflate(R.layout.send_request, null)
         tvPrice = view.findViewById(R.id.tvPrice)
         btnRequest = view.findViewById(R.id.btnRequest)
-
         tvPrice.text = distance.toString()
-
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
+        val currentDateTimeString = DateFormat
+            .getDateTimeInstance()
+            .format(Date())
 
         // The following lines connects the Android app to the server.
         ServiceBuilder.setSocket()
@@ -400,44 +440,74 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             val gson: Gson = Gson()
             val data = gson.toJson(
                 RideRequest(
-                    fullname = "Ujjal", phone = "0987", from = "Here", to = "There",
-                    date = "today", time = "now", distance = "100", price = "200"
+                    fullname = ServiceBuilder.customer!!.fullname,
+                    phone = ServiceBuilder.customer!!.contact,
+                    from = pickUp,
+                    to = destination,
+                    date = currentDateTimeString,
+                    distance = distance.toString(),
+                    price = "200"
                 )
             )
-
             mSocket.emit("message", data)
         }
     }
 
-    private fun requestAcceptedBottomSheet() {
-        if (currentDialog == null) {
-            currentDialog = BottomSheetDialog(requireContext())
-            // on below line we are inflating a layout file which we have created.
-            val view = layoutInflater.inflate(R.layout.invite_passengers, null)
-            currentDialog!!.setContentView(view)
-            currentDialog!!.show()
+    private var requestAccept = Emitter.Listener {
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val counter = it[0] as JSONObject
+                val gson = Gson()
+                val data = gson.fromJson(counter.toString(), Driver::class.java)
 
-            btnInvite = view.findViewById(R.id.btnInvite)
-            btnCancel = view.findViewById(R.id.btnCancel)
+                withContext(Dispatchers.Main) {
+//                                Log.d("Request Ride", "True")
+                    if (currentDialog == null) {
+                        currentDialog = BottomSheetDialog(requireContext())
+                        val view = layoutInflater.inflate(R.layout.invite_passengers, null)
+                        currentDialog!!.setContentView(view)
+                        currentDialog!!.show()
 
-            btnInvite.setOnClickListener {
-                currentDialog!!.dismiss()
-                val myDialog = ProgressDialog(context)
-                myDialog.setMessage("Waiting for other passengers to join in the ride...")
-                myDialog.setButton(
-                    DialogInterface.BUTTON_NEGATIVE, "Cancel"
-                ) { dialog, which -> dialog.dismiss() }
-                myDialog.setButton(
-                    DialogInterface.BUTTON_POSITIVE, "Ready to go"
-                ) { dialog, which ->
-                    // your code
+                        imgDriver = view.findViewById(R.id.imgDriver)
+                        imgRating = view.findViewById(R.id.imgRating)
+                        tvDriversName = view.findViewById(R.id.tvDriversNme)
+                        tvFare = view.findViewById(R.id.tvFare)
+                        tvPhone = view.findViewById(R.id.tvPhone)
+                        tvCarNo = view.findViewById(R.id.tvCarNo)
+                        tvColor = view.findViewById(R.id.tvColor)
+                        btnInvite = view.findViewById(R.id.btnInvite)
+                        btnCancel = view.findViewById(R.id.btnCancel)
+
+//                                    Log.d("Request Ride", data.toString())
+                        tvDriversName.text = data.fullname
+                        tvPhone.text = data.phone
+                        tvCarNo.text = data.vechileNo
+                        tvColor.text = data.model
+                        Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
+
+                        btnInvite.setOnClickListener {
+                            currentDialog!!.dismiss()
+                            val myDialog = ProgressDialog(context)
+                            myDialog.setMessage("Waiting for other passengers to join in the ride...")
+                            myDialog.setButton(
+                                DialogInterface.BUTTON_NEGATIVE, "Cancel"
+                            ) { dialog, which -> dialog.dismiss() }
+                            myDialog.setButton(
+                                DialogInterface.BUTTON_POSITIVE, "Ready to go"
+                            ) { dialog, which ->
+                                // your code
+                            }
+                            myDialog.show()
+                        }
+
+                    } else {
+                        currentDialog = null
+
+                    }
                 }
-                myDialog.show()
-
             }
-
-        } else {
-            currentDialog = null
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

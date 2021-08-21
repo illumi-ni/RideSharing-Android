@@ -41,6 +41,7 @@ import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.ujjallamichhane.ridesharing.DriverButtomNavActivity
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.entity.RideRequest
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -262,6 +263,7 @@ class DriverMapsFragment : Fragment() {
                                 tvFare = view.findViewById(R.id.tvFare)
                                 tvDistance = view.findViewById(R.id.tvDistance)
                                 tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
+                                btnAcceptRequest = view.findViewById(R.id.btnAcceptRequest)
 
                                 Log.d("Request Ride", data.toString())
                                 tvPickUpDate.text = data.date
@@ -271,6 +273,22 @@ class DriverMapsFragment : Fragment() {
                                 tvFare.text = data.price
                                 tvDistance.text = data.distance
                                 Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
+
+                                btnAcceptRequest.setOnClickListener{
+
+                                        val gson: Gson = Gson()
+                                        val ad = gson.toJson(
+                                            Driver( _id = ServiceBuilder.driver!!._id,
+                                                fullname = ServiceBuilder.driver!!.fullname,
+                                                phone = ServiceBuilder.driver!!.phone,
+                                                vechileNo = ServiceBuilder.driver!!.vechileNo,
+                                                model = ServiceBuilder.driver!!.model
+                                            )
+                                        )
+
+                                        mSocket!!.emit("accept", ad)
+
+                                }
                             }
                         }
                     }
