@@ -37,9 +37,9 @@ class CustomerRepository
         }
     }
 
-    suspend fun getCustomerDetails(): UpdateCustomerResponse {
+    suspend fun getCustomerDetails(email: String): UpdateCustomerResponse {
         return apiRequest {
-            rideshareApi.getCustomerDetails(ServiceBuilder.token!!)
+            rideshareApi.getCustomerDetails(ServiceBuilder.token!!, email)
         }
     }
 

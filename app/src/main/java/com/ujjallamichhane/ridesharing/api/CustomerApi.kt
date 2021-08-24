@@ -32,9 +32,10 @@ interface CustomerApi {
         @Field("email") email: String
     ): Response<LoginResponse>
 
-    @GET("customer/single")
+    @GET("customer/single/{email}")
     suspend fun getCustomerDetails(
-        @Header("Authorization") token: String
+        @Header("Authorization") token: String,
+        @Path("email") email: String
     ): Response<UpdateCustomerResponse>
 
     @Multipart
