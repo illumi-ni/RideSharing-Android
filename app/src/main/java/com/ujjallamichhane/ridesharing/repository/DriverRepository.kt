@@ -1,16 +1,11 @@
 package com.ujjallamichhane.ridesharing.repository
 
-import com.ujjallamichhane.ridesharing.api.CustomerApi
 import com.ujjallamichhane.ridesharing.api.DriverApi
 import com.ujjallamichhane.ridesharing.api.RideSharingApiRequest
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
-import com.ujjallamichhane.ridesharing.entity.Customer
+import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.response.DriverLoginResponse
-import com.ujjallamichhane.ridesharing.response.LoginResponse
-import retrofit2.Response
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import com.ujjallamichhane.ridesharing.response.UpdateDriverResponse
 
 class DriverRepository: RideSharingApiRequest() {
     val rideshareApi =
@@ -20,6 +15,18 @@ class DriverRepository: RideSharingApiRequest() {
     suspend fun checkDriver(email: String, password: String): DriverLoginResponse {
         return apiRequest {
             rideshareApi.checkDriver(email, password)
+        }
+    }
+
+    suspend fun getDriverDetails(): UpdateDriverResponse {
+        return apiRequest {
+            rideshareApi.getDriverDetails(ServiceBuilder.token!!)
+        }
+    }
+
+    suspend fun updateDriver(id: String, driver: Driver) : UpdateDriverResponse {
+        return apiRequest {
+            rideshareApi.updateDriver(ServiceBuilder.token!!,id, driver)
         }
     }
 }

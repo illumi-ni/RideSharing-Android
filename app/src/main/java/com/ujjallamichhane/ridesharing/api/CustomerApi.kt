@@ -2,11 +2,10 @@ package com.ujjallamichhane.ridesharing.api
 
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.response.LoginResponse
+import com.ujjallamichhane.ridesharing.response.UpdateCustomerResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface CustomerApi {
     //Register Customer
@@ -32,4 +31,31 @@ interface CustomerApi {
     suspend fun checkEmail(
         @Field("email") email: String
     ): Response<LoginResponse>
+
+//    @GET("customer/single/{email}")
+//    suspend fun getCustomerDetails(
+//        @Header("Authorization") token: String,
+//        @Path("email") email: String
+//    ): Response<UpdateCustomerResponse>
+
+    @GET("customer/details")
+    suspend fun getCustomerDetails(
+        @Header("Authorization") token: String,
+//        @Path("email") email: String
+    ): Response<UpdateCustomerResponse>
+
+    @Multipart
+    @PUT("user/updateImage")
+    suspend fun uploadImage(
+        @Header("Authorization") token: String,
+        @Part photo: MultipartBody.Part
+    ):Response<UpdateCustomerResponse>
+
+    //Update Customer
+    @PUT("customer/update/{id}")
+    suspend fun updateCustomer(
+        @Header("Authorization") token: String,
+        @Path ("id") id:String,
+        @Body customer: Customer
+    ):Response<UpdateCustomerResponse>
 }
