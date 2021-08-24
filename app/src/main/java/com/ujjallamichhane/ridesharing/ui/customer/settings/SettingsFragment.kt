@@ -9,11 +9,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.ui.customer.customerFragment.ProfileFragment
 
 class SettingsFragment : Fragment() {
 
     private lateinit var settingsViewModel: SettingsViewModel
     private lateinit var tvEditProfile: TextView
+    private lateinit var tvNotification: TextView
+    private lateinit var tvPayment: TextView
+    private lateinit var tvShareLocation: TextView
+
     private lateinit var tvLogout: TextView
 
     override fun onCreateView(
@@ -29,12 +34,17 @@ class SettingsFragment : Fragment() {
 //            textView.text = it
 //        })
         tvEditProfile = view.findViewById(R.id.tvEditProfile)
+        tvNotification = view.findViewById(R.id.tvNotification)
+        tvPayment = view.findViewById(R.id.tvPayment)
+        tvShareLocation = view.findViewById(R.id.tvShareLocation)
         tvLogout = view.findViewById(R.id.tvLogout)
 
         tvEditProfile.setOnClickListener {
-
-        }
-
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            transaction!!.replace(R.id.settings_container, ProfileFragment())
+            transaction.disallowAddToBackStack()
+            transaction.commit()
+            }
 
 
         return view

@@ -4,5 +4,5 @@ import com.ujjallamichhane.ridesharing.entity.Customer
 
 data class UpdateCustomerResponse(
     val success : Boolean? = null,
-    val data : Customer? = null
+    val customerData : Customer? = null
 )
