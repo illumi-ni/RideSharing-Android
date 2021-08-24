@@ -78,9 +78,9 @@ class SignUpActivity : AppCompatActivity() {
     private fun customerSignup(){
         val fullname = etFullName.text.toString()
         val email = etEmail.text.toString()
-        val contact = etContact.text.toString()
+        val phone = etContact.text.toString()
 
-        val customer = Customer(fullname=fullname, email=email, contact=contact, gender=gender)
+        val customer = Customer(fullname=fullname, email=email, phone=phone, gender=gender)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val customerRepository = CustomerRepository()

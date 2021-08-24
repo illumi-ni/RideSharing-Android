@@ -19,6 +19,7 @@ import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder.customer
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder.email
+import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
@@ -70,8 +71,11 @@ class ProfileFragment : Fragment() {
             imgBtnUpload.setOnClickListener{
 //                loadPopUpMenu()
             }
-
             customerDetails()
+
+            btnUpdateCProfile.setOnClickListener {
+                updateCustomerProfile()
+            }
         return view
     }
 
@@ -84,7 +88,7 @@ class ProfileFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     etCustomerFullname.setText(response.customerData!!.fullname)
                     etCustomerEmail.setText(response.customerData.email)
-                    etCustomerPhone.setText(response.customerData.contact)
+                    etCustomerPhone.setText(response.customerData.phone)
                     etCustomerGender.setText(response.customerData.gender)
 
 //                    val imagePath = ServiceBuilder.BASE_URL + response.CustomerData.photo
@@ -104,6 +108,38 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun updateCustomerProfile(){
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val customerRepository = CustomerRepository()
+                val customer = Customer(
+                    _id = ServiceBuilder.customer!!._id,
+                    fullname = etCustomerFullname.text.toString(),
+                    email = etCustomerEmail.text.toString(),
+                    phone = etCustomerPhone.text.toString(),
+                    gender = etCustomerGender.text.toString()
+                )
+                val response = customerRepository.updateCustomer(customer._id!!, customer)
+                if (response.success == true) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(
+                            context,
+                            "Updated successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            } catch (ex: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        ex.localizedMessage,
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+    }
 //    var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
 //        if (result.resultCode == Activity.RESULT_OK) {
 //            if (result.resultCode == REQUEST_GALLERY_CODE && result.data != null) {

@@ -49,4 +49,10 @@ class CustomerRepository
             rideshareApi.uploadImage(ServiceBuilder.token!!, body)
         }
     }
+
+    suspend fun updateCustomer(id:String, customer: Customer):UpdateCustomerResponse{
+        return apiRequest {
+            rideshareApi.updateCustomer(ServiceBuilder.token!!, id, customer)
+        }
+    }
 }
