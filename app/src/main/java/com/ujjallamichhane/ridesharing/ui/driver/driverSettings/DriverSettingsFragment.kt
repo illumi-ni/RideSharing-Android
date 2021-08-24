@@ -1,5 +1,6 @@
 package com.ujjallamichhane.ridesharing.ui.driver.driverSettings
 
+import android.R.attr
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,9 +15,20 @@ import androidx.lifecycle.ViewModelProvider
 import android.widget.SimpleAdapter
 import com.ujjallamichhane.ridesharing.R
 import android.icu.number.Precision.currency
+import android.widget.LinearLayout
 
+import android.widget.AdapterView
 
+import android.widget.AdapterView.OnItemClickListener
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentTransaction
+import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
+import android.R.attr.country
 
+import android.R.attr.name
+
+import android.content.Intent
+import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
 
 
 class DriverSettingsFragment : Fragment() {
@@ -60,6 +72,31 @@ class DriverSettingsFragment : Fragment() {
     listView = view.findViewById(R.id.listView)
     listView.adapter = adapter
 
+    listView.setOnItemClickListener { parent, view, position, id -> // Getting the Container Layout of the ListView
+
+      val ft = requireView().context as AppCompatActivity
+
+      when (position) {
+        0 ->ft.supportFragmentManager.beginTransaction()
+            .replace(R.id.driver_setting,DriverProfileFragment()).addToBackStack(null).commit();
+
+        1 -> ft.supportFragmentManager.beginTransaction()
+            .replace(R.id.driver_setting,DriverProfileFragment()).addToBackStack(null).commit();
+
+        2 -> ft.supportFragmentManager.beginTransaction()
+            .replace(R.id.driverHostFragment,DriverEarningsFragment()).addToBackStack(null).commit();
+
+        3 -> ft.supportFragmentManager.beginTransaction()
+            .replace(R.id.driverHostFragment,DriverProfileFragment()).addToBackStack(null).commit();
+
+        4 -> ft.supportFragmentManager.beginTransaction()
+            .replace(R.id.driverHostFragment,DriverProfileFragment()).addToBackStack(null).commit();
+      }
+
+    }
+
     return view
   }
 }
+
+

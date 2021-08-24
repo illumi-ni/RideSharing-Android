@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
+    android:id="@+id/driver_setting"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.driver.driverSettings.DriverSettingsFragment" >
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardProf"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardElevation="3dp">
 
         <RelativeLayout
+            android:id="@+id/relative1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="25dp">
+            android:layout_height="wrap_content"
+            android:paddingTop="25dp"
+            android:paddingBottom="25dp"
+            android:paddingLeft="20dp">
             <ImageView
                 android:id="@+id/imgCustProfile"
                 android:layout_width="70dp"
@@ -27,7 +27,7 @@
                 android:id="@+id/customerName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Customer Name"
+                android:text="Driver Name"
                 android:textSize="20sp"
                 android:textColor="#000"
                 android:layout_toEndOf="@+id/imgCustProfile"
@@ -45,18 +45,27 @@
                 android:layout_below="@+id/customerName"
                 android:layout_marginLeft="20dp"
                 android:layout_centerHorizontal="true"/>
+
         </RelativeLayout>
-    </androidx.cardview.widget.CardView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_margin="5dp"
-        android:layout_below="@+id/cardProf">
+        android:layout_below="@+id/relative1">
+        <View
+            android:id="@+id/view1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:elevation="1dp"
+            android:background="#aaa"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_below="@+id/relative1"/>
         <ListView
             android:id="@+id/listView"
-            android:layout_below="@+id/cardProf"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:listitem="@layout/driver_setting_layout"/>
