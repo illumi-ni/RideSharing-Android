@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#fff"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.customer.customerFragment.ProfileFragment">
     <LinearLayout
@@ -63,13 +64,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/imgProfileCustomer" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:id="@+id/view1"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_below="@+id/tvEditProfile"
-            android:background="#aaa"
-            android:layout_marginBottom="10dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
     <TextView
