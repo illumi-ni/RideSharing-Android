@@ -50,4 +50,12 @@ interface CustomerApi {
         @Header("Authorization") token: String,
         @Part photo: MultipartBody.Part
     ):Response<UpdateCustomerResponse>
+
+    //Update Customer
+    @PUT("customer/update/{id}")
+    suspend fun updateCustomer(
+        @Header("Authorization") token: String,
+        @Path ("id") id:String,
+        @Body customer: Customer
+    ):Response<UpdateCustomerResponse>
 }
