@@ -88,7 +88,7 @@ class ProfileFragment : Fragment() {
                 withContext(Dispatchers.Main) {
                     etCustomerFullname.setText(response.customerData!!.fullname)
                     etCustomerEmail.setText(response.customerData.email)
-                    etCustomerPhone.setText(response.customerData.phone)
+                    etCustomerPhone.setText(response.customerData.contact)
                     etCustomerGender.setText(response.customerData.gender)
 
 //                    val imagePath = ServiceBuilder.BASE_URL + response.CustomerData.photo
@@ -116,7 +116,7 @@ class ProfileFragment : Fragment() {
                     _id = ServiceBuilder.customer!!._id,
                     fullname = etCustomerFullname.text.toString(),
                     email = etCustomerEmail.text.toString(),
-                    phone = etCustomerPhone.text.toString(),
+                    contact = etCustomerPhone.text.toString(),
                     gender = etCustomerGender.text.toString()
                 )
                 val response = customerRepository.updateCustomer(customer._id!!, customer)

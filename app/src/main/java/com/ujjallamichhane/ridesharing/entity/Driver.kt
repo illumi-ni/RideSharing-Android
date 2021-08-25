@@ -9,7 +9,7 @@ data class Driver(
     val phone: String? = null,
     val citizenship: String? = null,
     val licence: String? = null,
-    val dob: String? = null,
+    val gender: String? = null,
     val vechileNo: String? = null,
     val model: String? = null
 )

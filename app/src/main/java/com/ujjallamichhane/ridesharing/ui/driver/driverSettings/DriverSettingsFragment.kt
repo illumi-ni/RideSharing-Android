@@ -22,7 +22,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
-import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
+//import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
 import android.R.attr.country
 
 import android.R.attr.name
@@ -32,7 +32,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
 import com.ujjallamichhane.ridesharing.SignInActivity
-import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
+//import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
+import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -92,9 +93,9 @@ class DriverSettingsFragment : Fragment() {
                     .replace(R.id.driver_setting, DriverProfileFragment()).addToBackStack(null)
                     .commit();
 
-                2 -> ft.supportFragmentManager.beginTransaction()
-                    .replace(R.id.driverHostFragment, DriverEarningsFragment()).addToBackStack(null)
-                    .commit();
+//                2 -> ft.supportFragmentManager.beginTransaction()
+//                    .replace(R.id.driverHostFragment, DriverEarningsFragment()).addToBackStack(null)
+//                    .commit();
 
                 3 -> ft.supportFragmentManager.beginTransaction()
                     .replace(R.id.driverHostFragment, DriverProfileFragment()).addToBackStack(null)

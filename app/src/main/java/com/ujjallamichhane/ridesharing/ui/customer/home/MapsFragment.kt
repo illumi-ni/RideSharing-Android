@@ -441,7 +441,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
             val data = gson.toJson(
                 RideRequest(
                     fullname = ServiceBuilder.customer!!.fullname,
-                    phone = ServiceBuilder.customer!!.contact,
+                    contact = ServiceBuilder.customer!!.contact,
                     from = pickUp,
                     to = destination,
                     date = currentDateTimeString,
