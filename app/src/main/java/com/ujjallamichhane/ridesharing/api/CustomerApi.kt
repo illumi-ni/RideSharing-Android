@@ -45,7 +45,7 @@ interface CustomerApi {
     ): Response<UpdateCustomerResponse>
 
     @Multipart
-    @PUT("user/updateImage")
+    @PUT("customer/updateImage")
     suspend fun uploadImage(
         @Header("Authorization") token: String,
         @Part photo: MultipartBody.Part

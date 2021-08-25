@@ -69,14 +69,47 @@ class ProfileFragment : Fragment() {
             btnUpdateCProfile= view.findViewById(R.id.btnUpdateCProfile)
 
             imgBtnUpload.setOnClickListener{
-//                loadPopUpMenu()
+                loadPopUpMenu()
             }
+
+            getProfileImage()
             customerDetails()
 
             btnUpdateCProfile.setOnClickListener {
                 updateCustomerProfile()
             }
         return view
+    }
+    private fun getProfileImage() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                withContext(Dispatchers.Main){
+                    if (ServiceBuilder.customer!!.photo.equals("")) {
+                        Glide.with(requireContext())
+                            .load(R.drawable.noimg)
+                            .into(imgProfileCustomer)
+                    }else{
+                        val customerRepository = CustomerRepository()
+                        val response = customerRepository.getCustomerDetails()
+                        val imagePath = ServiceBuilder.BASE_URL + response.customerData!!.photo
+
+                        Glide.with(requireContext())
+                            .load(imagePath)
+                            .fitCenter()
+                            .into(imgProfileCustomer)
+                    }
+                }
+            } catch (ex: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(
+                        context,
+                        ex.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+        }
     }
 
     private fun customerDetails(){
@@ -90,16 +123,7 @@ class ProfileFragment : Fragment() {
                     etCustomerEmail.setText(response.customerData.email)
                     etCustomerPhone.setText(response.customerData.contact)
                     etCustomerGender.setText(response.customerData.gender)
-
-//                    val imagePath = ServiceBuilder.BASE_URL + response.CustomerData.photo
-//
-//                    Glide.with(requireContext())
-//                        .load(imagePath)
-//                        .fitCenter()
-//                        .into(imgProfileCustomer)
                 }
-
-
             } catch (ex: IOException) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show()
@@ -163,90 +187,116 @@ class ProfileFragment : Fragment() {
 //            }
 //        }
 //    }
-//    private fun uploadImage() {
-//        if (imageUrl != null) {
-//            val file = File(imageUrl!!)
-//            val reqFile =
-//                RequestBody.create(MediaType.parse("image/jpeg"), file)
-//            val image =
-//                MultipartBody.Part.createFormData("photo", file.name, reqFile)
-////           val userId = ServiceBuilder.userId!!
-//            CoroutineScope(Dispatchers.IO).launch {
-//                try {
-//                    val customerRepository = CustomerRepository()
-//                    val response = customerRepository.uploadImage(image)
-//                    if (response.success == true) {
-//                        withContext(Dispatchers.Main) {
-//                            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT)
-//                                .show()
-//                        }
-//                    }
-//                } catch (ex: java.lang.Exception) {
-//                    withContext(Dispatchers.Main) {
-//                        Log.d("Mero Error ", ex.localizedMessage)
-//                        Toast.makeText(
-//                            context,
-//                            ex.localizedMessage,
-//                            Toast.LENGTH_SHORT
-//                        ).show()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun bitmapToFile(
-//        bitmap: Bitmap,
-//        fileNameToSave: String
-//    ): File? {
-//        var file: File? = null
-//        return try {
-//            file = File(
-//                requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-//                    .toString() + File.separator + fileNameToSave
-//            )
-//            file.createNewFile()
-//            //Convert bitmap to byte array
-//            val bos = ByteArrayOutputStream()
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos) // YOU can also save it in JPEG
-//            val bitMapData = bos.toByteArray()
-//            //write the bytes in file
-//            val fos = FileOutputStream(file)
-//            fos.write(bitMapData)
-//            fos.flush()
-//            fos.close()
-//            file
-//        } catch (e: java.lang.Exception) {
-//            e.printStackTrace()
-//            file // it will return null
-//        }
-//    }
-//    // Load pop up menu
-//    private fun loadPopUpMenu() {
-//        val popupMenu = PopupMenu(context, imgProfileCustomer)
-//        popupMenu.menuInflater.inflate(R.menu.gallery_camera, popupMenu.menu)
-//        popupMenu.setOnMenuItemClickListener { item ->
-//            when (item.itemId) {
-//                R.id.menuCamera ->
-//                    openCamera()
-//                R.id.menuGallery ->
-//                    openGallery()
-//            }
-//            true
-//        }
-//        popupMenu.show()
-//    }
-//
-//    private fun openGallery() {
-//        val intent = Intent(Intent.ACTION_PICK)
-//        intent.type = "image/*"
-//        startActivityForResult(intent, REQUEST_GALLERY_CODE)
-//    }
-//
-//    private fun openCamera() {
-//        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-//        startActivityForResult(cameraIntent, REQUEST_CAMERA_CODE)
-//    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_GALLERY_CODE && data != null) {
+                val selectedImage = data.data
+                val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+                val contentResolver = requireContext().contentResolver
+                val cursor =
+                    contentResolver.query(selectedImage!!, filePathColumn, null, null, null)
+                cursor!!.moveToFirst()
+                val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+                imageUrl = cursor.getString(columnIndex)
+                imgProfileCustomer.setImageURI(data.data)
+                cursor.close()
+            } else if (requestCode == REQUEST_CAMERA_CODE && data != null) {
+                val imageBitmap = data.extras?.get("data") as Bitmap
+                val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+                val file = bitmapToFile(imageBitmap, "$timeStamp.jpg")
+                imageUrl = file!!.absolutePath
+                imgProfileCustomer.setImageBitmap(BitmapFactory.decodeFile(imageUrl))
+                uploadImage()
+            }
+        }
+    }
+
+    private fun uploadImage() {
+        if (imageUrl != null) {
+            val file = File(imageUrl!!)
+            val reqFile =
+                RequestBody.create(MediaType.parse("image/jpeg"), file)
+            val image =
+                MultipartBody.Part.createFormData("photo", file.name, reqFile)
+//           val userId = ServiceBuilder.userId!!
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val customerRepository = CustomerRepository()
+                    val response = customerRepository.uploadImage(image)
+                    if (response.success == true) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(context, "Uploaded", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                    }
+                } catch (ex: java.lang.Exception) {
+                    withContext(Dispatchers.Main) {
+                        Log.d(" Error Uploading ", ex.localizedMessage)
+                        Toast.makeText(
+                            context,
+                            ex.localizedMessage,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun bitmapToFile(
+        bitmap: Bitmap,
+        fileNameToSave: String
+    ): File? {
+        var file: File? = null
+        return try {
+            file = File(
+                requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    .toString() + File.separator + fileNameToSave
+            )
+            file.createNewFile()
+            //Convert bitmap to byte array
+            val bos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos) // YOU can also save it in JPEG
+            val bitMapData = bos.toByteArray()
+            //write the bytes in file
+            val fos = FileOutputStream(file)
+            fos.write(bitMapData)
+            fos.flush()
+            fos.close()
+            file
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            file // it will return null
+        }
+    }
+    // Load pop up menu
+    private fun loadPopUpMenu() {
+        val popupMenu = PopupMenu(context, imgProfileCustomer)
+        popupMenu.menuInflater.inflate(R.menu.gallery_camera, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                R.id.menuCamera ->
+                    openCamera()
+                R.id.menuGallery ->
+                    openGallery()
+            }
+            true
+        }
+        popupMenu.show()
+    }
+
+    private fun openGallery() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_GALLERY_CODE)
+    }
+
+    private fun openCamera() {
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(cameraIntent, REQUEST_CAMERA_CODE)
+    }
 
 
     companion object {
