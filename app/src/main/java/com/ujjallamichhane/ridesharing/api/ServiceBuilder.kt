@@ -62,4 +62,8 @@ object ServiceBuilder {
     fun closeConnection() {
         mSocket.disconnect()
     }
+
+    fun loadImagePath(): String {
+        return BASE_URL
+    }
 }
