@@ -6,6 +6,7 @@ import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.response.DriverLoginResponse
 import com.ujjallamichhane.ridesharing.response.UpdateDriverResponse
+import okhttp3.MultipartBody
 
 class DriverRepository: RideSharingApiRequest() {
     val rideshareApi =
@@ -27,6 +28,13 @@ class DriverRepository: RideSharingApiRequest() {
     suspend fun updateDriver(id: String, driver: Driver) : UpdateDriverResponse {
         return apiRequest {
             rideshareApi.updateDriver(ServiceBuilder.token!!,id, driver)
+        }
+    }
+
+    suspend fun uploadImage(body: MultipartBody.Part)
+            : UpdateDriverResponse {
+        return apiRequest {
+            rideshareApi.uploadImage(ServiceBuilder.token!!, body)
         }
     }
 }

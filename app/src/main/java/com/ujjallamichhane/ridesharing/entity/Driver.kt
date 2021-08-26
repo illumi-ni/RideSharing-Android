@@ -6,6 +6,7 @@ data class Driver(
     val username: String? = null,
     val email: String? = null,
     val password: String? = null,
+    val photo: String? = null,
     val phone: String? = null,
     val citizenship: String? = null,
     val licence: String? = null,

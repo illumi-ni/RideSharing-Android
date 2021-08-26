@@ -3,6 +3,7 @@ package com.ujjallamichhane.ridesharing.api
 import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.response.DriverLoginResponse
 import com.ujjallamichhane.ridesharing.response.UpdateDriverResponse
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -27,4 +28,12 @@ interface DriverApi {
         @Path ("id")id: String,
         @Body driver:Driver
     ):Response<UpdateDriverResponse>
+
+    @Multipart
+    @PUT("driver/updateImage")
+    suspend fun uploadImage(
+        @Header("Authorization") token: String,
+        @Part photo: MultipartBody.Part
+    ):Response<UpdateDriverResponse>
+
 }
