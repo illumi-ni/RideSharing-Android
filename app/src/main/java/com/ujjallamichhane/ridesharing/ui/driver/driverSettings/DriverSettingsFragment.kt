@@ -31,13 +31,18 @@ import android.content.DialogInterface
 
 import android.content.Intent
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
 import com.ujjallamichhane.ridesharing.SignInActivity
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.repository.DriverRepository
 //import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
 import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 
 class DriverSettingsFragment : Fragment() {
@@ -57,6 +62,9 @@ class DriverSettingsFragment : Fragment() {
         R.drawable.ic_bell, R.drawable.ic_star, R.drawable.ic_logout
     )
 
+    private lateinit var imgProfile: CircleImageView
+    private lateinit var tvDriversName: TextView
+    private lateinit var tvDriversPhone: TextView
     private lateinit var listView: ListView
 
     override fun onCreateView(
@@ -65,6 +73,13 @@ class DriverSettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_driver_settings, container, false)
+
+        imgProfile = view.findViewById(R.id.imgProfile)
+        tvDriversName = view.findViewById(R.id.tvDriversName)
+        tvDriversPhone = view.findViewById(R.id.tvDriversPhone)
+        listView = view.findViewById(R.id.listView)
+
+        loadImage()
 
         // Each row in the list stores icon and Title
         val aList: MutableList<HashMap<String, String>> = ArrayList()
@@ -76,11 +91,44 @@ class DriverSettingsFragment : Fragment() {
         }
 
         val from = arrayOf("listview_image", "listview_title")
-        val to = intArrayOf(R.id.imgIcon, R.id.tvText,)
+        val to = intArrayOf(R.id.imgIcon, R.id.tvText)
         val adapter = SimpleAdapter(context, aList, R.layout.driver_setting_layout, from, to)
-        listView = view.findViewById(R.id.listView)
         listView.adapter = adapter
+        settingsList()
 
+        return view
+    }
+
+    private fun loadImage() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val driverRepository = DriverRepository()
+                val response = driverRepository.getDriverDetails()
+                tvDriversName.setText(response.driverData!!.username)
+                tvDriversPhone.setText(response.driverData.phone)
+                withContext(Dispatchers.Main) {
+                    if (ServiceBuilder.driver!!.photo.equals("")) {
+                        Glide.with(requireContext())
+                            .load(R.drawable.noimg)
+                            .into(imgProfile)
+                    } else {
+//
+                        val imagePath = ServiceBuilder.BASE_URL + response.driverData.photo
+                        Glide.with(requireContext())
+                            .load(imagePath)
+                            .fitCenter()
+                            .into(imgProfile)
+                    }
+                }
+            } catch (ex: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun settingsList() {
         listView.setOnItemClickListener { parent, view, position, id ->
             val ft = requireView().context as AppCompatActivity
 
@@ -109,8 +157,6 @@ class DriverSettingsFragment : Fragment() {
 
             }
         }
-
-        return view
     }
 
     private fun logout() {

@@ -9,7 +9,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.driver.driverSettings.DriverSettingsFragment" >
 
-
         <RelativeLayout
             android:id="@+id/relative1"
             android:layout_width="match_parent"
@@ -17,32 +16,32 @@
             android:paddingTop="25dp"
             android:paddingBottom="25dp"
             android:paddingLeft="20dp">
-            <ImageView
-                android:id="@+id/imgCustProfile"
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgProfile"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:src="@drawable/noimg"
                 android:layout_marginTop="20dp"/>
             <TextView
-                android:id="@+id/customerName"
+                android:id="@+id/tvDriversName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Driver Name"
                 android:textSize="20sp"
                 android:textColor="#000"
-                android:layout_toEndOf="@+id/imgCustProfile"
+                android:layout_toEndOf="@+id/imgProfile"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="30dp"
                 android:layout_centerHorizontal="true"/>
             <TextView
-                android:id="@+id/customerPhone"
+                android:id="@+id/tvDriversPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="+977 0000000"
                 android:textSize="18sp"
                 android:textColor="#000"
-                android:layout_toEndOf="@+id/imgCustProfile"
-                android:layout_below="@+id/customerName"
+                android:layout_toEndOf="@+id/imgProfile"
+                android:layout_below="@+id/tvDriversName"
                 android:layout_marginLeft="20dp"
                 android:layout_centerHorizontal="true"/>
 
