@@ -20,14 +20,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingLeft="10dp">
+                android:paddingLeft="7dp">
 
                 <ImageView
                     android:id="@+id/imgCalender"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/ic_calendar"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="7dp"/>
 
                 <TextView
                     android:id="@+id/tvPickUpDate"
@@ -45,15 +45,16 @@
                 android:id="@+id/relative1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/linear1"
-                android:paddingLeft="10dp">
+                android:layout_below="@+id/linear1">
 
                 <ImageView
                     android:id="@+id/imglocation"
-                    android:layout_width="wrap_content"
+                    android:layout_width="30dp"
                     android:layout_height="85dp"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/ic_round"/>
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:src="@drawable/ic_round" />
 
                 <TextView
                     android:id="@+id/pickUp"
@@ -120,7 +121,7 @@
                     android:layout_margin="5dp"/>
 
                 <TextView
-                    android:id="@+id/tvDriversNme"
+                    android:id="@+id/tvCustomersName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -148,16 +149,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Fare"
-                    android:textSize="18sp"
-                    android:layout_margin="5dp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/tvFare"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rs 00"
                     android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_margin="5dp"/>
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -174,23 +173,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Distance"
-                    android:textSize="18sp"
-                    android:layout_margin="5dp"/>
+                    android:textSize="18sp"/>
                 <TextView
                     android:id="@+id/tvDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="00km"
                     android:textStyle="bold"
-                    android:textSize="18sp"
-                    android:layout_margin="5dp"/>
+                    android:textSize="18sp"/>
 
             </LinearLayout>
 
             <Button
                 android:id="@+id/btnAcceptRequest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
                 android:text="Accept Ride Request"
                 android:layout_margin="10dp"
                 android:layout_centerHorizontal="true"
