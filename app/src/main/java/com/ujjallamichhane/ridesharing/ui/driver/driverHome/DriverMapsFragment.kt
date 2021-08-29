@@ -24,6 +24,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -274,21 +275,15 @@ class DriverMapsFragment : Fragment() {
                                 tvCustomersName.text = data.fullname
                                 tvFare.text = data.price
                                 tvDistance.text = data.distance
+                                Glide.with(requireContext())
+                                    .load(ServiceBuilder.BASE_URL+data.photo)
+                                    .into(imgCustomer)
 //                                Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
 
                                 btnAcceptRequest.setOnClickListener {
 
                                     val gson: Gson = Gson()
-                                    val ad = gson.toJson(
-                                        Driver(
-                                            _id = ServiceBuilder.driver!!._id,
-                                            fullname = ServiceBuilder.driver!!.fullname,
-                                            phone = ServiceBuilder.driver!!.phone,
-                                            vechileNo = ServiceBuilder.driver!!.vechileNo,
-                                            model = ServiceBuilder.driver!!.model,
-                                            photo = ServiceBuilder.driver!!.photo
-                                        )
-                                    )
+                                    val ad = gson.toJson(ServiceBuilder.driver)
                                     mSocket!!.emit("accept", ad)
                                     currentDialog!!.dismiss()
                                     waitingPassenger(data)
@@ -308,12 +303,16 @@ class DriverMapsFragment : Fragment() {
         val view = layoutInflater.inflate(R.layout.waiting_passenger_layout, null)
         tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
         tvCustomersName = view.findViewById(R.id.tvCustomersName)
+        imgCustomer = view.findViewById(R.id.imgCustomer)
         btnNavigate = view.findViewById(R.id.btnNavigate)
         btnCancel = view.findViewById(R.id.btnCancel)
         btnStart = view.findViewById(R.id.btnStart)
 
         tvPickUpLocation.text = data.from
         tvCustomersName.text = data.fullname
+        Glide.with(requireContext())
+            .load(ServiceBuilder.BASE_URL+data.photo)
+            .into(imgCustomer)
 
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
@@ -345,5 +344,4 @@ class DriverMapsFragment : Fragment() {
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
     }
-
 }
