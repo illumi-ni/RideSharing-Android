@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/scheduleContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".fragments.CustomerScheduleRide">
+
+    <ImageView
+        android:id="@+id/imgBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:layout_margin="10dp"/>
+    <TextView
+        android:id="@+id/txtride"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Schedule Ride"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="#333"
+        android:layout_toRightOf="@+id/imgBack"
+        android:layout_margin="10dp"/>
+
+    <EditText
+        android:id="@+id/etSchFullName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Name"
+        android:textSize="25sp"
+        android:textColor="#444"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/txtride"
+        android:background="@drawable/edittext_bottomline" />
+
+    <ImageView
+        android:id="@+id/imgPickup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_empty"
+        android:layout_below="@+id/etSchFullName"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etPickupLoc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Pickup location"
+        android:textSize="24sp"
+        android:textColor="#444"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/etSchFullName"
+        android:background="@drawable/edittext_bottomline"
+        android:layout_toEndOf="@+id/imgPickup"/>
+
+    <ImageView
+        android:id="@+id/imgDrop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_circle"
+        android:layout_below="@+id/etPickupLoc"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etDropLoc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Destination"
+        android:textSize="24sp"
+        android:textColor="#444"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/etPickupLoc"
+        android:background="@drawable/edittext_bottomline"
+        android:layout_toEndOf="@+id/imgPickup"/>
+
+    <ImageView
+        android:id="@+id/imgCalendar2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_calendar"
+        android:layout_below="@id/imgDrop"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etPickupDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgCalendar2"
+        android:hint="Date"
+        android:layout_below="@id/etDropLoc"
+        android:layout_marginTop="25dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="24sp"
+        android:background="@drawable/edittext_bottomline" />
+
+    <ImageView
+        android:id="@+id/imgClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_clock"
+        android:layout_below="@id/imgCalendar2"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etPickupTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgCalendar2"
+        android:hint="Time"
+        android:layout_marginTop="35dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="24sp"
+        android:background="@drawable/edittext_bottomline"
+        android:layout_below="@+id/etPickupDate"/>
+
+    <ImageView
+        android:id="@+id/imgDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_clock"
+        android:layout_below="@id/imgClock"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etSchDistance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgCalendar2"
+        android:hint="Distance"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="24sp"
+        android:background="@drawable/edittext_bottomline"
+        android:layout_below="@+id/etPickupTime"/>
+
+    <ImageView
+        android:id="@+id/imgPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_money"
+        android:layout_below="@id/imgDistance"
+        android:layout_margin="20dp"/>
+    <EditText
+        android:id="@+id/etSchPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgPrice"
+        android:hint="Price"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="10dp"
+        android:textSize="24sp"
+        android:background="@drawable/edittext_bottomline"
+        android:layout_below="@+id/etSchDistance"/>
+
+    <ImageView
+        android:id="@+id/imgDriverUpdProf"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:src="@drawable/noimg"
+        android:layout_below="@id/imgPrice"
+        android:layout_margin="20dp"/>
+    <TextView
+        android:id="@+id/txtDriverName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Driver Name"
+        android:layout_marginTop="35dp"
+        android:textSize="24sp"
+        android:textColor="#333"
+        android:layout_below="@id/etSchPrice"
+        android:layout_toEndOf="@+id/imgDriverUpdProf"/>
+
+    <TextView
+        android:id="@+id/txtDriverContact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact"
+        android:textSize="22sp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/txtDriverName"
+        android:layout_toEndOf="@+id/imgDriverUpdProf"/>
+
+    <ImageView
+        android:id="@+id/imgPhone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contact"
+        android:textSize="22sp"
+        android:src="@drawable/ic_phone"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/etSchPrice"/>
+
+    <Button
+        android:id="@+id/btnScheduleRide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="22sp"
+        android:layout_below="@+id/imgDriverUpdProf"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"
+        android:text="Schedule"/>
+
+</RelativeLayout>
