@@ -9,9 +9,9 @@
 
     <fragment
         android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+        android:layout_height="match_parent" />
 
     <EditText
         android:id="@+id/etHello"
@@ -21,7 +21,6 @@
         android:layout_margin="10dp"
         android:elevation="5dp"
         android:background="@drawable/bg_round"
-        android:focusable="false"
         android:drawableStart="@drawable/ic_pin"
         android:padding="10dp"
         android:maxLines="1"
