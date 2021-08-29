@@ -68,49 +68,48 @@ class ProfileFragment : Fragment() {
             etCustomerGender= view.findViewById(R.id.etCustomerGender)
             btnUpdateCProfile= view.findViewById(R.id.btnUpdateCProfile)
 
+            customerDetails()
+
             imgBtnUpload.setOnClickListener{
                 loadPopUpMenu()
             }
-
-            getProfileImage()
-            customerDetails()
-
+//            getProfileImage()
             btnUpdateCProfile.setOnClickListener {
                 updateCustomerProfile()
             }
         return view
     }
-    private fun getProfileImage() {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                withContext(Dispatchers.Main){
-                    if (ServiceBuilder.customer!!.photo.equals("")) {
-                        Glide.with(requireContext())
-                            .load(R.drawable.noimg)
-                            .into(imgProfileCustomer)
-                    }else{
-                        val customerRepository = CustomerRepository()
-                        val response = customerRepository.getCustomerDetails()
-                        val imagePath = ServiceBuilder.BASE_URL + response.customerData!!.photo
-
-                        Glide.with(requireContext())
-                            .load(imagePath)
-                            .fitCenter()
-                            .into(imgProfileCustomer)
-                    }
-                }
-            } catch (ex: IOException) {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(
-                        context,
-                        ex.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-        }
-    }
+//    private fun getProfileImage() {
+//        CoroutineScope(Dispatchers.IO).launch {
+//            try {
+//                withContext(Dispatchers.Main){
+//                    if (ServiceBuilder.customer!!.photo.equals("")) {
+//                        Glide.with(requireContext())
+//                            .load(R.drawable.noimg)
+//                            .into(imgProfileCustomer)
+//                    }else{
+//                        val customerRepository = CustomerRepository()
+//                        val response = customerRepository.getCustomerDetails()
+//                        val imagePath = ServiceBuilder.BASE_URL + response.customerData!!.photo
+//
+//                        Glide.with(requireContext())
+//                            .load(imagePath)
+//                            .fitCenter()
+//                            .into(imgProfileCustomer)
+//                    }
+//                }
+//            } catch (ex: IOException) {
+//                withContext(Dispatchers.Main) {
+//                    Toast.makeText(
+//                        context,
+//                        ex.toString(),
+//                        Toast.LENGTH_SHORT
+//                    ).show()
+//                }
+//
+//            }
+//        }
+//    }
 
     private fun customerDetails(){
         CoroutineScope(Dispatchers.IO).launch {
@@ -123,6 +122,19 @@ class ProfileFragment : Fragment() {
                     etCustomerEmail.setText(response.customerData.email)
                     etCustomerPhone.setText(response.customerData.contact)
                     etCustomerGender.setText(response.customerData.gender)
+
+                    if (ServiceBuilder.customer!!.photo.equals("")) {
+                        Glide.with(requireContext())
+                            .load(R.drawable.noimg)
+                            .into(imgProfileCustomer)
+                    }else{
+//
+                        val imagePath = ServiceBuilder.BASE_URL + response.customerData.photo
+                        Glide.with(requireContext())
+                            .load(imagePath)
+                            .fitCenter()
+                            .into(imgProfileCustomer)
+                    }
                 }
             } catch (ex: IOException) {
                 withContext(Dispatchers.Main) {

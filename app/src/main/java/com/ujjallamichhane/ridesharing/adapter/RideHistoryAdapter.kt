@@ -40,11 +40,11 @@ class RideHistoryAdapter(
 
     override fun onBindViewHolder(holder: RideHistoryAdapter.RideHistoryViewHolder, position: Int) {
         val rides = lstRideHistory[position]
-        holder.tvRideDate.text = rides.pickupDate
-        holder.tvRideTime.text = rides.pickupTime
-        holder.tvHistoryPrice.text = rides.ridePrice
-        holder.tvPickupLoc.text = rides.pickupLocation
-        holder.tvDestinationLoc.text = rides.dropLocation
+        holder.tvRideDate.text = rides.date
+        holder.tvRideTime.text = rides.time
+        holder.tvHistoryPrice.text = rides.price
+        holder.tvPickupLoc.text = rides.from
+        holder.tvDestinationLoc.text = rides.to
         holder.tvRequestAgain.setOnClickListener{
 
         }
