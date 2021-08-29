@@ -6,8 +6,6 @@ import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
@@ -22,10 +20,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.NonNull
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.test.core.app.ApplicationProvider
+import com.bumptech.glide.Glide
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,19 +37,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.ujjallamichhane.ridesharing.R
 import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.ujjallamichhane.ridesharing.DriverButtomNavActivity
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.entity.RideRequest
+import de.hdodenhof.circleimageview.CircleImageView
 import io.socket.client.Socket
-import io.socket.emitter.Emitter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
-import retrofit2.Response
 import java.lang.Exception
 
 class DriverMapsFragment : Fragment() {
@@ -58,6 +54,11 @@ class DriverMapsFragment : Fragment() {
     private var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
     private lateinit var btnCurrentLocation: FloatingActionButton
     private lateinit var btnAcceptRequest: Button
+    private lateinit var btnNavigate: Button
+    private lateinit var btnCancel: Button
+    private lateinit var btnEnd: Button
+    private lateinit var btnStart: Button
+    private lateinit var fabCall: FloatingActionButton
     private val pERMISSION_ID = 42
     lateinit var mFusedLocationClient: FusedLocationProviderClient
     lateinit var mMap: GoogleMap
@@ -68,10 +69,11 @@ class DriverMapsFragment : Fragment() {
     private lateinit var tvPickUpDate: TextView
     private lateinit var tvPickUpLocation: TextView
     private lateinit var tvDestination: TextView
-    private lateinit var tvDriversName: TextView
+    private lateinit var imgCustomer: CircleImageView
+    private lateinit var tvCustomersName: TextView
     private lateinit var tvFare: TextView
     private lateinit var tvDistance: TextView
-    private var mSocket : Socket? = null
+    private var mSocket: Socket? = null
 
     private val callback = OnMapReadyCallback { googleMap ->
         /**
@@ -239,9 +241,9 @@ class DriverMapsFragment : Fragment() {
     }
 
     private fun requestRideBottomSheet() {
-        if(ServiceBuilder.driver!=null){
+        if (ServiceBuilder.driver != null) {
             Log.d("Request Ride", ServiceBuilder.driver!!._id.toString())
-            mSocket!!.on("driver_"+ServiceBuilder.driver!!._id.toString()) { args ->
+            mSocket!!.on("driver_" + ServiceBuilder.driver!!._id.toString()) { args ->
                 try {
                     CoroutineScope(Dispatchers.IO).launch {
                         Log.d("Request ride", args.toString())
@@ -253,50 +255,93 @@ class DriverMapsFragment : Fragment() {
                             withContext(Dispatchers.Main) {
                                 Log.d("Request Ride", "True")
                                 currentDialog = BottomSheetDialog(requireContext())
-                                val view = layoutInflater.inflate(R.layout.request_ride, null)
+                                val view = layoutInflater.inflate(R.layout.request_ride_layout, null)
                                 currentDialog!!.setContentView(view)
                                 currentDialog!!.show()
 
                                 tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
                                 tvDestination = view.findViewById(R.id.tvDestination)
-                                tvDriversName = view.findViewById(R.id.tvDriversNme)
+                                tvCustomersName = view.findViewById(R.id.tvCustomersName)
+                                imgCustomer = view.findViewById(R.id.imgCustomer)
                                 tvFare = view.findViewById(R.id.tvFare)
                                 tvDistance = view.findViewById(R.id.tvDistance)
                                 tvPickUpDate = view.findViewById(R.id.tvPickUpDate)
                                 btnAcceptRequest = view.findViewById(R.id.btnAcceptRequest)
 
-                                Log.d("Request Ride", data.toString())
+//                                Log.d("Request Ride", data.toString())
                                 tvPickUpDate.text = data.date
                                 tvPickUpLocation.text = data.from
                                 tvDestination.text = data.to
-                                tvDriversName.text = data.fullname
+                                tvCustomersName.text = data.fullname
                                 tvFare.text = data.price
                                 tvDistance.text = data.distance
-                                Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
+                                Glide.with(requireContext())
+                                    .load(ServiceBuilder.BASE_URL+data.photo)
+                                    .into(imgCustomer)
+//                                Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
 
-                                btnAcceptRequest.setOnClickListener{
+                                btnAcceptRequest.setOnClickListener {
 
-                                        val gson: Gson = Gson()
-                                        val ad = gson.toJson(
-                                            Driver( _id = ServiceBuilder.driver!!._id,
-                                                fullname = ServiceBuilder.driver!!.fullname,
-                                                phone = ServiceBuilder.driver!!.phone,
-                                                vechileNo = ServiceBuilder.driver!!.vechileNo,
-                                                model = ServiceBuilder.driver!!.model
-                                            )
-                                        )
-
-                                        mSocket!!.emit("accept", ad)
-
+                                    val gson: Gson = Gson()
+                                    val ad = gson.toJson(ServiceBuilder.driver)
+                                    mSocket!!.emit("accept", ad)
+                                    currentDialog!!.dismiss()
+                                    waitingPassenger(data)
                                 }
                             }
                         }
                     }
-
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
+    }
+
+    private fun waitingPassenger(data: RideRequest) {
+        currentDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.waiting_passenger_layout, null)
+        tvPickUpLocation = view.findViewById(R.id.tvPickUpLocation)
+        tvCustomersName = view.findViewById(R.id.tvCustomersName)
+        imgCustomer = view.findViewById(R.id.imgCustomer)
+        btnNavigate = view.findViewById(R.id.btnNavigate)
+        btnCancel = view.findViewById(R.id.btnCancel)
+        btnStart = view.findViewById(R.id.btnStart)
+
+        tvPickUpLocation.text = data.from
+        tvCustomersName.text = data.fullname
+        Glide.with(requireContext())
+            .load(ServiceBuilder.BASE_URL+data.photo)
+            .into(imgCustomer)
+
+        currentDialog!!.setContentView(view)
+        currentDialog!!.show()
+
+        btnStart.setOnClickListener {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("Arrived at pick up location?")
+            builder.setPositiveButton("Yes") { _, _ ->
+                currentDialog!!.dismiss()
+                rideEnd(data)
+            }
+
+            builder.setNegativeButton("No") { _, _ ->
+
+            }
+            val alertDialog: AlertDialog = builder.create()
+            alertDialog.setCancelable(true)
+            alertDialog.show()
+        }
+    }
+
+    private fun rideEnd(data: RideRequest){
+        currentDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.ride_complete_layout, null)
+        tvDestination = view.findViewById(R.id.tvDestination)
+        btnNavigate = view.findViewById(R.id.btnNavigate)
+        btnEnd = view.findViewById(R.id.btnEnd)
+        tvDestination.text = data.to
+        currentDialog!!.setContentView(view)
+        currentDialog!!.show()
     }
 }

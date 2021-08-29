@@ -31,12 +31,12 @@
         android:id="@+id/btnCurrentLocation"
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="80dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="30dp"
-       android:src="@drawable/ic_location"
-        android:backgroundTint="@color/white"/>
+        android:layout_marginBottom="80dp"
+        android:backgroundTint="@color/white"
+        android:src="@drawable/ic_location" />
 
     <ImageView
         android:id="@+id/lollipop"
@@ -45,5 +45,47 @@
         android:src="@drawable/ic_lollipop"
         android:visibility="invisible"
         android:layout_centerInParent="true"/>
+
+    <RadioGroup
+        android:id="@+id/group"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/pink_out_line"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:id="@+id/search"
+            android:background="@drawable/toggle_widget_background"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:button="@null"
+            android:gravity="center"
+            android:text="Search"
+            android:textColor="@color/white" />
+
+        <RadioButton
+            android:layout_marginRight="1dp"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:id="@+id/offer"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/toggle_widget_background"
+            android:button="@null"
+            android:gravity="center"
+            android:text="Offers"
+            android:textColor="@color/white" />
+    </RadioGroup>
+
+
 
 </RelativeLayout>
