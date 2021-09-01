@@ -74,7 +74,7 @@ class CustomerScheduleRide : Fragment() {
             }
 
             btnScheduleRide.setOnClickListener {
-                insertRide()
+                insertBooking()
             }
 
             etSchFullName.setText(ServiceBuilder.customer!!.fullname)
@@ -84,7 +84,7 @@ class CustomerScheduleRide : Fragment() {
 
         return view
     }
-    private fun insertRide(){
+    private fun insertBooking(){
         val fullname = etSchFullName.text.toString()
         val contact = etSchContact.text.toString()
         val pickupLocation= location[etPickupLoc.selectedItemPosition]
