@@ -11,5 +11,6 @@ data class RideRequest(
     val time: String? = null,
     val distance: String? = null,
     val price: String? = null,
-    val photo: String? = null
+    val photo: String? = null,
+    val driver: Driver? = null
 )

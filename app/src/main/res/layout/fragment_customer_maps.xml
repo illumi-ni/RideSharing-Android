@@ -2,7 +2,6 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.customer.home.MapsFragment" >
@@ -13,18 +12,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <EditText
-        android:id="@+id/etHello"
+        <AutoCompleteTextView
+            android:id="@+id/etHello"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:drawableStart="@drawable/ic_pin"
+            android:layout_margin="10dp"
+            android:padding="10dp"
+            android:maxLines="1"
+            android:textSize="15sp"
+            android:textColor="#000"
+            android:background="@drawable/bg_round"
+            android:hint="Enter Address, City or Zip Code"
+            android:imeOptions="actionSearch"/>
+
+    <Spinner
+        android:id="@+id/spinner"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:hint="Set location on map"
-        android:layout_margin="10dp"
-        android:elevation="5dp"
-        android:background="@drawable/bg_round"
-        android:drawableStart="@drawable/ic_pin"
-        android:padding="10dp"
-        android:maxLines="1"
-        android:inputType="text"/>
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@+id/etHello"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnCurrentLocation"
@@ -46,45 +54,45 @@
         android:layout_centerInParent="true"/>
 
     <RadioGroup
-        android:id="@+id/group"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginRight="50dp"
-        android:layout_marginTop="100dp"
-        android:background="@drawable/pink_out_line"
-        android:orientation="horizontal">
+        android:id="@+id/toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:background="@drawable/outline"
+        android:checkedButton="@+id/off"
+        android:orientation="vertical"
+        android:layout_above="@+id/btnCurrentLocation"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="20dp">
 
         <RadioButton
+            android:id="@+id/off"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="1dp"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
-            android:layout_marginLeft="1dp"
-            android:id="@+id/search"
-            android:background="@drawable/toggle_widget_background"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="@drawable/switch_off"
             android:button="@null"
             android:gravity="center"
-            android:text="Search"
-            android:textColor="@color/white" />
+            android:text="off"
+            android:textColor="@drawable/switch_text" />
 
         <RadioButton
-            android:layout_marginRight="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginBottom="1dp"
-            android:id="@+id/offer"
-            android:layout_width="0dp"
+            android:id="@+id/on"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_marginTop="1dp"
+            android:layout_marginEnd="1dp"
+            android:layout_marginBottom="1dp"
             android:layout_weight="1"
-            android:background="@drawable/toggle_widget_background"
+            android:background="@drawable/switch_on"
             android:button="@null"
             android:gravity="center"
-            android:text="Offers"
-            android:textColor="@color/white" />
+            android:text="on"
+            android:textColor="@drawable/switch_text" />
     </RadioGroup>
-
 
 
 </RelativeLayout>
