@@ -48,6 +48,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
+import android.R.attr.name
+import android.net.Uri
+import com.ujjallamichhane.ridesharing.SignInActivity
+import com.ujjallamichhane.ridesharing.entity.Customer
+import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import com.ujjallamichhane.ridesharing.repository.RideRepository
+
 
 class DriverMapsFragment : Fragment() {
 
@@ -317,6 +324,10 @@ class DriverMapsFragment : Fragment() {
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
 
+        btnNavigate.setOnClickListener {
+            loadNavigation(data)
+        }
+
         btnStart.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Arrived at pick up location?")
@@ -334,6 +345,14 @@ class DriverMapsFragment : Fragment() {
         }
     }
 
+    private fun loadNavigation(data:RideRequest){
+        val navigation: Uri =
+            Uri.parse("google.navigation:q=" + data.from)
+        val navigationIntent = Intent(Intent.ACTION_VIEW, navigation)
+        navigationIntent.setPackage("com.google.android.apps.maps")
+        startActivity(navigationIntent)
+    }
+
     private fun rideEnd(data: RideRequest){
         currentDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.ride_complete_layout, null)
@@ -343,5 +362,35 @@ class DriverMapsFragment : Fragment() {
         tvDestination.text = data.to
         currentDialog!!.setContentView(view)
         currentDialog!!.show()
+
+        btnEnd.setOnClickListener {
+            insertRide(data)
+        }
+    }
+
+    private fun insertRide(ride: RideRequest) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val rideRepository = RideRepository()
+                val response = rideRepository.insertRide(ride)
+                if (response.success == true){
+                    withContext(Dispatchers.Main){
+                        Toast.makeText(
+                            context,
+                            "hello",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }catch(ex: Exception){
+                withContext(Dispatchers.Main){
+                    Toast.makeText(
+                        context,
+                        ex.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 }

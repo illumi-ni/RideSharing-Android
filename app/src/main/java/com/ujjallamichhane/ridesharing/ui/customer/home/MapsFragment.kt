@@ -97,6 +97,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var tvSendersName: TextView
     private lateinit var tvPickupLocation: TextView
     private lateinit var tvDestination: TextView
+    private lateinit var tvJoinedCustomer: TextView
     private lateinit var imgRating: ImageView
     private lateinit var tvPhone: TextView
     private lateinit var tvFare: TextView
@@ -116,7 +117,6 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     private var currentMarker: Marker? = null
     private var currentDialog: Dialog? = null
-    private var myDialog: ProgressDialog? = null
 
     private var addresses: List<Address>? = null
     private var destination: String = ""
@@ -516,10 +516,10 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         tvCarNo.text = data.vechileNo
                         tvColor.text = data.model
                         Glide.with(requireContext())
-                            .load(ServiceBuilder.BASE_URL+data.photo)
+                            .load(ServiceBuilder.BASE_URL + data.photo)
                             .into(imgDriver)
-
-                        Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
+//
+//                        Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
 
                         btnInvite.setOnClickListener {
 
@@ -538,22 +538,21 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                             )
                             mSocket.emit("invite", data1)
 
-                            myDialog = ProgressDialog(context)
-                            myDialog!!.setMessage("Waiting for other passengers to join in the ride...")
-                            myDialog!!.setButton(
+                            currentDialog = ProgressDialog(context)
+                            (currentDialog as ProgressDialog).setMessage("Waiting for other passengers to join in the ride...")
+                            (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_NEGATIVE, "Cancel"
                             ) { dialog, which -> dialog.dismiss() }
-                            myDialog!!.setButton(
+                            (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_POSITIVE, "Ready to go"
                             ) { dialog, which ->
 //                                mSocket.on("ridejoined" + ServiceBuilder.customer!!._id.toString(), connectedPassengers)
                             }
-                            myDialog!!.show()
+                            currentDialog!!.show()
                         }
 
                     } else {
                         currentDialog = null
-
                     }
                 }
             }
@@ -569,7 +568,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                     Toast.makeText(context, "hello asdf", Toast.LENGTH_SHORT).show()
                     getInvite()
                 }
-                R.id.off->{
+                R.id.off -> {
 //                    gender = rbFemale.text.toString()
                 }
             }
@@ -578,58 +577,63 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     private fun getInvite() {
 //        if (ServiceBuilder.customer != null) {
-            mSocket.on("customer_" + ServiceBuilder.customer!!._id.toString()) { args ->
-                try {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        if (args[0] != null) {
-                            val counter = args[0] as JSONObject
-                            val gson = Gson()
-                            val data = gson.fromJson(counter.toString(), RideRequest::class.java)
+        mSocket.on("customer_" + ServiceBuilder.customer!!._id.toString()) { args ->
+            try {
+                CoroutineScope(Dispatchers.IO).launch {
+                    if (args[0] != null) {
+                        val counter = args[0] as JSONObject
+                        val gson = Gson()
+                        val data = gson.fromJson(counter.toString(), RideRequest::class.java)
 
-                            withContext(Dispatchers.Main) {
-                                if (currentDialog == null) {
-                                    currentDialog = BottomSheetDialog(requireContext())
-                                    val view =
-                                        layoutInflater.inflate(R.layout.available_rides, null)
-                                    currentDialog!!.setContentView(view)
-                                    currentDialog!!.show()
+                        withContext(Dispatchers.Main) {
+                            if (currentDialog == null) {
+                                currentDialog = BottomSheetDialog(requireContext())
+                                val view =
+                                    layoutInflater.inflate(R.layout.available_rides, null)
+                                currentDialog!!.setContentView(view)
+                                currentDialog!!.show()
 
-                                    tvSendersName = view.findViewById(R.id.tvSendersName)
-                                    tvPickupLocation = view.findViewById(R.id.tvPickUpLocation)
-                                    tvDriversName = view.findViewById(R.id.tvDriversName)
-                                    imgDriver = view.findViewById(R.id.imgDriver)
-                                    tvDestination = view.findViewById(R.id.tvDestination)
-                                    tvFare = view.findViewById(R.id.tvFare)
-                                    imgSender = view.findViewById(R.id.imgSender)
-                                    btnJoin = view.findViewById(R.id.btnJoin)
-                                    btnDecline = view.findViewById(R.id.btnDecline)
+                                tvSendersName = view.findViewById(R.id.tvSendersName)
+                                tvPickupLocation = view.findViewById(R.id.tvPickUpLocation)
+                                tvDriversName = view.findViewById(R.id.tvDriversName)
+                                imgDriver = view.findViewById(R.id.imgDriver)
+                                tvDestination = view.findViewById(R.id.tvDestination)
+                                tvFare = view.findViewById(R.id.tvFare)
+                                imgSender = view.findViewById(R.id.imgSender)
+                                btnJoin = view.findViewById(R.id.btnJoin)
+                                btnDecline = view.findViewById(R.id.btnDecline)
 
-                                    tvSendersName.text = data.fullname
-                                    tvPickupLocation.text = data.from
-                                    tvDestination.text = data.to
-                                    tvDriversName.text = data.driver!!.fullname
-                                    Glide.with(requireContext())
-                                        .load(ServiceBuilder.BASE_URL+data.photo)
-                                        .into(imgSender)
+                                tvSendersName.text = data.fullname
+                                tvPickupLocation.text = data.from
+                                tvDestination.text = data.to
+                                tvDriversName.text = data.driver!!.fullname
+                                Glide.with(requireContext())
+                                    .load(ServiceBuilder.BASE_URL + data.photo)
+                                    .into(imgSender)
 
-                                    Glide.with(requireContext())
-                                        .load(ServiceBuilder.BASE_URL+data.driver.photo)
-                                        .into(imgDriver)
-                                    btnJoin.setOnClickListener {
-                                        val data = gson.toJson(ServiceBuilder.customer)
-                                        mSocket.emit("join", data)
-
-                                    }
-
-                                } else {
-                                    currentDialog = null
+                                Glide.with(requireContext())
+                                    .load(ServiceBuilder.BASE_URL + data.driver.photo)
+                                    .into(imgDriver)
+                                btnJoin.setOnClickListener {
+                                    val data2 = gson.toJson(
+                                        RideRequest(
+                                            fullname = ServiceBuilder.customer!!.fullname,
+                                            driver = data.driver
+                                        )
+                                    )
+                                    mSocket.emit("join", data2)
+//                                        currentDialog!!.dismiss()
                                 }
+
+                            } else {
+                                currentDialog = null
                             }
                         }
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
 //            }
         }
     }
@@ -638,41 +642,50 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val counter = it[0] as JSONObject
-                val data = gson.fromJson(counter.toString(), Customer::class.java)
+                val data = gson.fromJson(counter.toString(), RideRequest::class.java)
 
                 withContext(Dispatchers.Main) {
-                    myDialog!!.dismiss()
-                    val builder = AlertDialog.Builder(requireContext())
-                    builder.setTitle("${data.fullname}+ joined the ride")
-                    builder.setIcon(R.drawable.ic_info)
-                    builder.setPositiveButton("Ready to go") { _, _ ->
-                        CoroutineScope(Dispatchers.IO).launch {
-                            withContext(Dispatchers.Main) {
-                                if (currentDialog == null) {
-                                    currentDialog = BottomSheetDialog(requireContext())
-                                    val view =
-                                        layoutInflater.inflate(R.layout.start_ride, null)
-                                    currentDialog!!.setContentView(view)
-                                    currentDialog!!.show()
+                    currentDialog!!.dismiss()
+                    currentDialog = null
+                    if (currentDialog == null) {
+                        Toast.makeText(context, "$data", Toast.LENGTH_SHORT).show()
+                        val builder = AlertDialog.Builder(requireContext())
+                        builder.setTitle("${data.fullname} joined the ride")
+                        builder.setIcon(R.drawable.ic_info)
+                        builder.setPositiveButton("Ready to go") { _, _ ->
+                            CoroutineScope(Dispatchers.IO).launch {
+                                withContext(Dispatchers.Main) {
+                                    if (currentDialog == null) {
+                                        currentDialog = BottomSheetDialog(requireContext())
+                                        val view =
+                                            layoutInflater.inflate(R.layout.start_ride, null)
+                                        currentDialog!!.setContentView(view)
+                                        currentDialog!!.show()
 
-                                    imgDriver = view.findViewById(R.id.imgDriver)
-                                    tvDriversName = view.findViewById(R.id.tvDriversName)
+                                        imgDriver = view.findViewById(R.id.imgDriver)
+                                        tvDriversName = view.findViewById(R.id.tvDriversName)
+                                        tvJoinedCustomer = view.findViewById(R.id.tvJoinedCustomer)
 
-                                    Glide.with(requireContext())
-                                        .load(ServiceBuilder.BASE_URL+data.photo)
-                                        .into(imgDriver)
+                                        tvJoinedCustomer.text = data.fullname
+                                        tvDriversName.text = data.driver!!.fullname
+
+                                        Glide.with(requireContext())
+                                            .load(ServiceBuilder.BASE_URL + data.driver.photo)
+                                            .into(imgDriver)
+                                    }
                                 }
                             }
                         }
+
+                        builder.setNegativeButton("Wait") { _, _ ->
+
+                        }
+                        val alertDialog: AlertDialog = builder.create()
+                        alertDialog.setCancelable(true)
+                        alertDialog.show()
+                    } else {
+                        currentDialog = null
                     }
-
-                    builder.setNegativeButton("Wait") { _, _ ->
-
-                    }
-                    val alertDialog: AlertDialog = builder.create()
-                    alertDialog.setCancelable(true)
-                    alertDialog.show()
-
                 }
             }
         } catch (e: Exception) {
