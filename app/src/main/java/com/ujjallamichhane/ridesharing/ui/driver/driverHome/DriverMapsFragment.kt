@@ -49,11 +49,16 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.lang.Exception
 import android.R.attr.name
+import android.graphics.Color
 import android.net.Uri
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import com.ujjallamichhane.ridesharing.NotificationChannels
 import com.ujjallamichhane.ridesharing.SignInActivity
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import com.ujjallamichhane.ridesharing.repository.RideRepository
+import io.socket.emitter.Emitter
 
 
 class DriverMapsFragment : Fragment() {
@@ -132,6 +137,8 @@ class DriverMapsFragment : Fragment() {
                 mSocket = ServiceBuilder.getSocket()
 
                 requestRideBottomSheet()
+
+                mSocket!!.on("cuCanceled" + ServiceBuilder.driver!!._id.toString(), showNotification)
                 Toast.makeText(context, "Checked", Toast.LENGTH_SHORT).show()
 
             } else {
@@ -279,11 +286,11 @@ class DriverMapsFragment : Fragment() {
                                 tvPickUpDate.text = data.date
                                 tvPickUpLocation.text = data.from
                                 tvDestination.text = data.to
-                                tvCustomersName.text = data.fullname
+                                tvCustomersName.text = data.customer!!.fullname
                                 tvFare.text = data.price
                                 tvDistance.text = data.distance
                                 Glide.with(requireContext())
-                                    .load(ServiceBuilder.BASE_URL+data.photo)
+                                    .load(ServiceBuilder.BASE_URL+data.customer.photo)
                                     .into(imgCustomer)
 //                                Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
 
@@ -316,9 +323,9 @@ class DriverMapsFragment : Fragment() {
         btnStart = view.findViewById(R.id.btnStart)
 
         tvPickUpLocation.text = data.from
-        tvCustomersName.text = data.fullname
+        tvCustomersName.text = data.customer!!.fullname
         Glide.with(requireContext())
-            .load(ServiceBuilder.BASE_URL+data.photo)
+            .load(ServiceBuilder.BASE_URL+data.customer.photo)
             .into(imgCustomer)
 
         currentDialog!!.setContentView(view)
@@ -326,6 +333,11 @@ class DriverMapsFragment : Fragment() {
 
         btnNavigate.setOnClickListener {
             loadNavigation(data)
+        }
+
+        btnCancel.setOnClickListener {
+            val message = "Your ride request has been cancelled"
+            mSocket!!.emit("driverCancel", message)
         }
 
         btnStart.setOnClickListener {
@@ -343,6 +355,27 @@ class DriverMapsFragment : Fragment() {
             alertDialog.setCancelable(true)
             alertDialog.show()
         }
+    }
+
+    private var showNotification = Emitter.Listener{
+        val counter = it[0]
+        val notificationManager = NotificationManagerCompat.from(requireContext())
+
+        val notificationChannels = NotificationChannels(requireContext())
+        notificationChannels.createNotificationChannels()
+
+        val notification = NotificationCompat.Builder(requireContext(), notificationChannels.CHANNEL_1)
+            .setSmallIcon(R.drawable.ic_bell)
+            .setContentTitle("Ride Sharing")
+            .setContentText(counter.toString())
+            .setColor(Color.GREEN)
+            .build()
+
+        currentDialog!!.dismiss()
+        currentDialog = null;
+
+        notificationManager.notify(1, notification)
+
     }
 
     private fun loadNavigation(data:RideRequest){
@@ -372,7 +405,12 @@ class DriverMapsFragment : Fragment() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val rideRepository = RideRepository()
-                val response = rideRepository.insertRide(ride)
+                val rideRequest = RideRequest(
+                    from = ride.from, to = ride.to, date = ride.date, distance = ride.distance,
+                    price = ride.price, customer = ride.customer, driver = ServiceBuilder.driver
+                )
+                val response = rideRepository.insertRide(rideRequest)
+
                 if (response.success == true){
                     withContext(Dispatchers.Main){
                         Toast.makeText(

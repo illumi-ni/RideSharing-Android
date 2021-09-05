@@ -74,7 +74,10 @@ import android.content.ContentValues.TAG
 import android.view.*
 import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.maps.*
+import com.ujjallamichhane.ridesharing.NotificationChannels
 import com.ujjallamichhane.ridesharing.SignInActivity
 
 
@@ -191,6 +194,8 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 //        Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
         mSocket.on("accepted" + ServiceBuilder.customer!!._id.toString(), requestAccept)
         mSocket.on("ridejoined" + ServiceBuilder.customer!!._id.toString(), connectedPassengers)
+        mSocket.on("drCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
+        mSocket.on("driverCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
 
         return view
     }
@@ -470,20 +475,24 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
             val data = gson.toJson(
                 RideRequest(
-                    fullname = ServiceBuilder.customer!!.fullname,
-                    contact = ServiceBuilder.customer!!.contact,
                     from = pickUp,
                     to = destination,
                     date = currentDateTimeString,
                     distance = distance.toString(),
                     price = "200",
-                    customerID = ServiceBuilder.customer!!._id.toString(),
-                    photo = ServiceBuilder.customer!!.photo
+                    customer = ServiceBuilder.customer,
+                    customerID = ServiceBuilder.customer!!._id
                 )
             )
             mSocket.emit("message", data)
             currentDialog!!.dismiss()
             currentDialog = null
+
+            currentDialog = ProgressDialog.show(
+                context, "Ride Sharing",
+                "Searching for the ride. Please wait...",
+                true
+            )
         }
     }
 
@@ -494,7 +503,8 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                 val data = gson.fromJson(counter.toString(), Driver::class.java)
 
                 withContext(Dispatchers.Main) {
-//                                Log.d("Request Ride", "True")
+                    currentDialog!!.dismiss()
+                    currentDialog = null
                     if (currentDialog == null) {
                         currentDialog = BottomSheetDialog(requireContext())
                         val view = layoutInflater.inflate(R.layout.invite_passengers, null)
@@ -521,13 +531,18 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 //
 //                        Toast.makeText(context, "$data", Toast.LENGTH_LONG).show()
 
+                        btnCancel.setOnClickListener {
+                            val message = "Customer has cancelled the ride"
+                            mSocket.emit("customerCancel", message)
+                            currentDialog!!.dismiss()
+                        }
+
                         btnInvite.setOnClickListener {
 
                             currentDialog!!.dismiss()
                             val data1 = gson.toJson(
                                 RideRequest(
-                                    fullname = ServiceBuilder.customer!!.fullname,
-                                    contact = ServiceBuilder.customer!!.contact,
+                                    customer = ServiceBuilder.customer,
                                     from = pickUp,
                                     to = destination,
                                     date = currentDateTimeString,
@@ -561,6 +576,28 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         }
     }
 
+    private var showNotification = Emitter.Listener {
+        val counter = it[0]
+        val notificationManager = NotificationManagerCompat.from(requireContext())
+
+        val notificationChannels = NotificationChannels(requireContext())
+        notificationChannels.createNotificationChannels()
+
+        val notification =
+            NotificationCompat.Builder(requireContext(), notificationChannels.CHANNEL_1)
+                .setSmallIcon(R.drawable.ic_bell)
+                .setContentTitle("Ride Sharing")
+                .setContentText(counter.toString())
+                .setColor(Color.GREEN)
+                .build()
+
+        currentDialog!!.dismiss()
+        currentDialog = null;
+
+        notificationManager.notify(1, notification)
+
+    }
+
     private fun findRide() {
         toggle.setOnCheckedChangeListener { toggle, checkedId ->
             when (checkedId) {
@@ -587,6 +624,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
                         withContext(Dispatchers.Main) {
                             if (currentDialog == null) {
+                                Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
                                 currentDialog = BottomSheetDialog(requireContext())
                                 val view =
                                     layoutInflater.inflate(R.layout.available_rides, null)
@@ -603,12 +641,12 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                 btnJoin = view.findViewById(R.id.btnJoin)
                                 btnDecline = view.findViewById(R.id.btnDecline)
 
-                                tvSendersName.text = data.fullname
+                                tvSendersName.text = data.customer!!.fullname
                                 tvPickupLocation.text = data.from
                                 tvDestination.text = data.to
                                 tvDriversName.text = data.driver!!.fullname
                                 Glide.with(requireContext())
-                                    .load(ServiceBuilder.BASE_URL + data.photo)
+                                    .load(ServiceBuilder.BASE_URL + data.customer.photo)
                                     .into(imgSender)
 
                                 Glide.with(requireContext())
@@ -617,12 +655,17 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                 btnJoin.setOnClickListener {
                                     val data2 = gson.toJson(
                                         RideRequest(
-                                            fullname = ServiceBuilder.customer!!.fullname,
+                                            customer = ServiceBuilder.customer,
                                             driver = data.driver
                                         )
                                     )
                                     mSocket.emit("join", data2)
-//                                        currentDialog!!.dismiss()
+                                    currentDialog!!.dismiss()
+                                }
+
+                                btnDecline.setOnClickListener {
+                                    currentDialog!!.dismiss()
+                                    currentDialog = null;
                                 }
 
                             } else {
@@ -650,7 +693,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                     if (currentDialog == null) {
                         Toast.makeText(context, "$data", Toast.LENGTH_SHORT).show()
                         val builder = AlertDialog.Builder(requireContext())
-                        builder.setTitle("${data.fullname} joined the ride")
+                        builder.setTitle("${data.customer!!.fullname} joined the ride")
                         builder.setIcon(R.drawable.ic_info)
                         builder.setPositiveButton("Ready to go") { _, _ ->
                             CoroutineScope(Dispatchers.IO).launch {
@@ -666,7 +709,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                         tvDriversName = view.findViewById(R.id.tvDriversName)
                                         tvJoinedCustomer = view.findViewById(R.id.tvJoinedCustomer)
 
-                                        tvJoinedCustomer.text = data.fullname
+                                        tvJoinedCustomer.text = data.customer.fullname
                                         tvDriversName.text = data.driver!!.fullname
 
                                         Glide.with(requireContext())
