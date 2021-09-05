@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.SignInActivity
+import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.ui.customer.customerFragment.ProfileFragment
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +26,8 @@ class SettingsFragment : Fragment() {
 
     private lateinit var settingsViewModel: SettingsViewModel
     private lateinit var tvEditProfile: TextView
+    private lateinit var customerName: TextView
+    private lateinit var customerPhone: TextView
     private lateinit var tvNotification: TextView
     private lateinit var tvPayment: TextView
     private lateinit var tvShareLocation: TextView
@@ -44,6 +47,8 @@ class SettingsFragment : Fragment() {
 //            textView.text = it
 //        })
         tvEditProfile = view.findViewById(R.id.tvEditProfile)
+        customerName = view.findViewById(R.id.customerName)
+        customerPhone = view.findViewById(R.id.customerPhone)
         tvNotification = view.findViewById(R.id.tvNotification)
         tvPayment = view.findViewById(R.id.tvPayment)
         tvShareLocation = view.findViewById(R.id.tvShareLocation)
@@ -61,6 +66,8 @@ class SettingsFragment : Fragment() {
             logout()
         }
 
+        customerName.setText(ServiceBuilder.customer!!.fullname)
+        customerPhone.setText(ServiceBuilder.customer!!.contact)
 
         return view
     }

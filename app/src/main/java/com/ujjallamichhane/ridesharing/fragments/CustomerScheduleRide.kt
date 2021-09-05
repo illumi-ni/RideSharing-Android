@@ -7,10 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Rides
@@ -26,8 +23,9 @@ import java.util.*
 
 class CustomerScheduleRide : Fragment() {
     private lateinit var etSchFullName: EditText
-    private lateinit var etPickupLoc: EditText
-    private lateinit var etDropLoc: EditText
+    private lateinit var etSchContact: EditText
+    private lateinit var etPickupLoc: Spinner
+    private lateinit var etDropLoc: Spinner
     private lateinit var etPickupDate: EditText
     private lateinit var etPickupTime: EditText
     private lateinit var etSchDistance: EditText
@@ -36,6 +34,12 @@ class CustomerScheduleRide : Fragment() {
     private lateinit var btnScheduleRide: Button
 
     var timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
+
+    private val location = arrayOf("Pashupatinath","Boudha","Swayambhunath","Thamel","Kapan","Patan","Lokanthali","Jamal",
+        "Kupondole","Samakhushi","Tokha","Koteshwor","Jadibuti","New baneshwor","Mid-Baneshwor","Satdobato", "Maitighar",
+        "Tripureshwor","Sundhara","Maitidevi","Sinamangal","Gaushala","Chabahil","Tinkune", "Kaushaltar","Gatthaghar",
+        "Thimi","Balkumari","Gwarko","Ekantakuna","Suryabinayak","Dhobighat","Jawalakhel","Lagankhel","Pulchowk")
+//    private val destination = arrayOf("Manager", "Accountant", "Clerk")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +53,7 @@ class CustomerScheduleRide : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_customer_schedule_ride, container, false)
             etSchFullName = view.findViewById(R.id.etSchFullName)
+            etSchContact = view.findViewById(R.id.etSchContact)
             etPickupLoc = view.findViewById(R.id.etPickupLoc)
             etDropLoc = view.findViewById(R.id.etDropLoc)
             etPickupDate = view.findViewById(R.id.etPickupDate)
@@ -69,22 +74,27 @@ class CustomerScheduleRide : Fragment() {
             }
 
             btnScheduleRide.setOnClickListener {
-                insertRide()
+                insertBooking()
             }
 
             etSchFullName.setText(ServiceBuilder.customer!!.fullname)
+            etSchContact.setText(ServiceBuilder.customer!!.contact)
+
+            locations()
+
         return view
     }
-    private fun insertRide(){
+    private fun insertBooking(){
         val fullname = etSchFullName.text.toString()
-        val pickupLocation= etPickupLoc.text.toString()
-        val dropLocation = etDropLoc.text.toString()
+        val contact = etSchContact.text.toString()
+        val pickupLocation= location[etPickupLoc.selectedItemPosition]
+        val dropLocation = location[etDropLoc.selectedItemPosition]
         val pickupDate = etPickupDate.text.toString()
         val pickupTime = etPickupTime.text.toString()
         val rideDistance = etSchDistance.text.toString()
         val ridePrice = etSchPrice.text.toString()
 
-        val rides=Rides(fullname = fullname, from = pickupLocation, to = dropLocation,
+        val rides=Rides(fullname = fullname, contact = contact, from = pickupLocation, to = dropLocation,
             date= pickupDate, time = pickupTime, distance = rideDistance, price = ridePrice)
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -143,6 +153,42 @@ class CustomerScheduleRide : Fragment() {
             c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false
         )
         timePicker.show()
+    }
+
+    private fun locations(){
+        etPickupLoc.adapter = ArrayAdapter(requireActivity().applicationContext,
+            android.R.layout.simple_list_item_1, location)
+        etPickupLoc.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener{
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedItem = parent?.getItemAtPosition(position).toString()
+                    Toast.makeText(context, "Selected Post : $selectedItem", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        etDropLoc.adapter = ArrayAdapter(requireActivity().applicationContext,
+            android.R.layout.simple_list_item_1, location)
+        etDropLoc.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener{
+                override fun onNothingSelected(parent: AdapterView<*>?) {
+                }
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    val selectedItem = parent?.getItemAtPosition(position).toString()
+                    Toast.makeText(context, "Selected Post : $selectedItem", Toast.LENGTH_SHORT).show()
+                }
+            }
     }
     companion object {
 
