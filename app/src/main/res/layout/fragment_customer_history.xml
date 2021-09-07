@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,19 +8,11 @@
     tools:context=".fragments.CustomerHistoryFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvViewHistory"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="3dp"
-        android:padding="5dp"
+        android:padding="3dp"
         android:scrollbars="vertical"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="25dp"
-        android:scaleType="center"
-        android:src="@drawable/ic_add"/>
-
-</FrameLayout>
+</LinearLayout>

@@ -2,7 +2,8 @@ package com.ujjallamichhane.ridesharing.entity
 
 data class Rides(
     val _id: String? = null,
-    val fullname: String? = null,
+    val id: String? = null,
+    val email: String? = null,
     val contact: String? = null,
     val from: String? = null,
     val to: String? = null,

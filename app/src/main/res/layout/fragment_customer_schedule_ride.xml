@@ -3,196 +3,298 @@
     android:id="@+id/scheduleContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fff"
     tools:context=".fragments.CustomerScheduleRide">
 
-    <ImageView
-        android:id="@+id/imgBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_back"
-        android:layout_margin="10dp"/>
-    <TextView
-        android:id="@+id/txtride"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Schedule Ride"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="#333"
-        android:layout_toRightOf="@+id/imgBack"
-        android:layout_margin="10dp"/>
+        android:elevation="3dp">
 
-    <EditText
-        android:id="@+id/etSchFullName"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="Full Name"
-        android:textSize="20sp"
-        android:textColor="#444"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/txtride"
-        android:visibility="invisible"
-        android:background="@drawable/edittext_bottomline" />
-    <EditText
-        android:id="@+id/etSchContact"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="Contact"
-        android:textSize="20sp"
-        android:textColor="#444"
-        android:layout_marginLeft="10dp"
-        android:layout_below="@+id/txtride"
-        android:layout_toRightOf="@+id/etSchFullName"
-        android:visibility="invisible"
-        android:background="@drawable/edittext_bottomline" />
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back" />
 
-    <ImageView
-        android:id="@+id/imgPickup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_empty"
-        android:layout_below="@+id/etSchFullName"
-        android:layout_margin="20dp"/>
-    <TextView
-        android:id="@+id/tvPickup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Pickup Location"
-        android:layout_margin="10dp"
-        android:textSize="24sp"
-        android:textColor="#606060"
-        android:layout_below="@+id/etSchFullName"
-        android:layout_toEndOf="@+id/imgPickup"/>
-    <Spinner
-        android:id="@+id/etPickupLoc"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:hint="Pickup location"
-        android:textSize="24sp"
-        android:textColor="#444"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/tvPickup"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_toEndOf="@+id/imgPickup"/>
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Schedule Ride"
+                android:textSize="22sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center"/>
 
-    <ImageView
-        android:id="@+id/imgDrop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_circle"
-        android:layout_below="@+id/etPickupLoc"
-        android:layout_margin="20dp"/>
-    <TextView
-        android:id="@+id/tvDrop"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Destination"
-        android:layout_margin="10dp"
-        android:textSize="24sp"
-        android:textColor="#606060"
-        android:layout_below="@+id/etPickupLoc"
-        android:layout_toEndOf="@+id/imgPickup"/>
-    <Spinner
-        android:id="@+id/etDropLoc"
-        android:layout_width="match_parent"
-        android:layout_height="24dp"
-        android:textSize="24sp"
-        android:textColor="#444"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/tvDrop"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_toEndOf="@+id/imgPickup"/>
+        </androidx.appcompat.widget.Toolbar>
 
-    <ImageView
-        android:id="@+id/imgCalendar2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_calendar"
-        android:layout_below="@id/etDropLoc"
-        android:layout_margin="20dp"/>
-    <EditText
-        android:id="@+id/etPickupDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgCalendar2"
-        android:hint="Date"
-        android:layout_below="@id/etDropLoc"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="24sp"
-        android:background="@drawable/edittext_bottomline" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <ImageView
-        android:id="@+id/imgClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_clock"
-        android:layout_below="@id/imgCalendar2"
-        android:layout_margin="20dp"/>
-    <EditText
-        android:id="@+id/etPickupTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgCalendar2"
-        android:hint="Time"
-        android:layout_marginTop="35dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="24sp"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_below="@+id/etPickupDate"/>
+<!--    <LinearLayout-->
+<!--        android:id="@+id/linear1"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/appBar"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:orientation="horizontal">-->
 
-    <ImageView
-        android:id="@+id/imgDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_distance"
-        android:layout_below="@id/imgClock"
-        android:layout_margin="20dp"/>
-    <EditText
-        android:id="@+id/etSchDistance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgCalendar2"
-        android:hint="Distance"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="24sp"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_below="@+id/etPickupTime"/>
+<!--        <TextView-->
+<!--            android:id="@+id/tvFullName"-->
+<!--            android:layout_width="185dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:text="Fullname"-->
+<!--            android:gravity="center"-->
+<!--            android:textSize="18sp" />-->
+<!--        <TextView-->
+<!--            android:id="@+id/tvContact"-->
+<!--            android:layout_width="185dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:text="Contact"-->
+<!--            android:gravity="center"-->
+<!--            android:textSize="18sp" />-->
+<!--    </LinearLayout>-->
 
-    <ImageView
-        android:id="@+id/imgPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_money"
-        android:layout_below="@id/imgDistance"
-        android:layout_margin="20dp"/>
-    <EditText
-        android:id="@+id/etSchPrice"
+    <RelativeLayout
+        android:id="@+id/relative1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgPrice"
-        android:hint="Price"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="10dp"
-        android:textSize="24sp"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_below="@+id/etSchDistance"/>
+        android:layout_below="@+id/appBar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:id="@+id/imgPickup"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_empty" />
+
+        <TextView
+            android:id="@+id/tvPickup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/imgPickup"
+            android:text="Pickup Location"
+            android:textSize="18sp" />
+        <Spinner
+            android:id="@+id/etPickupLoc"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:hint="Pickup location"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/tvPickup"
+            android:background="@drawable/edittext_bottomline"
+            android:layout_toEndOf="@+id/imgPickup"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgDrop"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_circle" />
+        <TextView
+            android:id="@+id/tvDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Destination"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgDrop" />
+        <Spinner
+            android:id="@+id/etDestination"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:hint="Pickup location"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/tvDestination"
+            android:background="@drawable/edittext_bottomline"
+            android:layout_toEndOf="@+id/imgDrop"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgCalendar2"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_calendar" />
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgCalendar2" />
+
+        <EditText
+            android:id="@+id/etPickupDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@+id/imgCalendar2"
+            android:background="@drawable/edittext_bottomline"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative3"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgClock"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_clock" />
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgClock" />
+        <EditText
+            android:id="@+id/etPickupTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgClock"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative4"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgDistance"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_distance" />
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Distance"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgDistance" />
+        <EditText
+            android:id="@+id/etDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgDistance"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative5"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgPrice"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_money" />
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgPrice" />
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgPrice"
+            android:layout_marginTop="40sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btnScheduleRide"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:layout_below="@+id/etSchPrice"
-        android:layout_margin="20dp"
+        android:layout_height="55dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/relative6"
+        android:layout_margin="25dp"
         android:layout_alignParentEnd="true"
         android:text="Schedule"/>
 

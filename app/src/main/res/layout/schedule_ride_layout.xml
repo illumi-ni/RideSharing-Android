@@ -1,116 +1,120 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:elevation="8dp"
-    app:cardBackgroundColor="#fff"
-    app:cardCornerRadius="5dp"
-    android:layout_margin="4dp"
-    >
+    android:elevation="3dp"
+    app:cardCornerRadius="2dp"
+    android:layout_margin="3dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="5dp">
+        android:paddingBottom="10dp">
 
-        <ImageView
-            android:id="@+id/imgRideProf"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="Price"
-            android:textSize="23sp"
-            android:textColor="#222"
-            android:layout_marginRight="10dp"
-            android:layout_marginBottom="5dp"
-            android:src="@drawable/noimg"
-            android:layout_alignParentStart="true" />
+<!--        <ImageView-->
+<!--            android:id="@+id/imgRideProf"-->
+<!--            android:layout_width="60dp"-->
+<!--            android:layout_height="60dp"-->
+<!--            android:layout_marginRight="10dp"-->
+<!--            android:layout_marginBottom="5dp"-->
+<!--            android:src="@drawable/noimg"-->
+<!--            android:layout_alignParentStart="true" />-->
 
         <TextView
-            android:id="@+id/tvRiderName"
+            android:id="@+id/tvDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ride Name"
-            android:textSize="23sp"
+            android:text="Date"
+            android:layout_marginLeft="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:textColor="#222"
-            android:layout_toEndOf="@+id/imgRideProf"/>
+            android:layout_toEndOf="@+id/imgRideCalendar"/>
 
         <ImageView
             android:id="@+id/imgRideCalendar"
             android:layout_width="20dp"
             android:layout_height="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="5dp"
             android:src="@drawable/ic_calendar"
-            android:layout_margin="5dp"
-            android:layout_toEndOf="@id/imgRideProf"
-            android:layout_below="@id/tvRiderName"/>
+            android:layout_marginStart="10dp"/>
 
         <TextView
-            android:id="@+id/tvSchDate"
+            android:id="@+id/tvTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Date"
-            android:textSize="19sp"
-            android:textColor="#666"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@id/imgRideCalendar"
-            android:layout_below="@+id/tvRiderName"/>
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@id/tvDate"
+            android:text="Time"
+            android:textColor="#222"
+            android:textStyle="bold"
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/roundIcon"
-            android:layout_width="40dp"
+            android:layout_width="35dp"
             android:layout_height="45dp"
             android:src="@drawable/ic_round"
-            android:layout_below="@+id/imgRideProf"
-            android:layout_margin="10dp" />
+            android:layout_below="@+id/imgRideCalendar"
+            android:layout_marginTop="10dp" />
 
         <TextView
-            android:id="@+id/tvPickupAdd"
+            android:id="@+id/tvPickup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pickup Address"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="#222"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="5dp"
+            android:maxLines="1"
             android:layout_toEndOf="@id/roundIcon"
-            android:layout_below="@+id/tvSchDate"/>
+            android:layout_below="@+id/tvDate"/>
 
         <TextView
-            android:id="@+id/tvDropAdd"
+            android:id="@+id/tvDestination"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Destination"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textColor="#222"
+            android:maxLines="1"
             android:layout_toEndOf="@id/roundIcon"
-            android:layout_below="@+id/tvPickupAdd"/>
+            android:layout_below="@+id/tvPickup"/>
 
         <TextView
-            android:id="@+id/tvSchPrice"
+            android:id="@+id/tvPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Rs 000"
-            android:textSize="23sp"
+            android:textSize="18sp"
+            android:textStyle="bold"
             android:textColor="#222"
             android:layout_marginRight="10dp"
             android:layout_alignParentEnd="true"/>
+
         <ImageView
             android:id="@+id/deleteIcon"
             android:layout_width="25dp"
             android:layout_height="25dp"
-            android:layout_below="@id/tvSchPrice"
+            android:layout_below="@id/tvPrice"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="55dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="22dp"
+            android:layout_marginEnd="14dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/ic_delete"
-            />
+            android:src="@drawable/ic_delete" />
+
         <ImageView
             android:id="@+id/editIcon"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_below="@id/tvSchPrice"
+            android:layout_below="@id/tvPrice"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="18dp"
             android:layout_toLeftOf="@id/deleteIcon"
-            android:layout_marginTop="50dp"
             android:src="@drawable/ic_edit" />
 
 

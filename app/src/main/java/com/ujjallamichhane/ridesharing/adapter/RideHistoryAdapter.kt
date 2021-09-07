@@ -9,15 +9,17 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.ujjallamichhane.ridesharing.R
+import com.ujjallamichhane.ridesharing.entity.RideRequest
 import com.ujjallamichhane.ridesharing.entity.Rides
 
 class RideHistoryAdapter(
-    val lstRideHistory: ArrayList<Rides>,
+    val lstRideHistory: ArrayList<RideRequest>,
     val context: Context
-):RecyclerView.Adapter <RideHistoryAdapter.RideHistoryViewHolder>(){
-    class RideHistoryViewHolder(view: View):RecyclerView.ViewHolder(view) {
+): RecyclerView.Adapter<RideHistoryAdapter.HistoryViewHolder>(){
+
+    class HistoryViewHolder(view: View):RecyclerView.ViewHolder(view) {
         val tvRideDate: TextView
-        val tvRideTime: TextView
+//        val tvRideTime: TextView
         val tvHistoryPrice: TextView
         val tvPickupLoc: TextView
         val tvDestinationLoc: TextView
@@ -25,30 +27,28 @@ class RideHistoryAdapter(
 
         init {
             tvRideDate = view.findViewById(R.id.tvRideDate)
-            tvRideTime = view.findViewById(R.id.tvRideTime)
+//            tvRideTime = view.findViewById(R.id.tvRideTime)
             tvHistoryPrice = view.findViewById(R.id.tvHistoryPrice)
             tvPickupLoc = view.findViewById(R.id.tvPickupLoc)
             tvDestinationLoc = view.findViewById(R.id.tvDestinationLoc)
             tvRequestAgain = view.findViewById(R.id.tvRequestAgain)
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup,viewType: Int): RideHistoryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup,viewType: Int): HistoryViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.customer_history_layout, parent, false)
-        return RideHistoryViewHolder(view)
+        return HistoryViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RideHistoryAdapter.RideHistoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         val rides = lstRideHistory[position]
         holder.tvRideDate.text = rides.date
-        holder.tvRideTime.text = rides.time
         holder.tvHistoryPrice.text = rides.price
         holder.tvPickupLoc.text = rides.from
         holder.tvDestinationLoc.text = rides.to
         holder.tvRequestAgain.setOnClickListener{
 
         }
-
     }
 
     override fun getItemCount(): Int {

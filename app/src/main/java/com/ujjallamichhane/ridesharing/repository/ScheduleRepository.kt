@@ -5,9 +5,7 @@ import com.ujjallamichhane.ridesharing.api.RideSharingApiRequest
 import com.ujjallamichhane.ridesharing.api.ScheduleApi
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Rides
-import com.ujjallamichhane.ridesharing.response.DriverLoginResponse
-import com.ujjallamichhane.ridesharing.response.ScheduleRideResponse
-import com.ujjallamichhane.ridesharing.response.UpdateDriverResponse
+import com.ujjallamichhane.ridesharing.response.*
 
 class ScheduleRepository: RideSharingApiRequest() {
     val rideshareApi =
@@ -18,13 +16,12 @@ class ScheduleRepository: RideSharingApiRequest() {
             rideshareApi.scheduleRide(rides)
         }
     }
-//    suspend fun getScheduledRide(): ScheduleRideResponse {
-//        return apiRequest {
-//            rideshareApi.getScheduledRide(
-//                ServiceBuilder.token!!,
-//                ServiceBuilder.id!!
-//            )
-//        }
-//    }
+
+    suspend fun getAllScheduleRides(token: String): GetAllScheduleRidesResponse {
+        return apiRequest {
+            rideshareApi.getAllScheduleRides(token)
+        }
+
+    }
 
 }

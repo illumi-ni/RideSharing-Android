@@ -1,5 +1,6 @@
 package com.ujjallamichhane.ridesharing.fragments
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
@@ -20,17 +21,19 @@ import kotlinx.coroutines.withContext
 import okhttp3.internal.http.HttpDate.format
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.appbar.AppBarLayout
+
 
 class CustomerScheduleRide : Fragment() {
-    private lateinit var etSchFullName: EditText
-    private lateinit var etSchContact: EditText
+    private lateinit var appBar: AppBarLayout
+    private lateinit var imgBack: ImageView
     private lateinit var etPickupLoc: Spinner
     private lateinit var etDropLoc: Spinner
     private lateinit var etPickupDate: EditText
     private lateinit var etPickupTime: EditText
     private lateinit var etSchDistance: EditText
     private lateinit var etSchPrice: EditText
-    private lateinit var imgBack: ImageView
     private lateinit var btnScheduleRide: Button
 
     var timeFormat = SimpleDateFormat("hh:mm a", Locale.US)
@@ -46,47 +49,52 @@ class CustomerScheduleRide : Fragment() {
 
     }
 
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_customer_schedule_ride, container, false)
-            etSchFullName = view.findViewById(R.id.etSchFullName)
-            etSchContact = view.findViewById(R.id.etSchContact)
+
+            appBar = view.findViewById(R.id.appBar)
+            imgBack = view.findViewById(R.id.imgBack)
             etPickupLoc = view.findViewById(R.id.etPickupLoc)
-            etDropLoc = view.findViewById(R.id.etDropLoc)
+            etDropLoc = view.findViewById(R.id.etDestination)
             etPickupDate = view.findViewById(R.id.etPickupDate)
             etPickupTime = view.findViewById(R.id.etPickupTime)
-            etSchDistance = view.findViewById(R.id.etSchDistance)
-            etSchPrice = view.findViewById(R.id.etSchPrice)
-            imgBack = view.findViewById(R.id.imgBack)
+            etSchDistance = view.findViewById(R.id.etDistance)
+            etSchPrice = view.findViewById(R.id.etPrice)
             btnScheduleRide = view.findViewById(R.id.btnScheduleRide)
 
             etPickupDate.setOnClickListener{pickDate()}
             etPickupTime.setOnClickListener{pickTime()}
 
             imgBack.setOnClickListener {
-                val transaction = activity?.supportFragmentManager?.beginTransaction()
-                transaction!!.replace(R.id.scheduleContainer, CustomerScheduledRideFragment())
-                transaction.disallowAddToBackStack()
-                transaction.commit()
+                val ft = requireView().context as AppCompatActivity
+                    ft.supportFragmentManager.beginTransaction()
+                    .replace(R.id.scheduleContainer, RidesFragment())
+                    .addToBackStack(null)
+                    .commit();
+                btnScheduleRide.visibility = View.GONE
+                appBar.visibility = View.GONE
             }
 
             btnScheduleRide.setOnClickListener {
                 insertBooking()
             }
 
-            etSchFullName.setText(ServiceBuilder.customer!!.fullname)
-            etSchContact.setText(ServiceBuilder.customer!!.contact)
+//            tvFullName.setText(ServiceBuilder.customer!!.fullname)
+//            tvContact.setText(ServiceBuilder.customer!!.contact)
 
             locations()
 
         return view
     }
     private fun insertBooking(){
-        val fullname = etSchFullName.text.toString()
-        val contact = etSchContact.text.toString()
+        val id = ServiceBuilder.customer!!._id
+        val contact = ServiceBuilder.customer!!.contact
+        val email = ServiceBuilder.customer!!.email
         val pickupLocation= location[etPickupLoc.selectedItemPosition]
         val dropLocation = location[etDropLoc.selectedItemPosition]
         val pickupDate = etPickupDate.text.toString()
@@ -94,7 +102,7 @@ class CustomerScheduleRide : Fragment() {
         val rideDistance = etSchDistance.text.toString()
         val ridePrice = etSchPrice.text.toString()
 
-        val rides=Rides(fullname = fullname, contact = contact, from = pickupLocation, to = dropLocation,
+        val rides=Rides(id = id, contact = contact, email = email, from = pickupLocation, to = dropLocation,
             date= pickupDate, time = pickupTime, distance = rideDistance, price = ridePrice)
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -190,6 +198,7 @@ class CustomerScheduleRide : Fragment() {
                 }
             }
     }
+
     companion object {
 
     }

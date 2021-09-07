@@ -57,9 +57,9 @@ class SettingsFragment : Fragment() {
         tvEditProfile.setOnClickListener {
             val transaction = activity?.supportFragmentManager?.beginTransaction()
             transaction!!.replace(R.id.settings_container, ProfileFragment())
-            transaction.disallowAddToBackStack()
+            transaction.addToBackStack(null)
             transaction.commit()
-            }
+        }
 
 
         tvLogout.setOnClickListener {
