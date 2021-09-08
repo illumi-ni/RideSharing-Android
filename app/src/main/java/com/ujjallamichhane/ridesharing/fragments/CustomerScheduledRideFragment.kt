@@ -48,7 +48,7 @@ class CustomerScheduledRideFragment : Fragment() {
 //            transaction.commit()
 //            fabSchedule.visibility = View.GONE
 
-            val ft = requireView().context as AppCompatActivity
+            val ft = requireActivity()
                 ft.supportFragmentManager.beginTransaction()
                 .replace(R.id.history, CustomerScheduleRide())
                 .addToBackStack(null)

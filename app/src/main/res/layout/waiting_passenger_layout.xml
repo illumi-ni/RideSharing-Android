@@ -128,13 +128,13 @@
                         android:id="@+id/tvFare"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="Rs. 89"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"
                         android:layout_below="@+id/tvCustomersName"
-                        android:layout_toEndOf="@+id/imgCustomer"/>
+                        android:layout_marginLeft="10dp"
+                        android:layout_toEndOf="@+id/imgCustomer"
+                        android:text="Rs. 89"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <com.google.android.material.floatingactionbutton.FloatingActionButton
                         android:id="@+id/fabCall"

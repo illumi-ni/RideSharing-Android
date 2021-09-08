@@ -1,5 +1,7 @@
 package com.ujjallamichhane.ridesharing.entity
 
+import java.io.Serializable
+
 data class RideRequest(
     val _id: String? = null,
     val from: String? = null,
@@ -14,4 +16,4 @@ data class RideRequest(
 //    val fullname: String? = null,
 //    val contact: String? = null,
 //    val photo: String? = null,
-)
+): Serializable

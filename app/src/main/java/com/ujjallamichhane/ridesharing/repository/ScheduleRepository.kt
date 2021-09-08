@@ -21,7 +21,18 @@ class ScheduleRepository: RideSharingApiRequest() {
         return apiRequest {
             rideshareApi.getAllScheduleRides(token)
         }
+    }
 
+    suspend fun updateBooking(rides: Rides): ScheduleRideResponse {
+        return apiRequest {
+            rideshareApi.updateBooking(ServiceBuilder.token!!, rides)
+        }
+    }
+
+    suspend fun deleteBooking(id : String) : ScheduleRideResponse{
+        return apiRequest {
+            rideshareApi.deleteBooking(ServiceBuilder.token!!, id)
+        }
     }
 
 }

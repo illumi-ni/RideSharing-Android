@@ -319,11 +319,13 @@ class DriverMapsFragment : Fragment() {
         tvCustomersName = view.findViewById(R.id.tvCustomersName)
         imgCustomer = view.findViewById(R.id.imgCustomer)
         btnNavigate = view.findViewById(R.id.btnNavigate)
+        tvFare = view.findViewById(R.id.tvFare)
         btnCancel = view.findViewById(R.id.btnCancel)
         btnStart = view.findViewById(R.id.btnStart)
 
         tvPickUpLocation.text = data.from
         tvCustomersName.text = data.customer!!.fullname
+        tvFare.text = data.price
         Glide.with(requireContext())
             .load(ServiceBuilder.BASE_URL+data.customer.photo)
             .into(imgCustomer)

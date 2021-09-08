@@ -17,4 +17,16 @@ interface ScheduleApi {
     suspend fun getAllScheduleRides(
         @Header("Authorization") token: String,
     ): Response<GetAllScheduleRidesResponse>
+
+    @PUT("update/booking")
+    suspend fun updateBooking(
+        @Header("Authorization") token: String,
+        @Body rides: Rides
+    ): Response<ScheduleRideResponse>
+
+    @DELETE("delete/booking/{bid}")
+    suspend fun deleteBooking(
+        @Header("Authorization") token: String,
+        @Path("bid") id: String
+    ): Response<ScheduleRideResponse>
 }

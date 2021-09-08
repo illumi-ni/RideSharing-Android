@@ -1,210 +1,272 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/updateScheduleContainer"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.UpdateRideFragment">
 
-    <TextView
-        android:id="@+id/txtride"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ride Info"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="#333"
-        android:layout_margin="10dp"/>
+        android:elevation="3dp">
 
-    <ImageView
-        android:id="@+id/imgPickup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_empty"
-        android:layout_below="@+id/txtride"
-        android:layout_margin="10dp"/>
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white">
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back" />
 
-    <TextView
-        android:id="@+id/txtPickup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pickup"
-        android:textSize="22sp"
-        android:layout_marginTop="5dp"
-        android:layout_below="@+id/txtride"
-        android:layout_toEndOf="@+id/imgPickup"/>
-    <EditText
-        android:id="@+id/etPickup"
+            <TextView
+                android:id="@+id/text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Update Ride"
+                android:textSize="22sp"
+                android:textColor="@color/black"
+                android:layout_gravity="center"/>
+
+        </androidx.appcompat.widget.Toolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:id="@+id/relative1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Pickup location"
-        android:textSize="24sp"
-        android:textColor="#444"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/txtPickup"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_toEndOf="@+id/imgPickup"/>
+        android:layout_below="@+id/appBar"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp">
+        <ImageView
+            android:id="@+id/imgPickup"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_empty" />
 
-    <ImageView
-        android:id="@+id/imgDrop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_circle"
-        android:layout_below="@+id/etPickup"
-        android:layout_marginTop="25dp"
-        android:layout_marginLeft="10dp"/>
+        <TextView
+            android:id="@+id/tvPickup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_toEndOf="@+id/imgPickup"
+            android:text="Pickup Location"
+            android:textSize="18sp" />
+        <Spinner
+            android:id="@+id/etPickupLoc"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:hint="Pickup location"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/tvPickup"
+            android:background="@drawable/edittext_bottomline"
+            android:layout_toEndOf="@+id/imgPickup"/>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txtDrop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Destination"
-        android:textSize="22sp"
-        android:layout_marginTop="20dp"
-        android:layout_below="@+id/etPickup"
-        android:layout_toEndOf="@+id/imgPickup"/>
-    <EditText
-        android:id="@+id/etDrop"
+    <RelativeLayout
+        android:id="@+id/relative2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Destination"
-        android:textSize="24sp"
-        android:textColor="#444"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/txtDrop"
-        android:background="@drawable/edittext_bottomline"
-        android:layout_toEndOf="@+id/imgPickup"/>
-    <TextView
-        android:id="@+id/txtPickupDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pickup Date"
-        android:layout_margin="20dp"
-        android:textSize="22sp"
-        android:layout_below="@id/etDrop"/>
+        android:layout_below="@+id/relative1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgDrop"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_circle" />
+        <TextView
+            android:id="@+id/tvDestination"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Destination"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgDrop" />
+        <Spinner
+            android:id="@+id/etDestination"
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:hint="Pickup location"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:layout_below="@+id/tvDestination"
+            android:background="@drawable/edittext_bottomline"
+            android:layout_toEndOf="@+id/imgDrop"/>
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imgCalendar2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_calendar"
-        android:layout_below="@id/txtPickupDate"
-        android:layout_marginLeft="20dp"/>
-    <EditText
-        android:id="@+id/etPickupDate"
+    <RelativeLayout
+        android:id="@+id/relative3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgCalendar2"
-        android:layout_marginLeft="10dp"
-        android:hint="Date"
-        android:layout_below="@+id/txtPickupDate"/>
+        android:layout_below="@+id/relative2"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgCalendar2"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_calendar" />
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgCalendar2" />
 
-    <TextView
-        android:id="@+id/txtPickupTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pickup Time"
-        android:layout_margin="20dp"
-        android:textSize="22sp"
-        android:layout_below="@id/imgCalendar2"/>
+        <EditText
+            android:id="@+id/etPickupDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@+id/imgCalendar2"
+            android:background="@drawable/edittext_bottomline"
+            android:textSize="18sp" />
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imgClock"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_clock"
-        android:layout_below="@id/txtPickupTime"
-        android:layout_marginLeft="20dp"/>
-    <EditText
-        android:id="@+id/etPickupTime"
+    <RelativeLayout
+        android:id="@+id/relative4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/imgCalendar2"
-        android:layout_marginLeft="10dp"
-        android:hint="Date"
-        android:layout_below="@+id/txtPickupTime"/>
+        android:layout_below="@+id/relative3"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgClock"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_clock" />
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Time"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgClock" />
+        <EditText
+            android:id="@+id/etPickupTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgClock"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
 
-    <ImageView
-        android:id="@+id/imgDriverUpdProf"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:src="@drawable/noimg"
-        android:layout_below="@id/imgClock"
-        android:layout_margin="20dp"/>
+    <RelativeLayout
+        android:id="@+id/relative5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relative4"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgDistance"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_distance" />
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Distance"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgDistance" />
+        <EditText
+            android:id="@+id/etDistance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgDistance"
+            android:layout_marginTop="40dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
 
-    <TextView
-        android:id="@+id/txtDriverName"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/relative6"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Driver Name"
-        android:layout_marginTop="15dp"
-        android:textSize="24sp"
-        android:textColor="#333"
-        android:layout_below="@id/etPickupTime"
-        android:layout_toEndOf="@+id/imgDriverUpdProf"/>
-
-    <TextView
-        android:id="@+id/txtDriverContact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Contact"
-        android:textSize="22sp"
-        android:layout_below="@id/txtDriverName"
-        android:layout_toEndOf="@+id/imgDriverUpdProf"/>
-
-    <ImageView
-        android:id="@+id/imgPhone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Contact"
-        android:textSize="22sp"
-        android:src="@drawable/ic_phone"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@+id/etPickupTime"/>
-
-    <TextView
-        android:id="@+id/txtReceipt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Receipt"
-        android:textSize="22sp"
-        android:layout_marginLeft="20dp"
-        android:layout_below="@id/imgDriverUpdProf"
-        />
-    <TextView
-        android:id="@+id/txtPrice"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rs 000"
-        android:textSize="22sp"
-        android:textColor="#000"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@id/imgPhone"
-        android:layout_alignParentEnd="true"
-        />
-    <ImageView
-        android:id="@+id/imgMoney"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Contact"
-        android:textSize="22sp"
-        android:src="@drawable/ic_money"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="10dp"
-        android:layout_below="@+id/imgPhone"
-        android:layout_toStartOf="@+id/txtPrice"/>
+        android:layout_below="@+id/relative5"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/imgPrice"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_money" />
+        <TextView
+            android:id="@+id/tvPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:layout_margin="10dp"
+            android:textSize="18sp"
+            android:layout_toEndOf="@+id/imgPrice" />
+        <EditText
+            android:id="@+id/etPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/imgPrice"
+            android:layout_marginTop="40sp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textSize="18sp"
+            android:background="@drawable/edittext_bottomline"/>
+    </RelativeLayout>
 
     <Button
-        android:id="@+id/btnUpdateRide"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="22sp"
-        android:layout_below="@+id/txtReceipt"
-        android:layout_margin="20dp"
+        android:id="@+id/btnUpdate"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:textSize="18sp"
+        android:layout_below="@+id/relative6"
+        android:layout_margin="25dp"
         android:layout_alignParentEnd="true"
         android:text="Update"/>
 

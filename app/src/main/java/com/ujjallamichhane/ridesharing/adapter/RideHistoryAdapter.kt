@@ -2,15 +2,19 @@ package com.ujjallamichhane.ridesharing.adapter
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.entity.RideRequest
 import com.ujjallamichhane.ridesharing.entity.Rides
+import com.ujjallamichhane.ridesharing.fragments.UpdateRideFragment
+import com.ujjallamichhane.ridesharing.ui.customer.home.MapsFragment
 
 class RideHistoryAdapter(
     val lstRideHistory: ArrayList<RideRequest>,
@@ -41,15 +45,30 @@ class RideHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
-        val rides = lstRideHistory[position]
-        holder.tvRideDate.text = rides.date
-        holder.tvHistoryPrice.text = rides.price
-        holder.tvPickupLoc.text = rides.from
-        holder.tvDestinationLoc.text = rides.to
-        holder.tvRequestAgain.setOnClickListener{
+        val rideRequest = lstRideHistory[position]
+        holder.tvRideDate.text = rideRequest.date
+        holder.tvHistoryPrice.text = rideRequest.price
+        holder.tvPickupLoc.text = rideRequest.from
+        holder.tvDestinationLoc.text = rideRequest.to
+
+        holder.tvRequestAgain.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                val fragment = MapsFragment()
+                val appCompatActivity = context as AppCompatActivity
+                val args = Bundle()
+                args.putSerializable("rideRequest", rideRequest)
+                fragment.arguments = args
+
+                appCompatActivity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment, fragment)
+                    .commit()
+
+            }
+        })
 
         }
-    }
+
 
     override fun getItemCount(): Int {
         return lstRideHistory.size
