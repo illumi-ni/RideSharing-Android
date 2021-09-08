@@ -32,7 +32,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.maps.android.SphericalUtil
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.entity.RideRequest
@@ -69,17 +68,12 @@ import android.view.inputmethod.EditorInfo
 
 import android.widget.TextView
 
-import android.R.attr.name
-import android.content.ContentValues.TAG
 import android.view.*
-import android.widget.TextView.OnEditorActionListener
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.maps.*
 import com.ujjallamichhane.ridesharing.NotificationChannels
-import com.ujjallamichhane.ridesharing.SignInActivity
-
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener {
 
@@ -161,7 +155,6 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         off = view.findViewById(R.id.off)
         on = view.findViewById(R.id.on)
 
-        //get current location and move camera
         btnCurrentLocation.setOnClickListener {
             getLocation()
         }
@@ -197,7 +190,38 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         mSocket.on("drCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
         mSocket.on("driverCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
 
+        val bundle: Bundle? = arguments
+        if(bundle != null){
+            val data: RideRequest = requireArguments().getSerializable("rideRequest") as RideRequest
+            currentLocation = latLngFromAddress(data.from!!)
+            cameraPos = latLngFromAddress(data.to!!)
+
+            findroutes(currentLocation, cameraPos)
+
+//            Toast.makeText(context, "$currentLocation and $cameraPos", Toast.LENGTH_SHORT).show()
+        }
+
         return view
+    }
+
+    private fun latLngFromAddress(address: String): LatLng {
+        geo = Geocoder(requireContext(), Locale.getDefault())
+        var latLng: LatLng? = null
+
+        try {
+            // May throw an IOException
+            addresses = geo!!.getFromLocationName(address, 5);
+            if (addresses == null) {
+                Toast.makeText(context, "Hello", Toast.LENGTH_SHORT).show()
+            }
+
+            val location: Address = addresses!![0]
+            latLng = LatLng(location.latitude, location.longitude)
+        }
+        catch (ex:Exception){
+
+        }
+        return latLng!!
     }
 
     //get current location as per the device's location
@@ -479,7 +503,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                     to = destination,
                     date = currentDateTimeString,
                     distance = distance.toString(),
-                    price = "200",
+                    price = calculatePrice(distance).toString(),
                     customer = ServiceBuilder.customer,
                     customerID = ServiceBuilder.customer!!._id
                 )
@@ -525,6 +549,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         tvPhone.text = data.phone
                         tvCarNo.text = data.vechileNo
                         tvColor.text = data.model
+                        tvFare.text = calculatePrice(distance).toString()
                         Glide.with(requireContext())
                             .load(ServiceBuilder.BASE_URL + data.photo)
                             .into(imgDriver)
@@ -547,7 +572,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                     to = destination,
                                     date = currentDateTimeString,
                                     distance = distance.toString(),
-                                    price = "200",
+                                    price = calculatePrice(distance).toString(),
                                     driver = data
                                 )
                             )
@@ -557,7 +582,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                             (currentDialog as ProgressDialog).setMessage("Waiting for other passengers to join in the ride...")
                             (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_NEGATIVE, "Cancel"
-                            ) { dialog, which -> dialog.dismiss() }
+                            ) { dialog, which ->  }
                             (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_POSITIVE, "Ready to go"
                             ) { dialog, which ->
@@ -602,7 +627,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         toggle.setOnCheckedChangeListener { toggle, checkedId ->
             when (checkedId) {
                 R.id.on -> {
-                    Toast.makeText(context, "hello asdf", Toast.LENGTH_SHORT).show()
+//                    Toast.makeText(context, "hello asdf", Toast.LENGTH_SHORT).show()
                     getInvite()
                 }
                 R.id.off -> {
@@ -645,6 +670,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                 tvPickupLocation.text = data.from
                                 tvDestination.text = data.to
                                 tvDriversName.text = data.driver!!.fullname
+                                tvFare.text = calculatePrice(distance).toString()
                                 Glide.with(requireContext())
                                     .load(ServiceBuilder.BASE_URL + data.customer.photo)
                                     .into(imgSender)
@@ -734,6 +760,15 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    private fun calculatePrice(distance: Double): Double {
+        var price = 60.0
+        if(distance >=1 ) {
+            price = distance * 50
+        }
+        price = Math.round(price * 100.0) / 100.0
+        return price
     }
 
     companion object {
