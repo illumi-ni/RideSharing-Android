@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.DriverEarningsFragment">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".fragments.DriverEarningsFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart"
+            android:layout_width="match_parent"
+            android:layout_height="420dp"
+            android:layout_margin="32dp"/>
+        <TextView
+            android:id="@+id/txtEarning"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Todays Earinings"
+            android:layout_below="@+id/lineChart"
+            android:layout_margin="10dp"
+            android:textSize="22sp"/>
+        <TextView
+            android:id="@+id/tvEarnings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0000"
+            android:layout_below="@+id/txtEarning"
+            android:layout_marginLeft="10dp"
+            android:textSize="24sp"
+            android:textColor="#404040"/>
+
+        <TextView
+            android:id="@+id/txtTrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trips Completed"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/lineChart"
+            android:layout_alignParentEnd="true"
+            android:textSize="22sp" />
+        <TextView
+            android:id="@+id/tvTrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:layout_below="@+id/txtTrip"
+            android:layout_marginEnd="50dp"
+            android:layout_alignParentRight="true"
+            android:textSize="24sp"
+            android:textColor="#404040"/>
+
+        <TextView
+            android:id="@+id/txtLife"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lifetime Earnings"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/tvEarnings"
+            android:textSize="22sp" />
+        <TextView
+            android:id="@+id/tvLife"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0000"
+            android:layout_below="@+id/txtLife"
+            android:textSize="24sp"
+            android:layout_marginLeft="10dp"
+            android:textColor="#404040"/>
+
+        <TextView
+            android:id="@+id/txtTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Trips"
+            android:layout_margin="10dp"
+            android:layout_below="@+id/tvTrip"
+            android:layout_alignParentEnd="true"
+            android:textSize="22sp" />
+        <TextView
+            android:id="@+id/tvTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00"
+            android:layout_below="@+id/txtTotal"
+            android:layout_marginEnd="50dp"
+            android:layout_alignParentEnd="true"
+            android:textSize="24sp"
+            android:textColor="#404040"/>
+    </RelativeLayout>
+
+</FrameLayout>
+</ScrollView>

@@ -102,6 +102,8 @@ dependencies {
     implementation ('io.socket:socket.io-client:2.0.0') {
         exclude group: 'org.json', module: 'json'
     }
+    //chart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     compile 'co.aenterhy:toggleswitch:1.0.0'
 }
