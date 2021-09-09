@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#fff"
+    android:padding="20dip">
+
+    <TextView
+        android:text="How would you rate the ride?"
+        android:id="@+id/rank_dialog_text1"
+        android:textSize="22dp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"/>
+
+    <RatingBar
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:id="@+id/ratingbar"
+        android:layout_gravity="center"
+        android:numStars="5"
+        android:rating="0"/>
+
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:focusable="false"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent" />
+
+</LinearLayout>

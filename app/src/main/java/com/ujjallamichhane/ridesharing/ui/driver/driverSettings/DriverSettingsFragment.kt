@@ -37,6 +37,7 @@ import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.repository.DriverRepository
 //import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
 import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
+import com.ujjallamichhane.ridesharing.ui.driver.DriverVehiclesfragment
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -138,7 +139,7 @@ class DriverSettingsFragment : Fragment() {
                     .commit();
 
                 1 -> ft.supportFragmentManager.beginTransaction()
-                    .replace(R.id.driver_setting, DriverProfileFragment()).addToBackStack(null)
+                    .replace(R.id.driver_setting, DriverVehiclesfragment()).addToBackStack(null)
                     .commit();
 
 //                2 -> ft.supportFragmentManager.beginTransaction()

@@ -17,4 +17,10 @@
     -->
     <string name="hello_world">Hello Square World!</string>
     <string name="add">Add</string>
+
+    <string name="vehicleDetails">Incase of any confusion
+        <br>call us at : <b>01-5551333/ 01-5551334</b></br>
+        <br>Or</br>
+        <br>Visit our office with your license, bluebook and citizenship certificate</br></string>
+
 </resources>

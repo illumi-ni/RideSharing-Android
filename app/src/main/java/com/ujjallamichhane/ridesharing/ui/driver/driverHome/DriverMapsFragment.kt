@@ -415,11 +415,9 @@ class DriverMapsFragment : Fragment() {
 
                 if (response.success == true){
                     withContext(Dispatchers.Main){
-                        Toast.makeText(
-                            context,
-                            "hello",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        val gson: Gson = Gson()
+                        val ad = gson.toJson(ServiceBuilder.driver)
+                        mSocket!!.emit("end", ad)
                     }
                 }
             }catch(ex: Exception){
