@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -19,6 +20,11 @@ import com.ujjallamichhane.ridesharing.entity.Earning
 class DriverEarningsFragment : Fragment() {
 
     private lateinit var lineChart: LineChart
+    private lateinit var tvEarnings: TextView
+    private lateinit var tvTrip: TextView
+    private lateinit var tvTotal: TextView
+    private lateinit var tvLife: TextView
+
     private var earnings = ArrayList<Earning>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +38,12 @@ class DriverEarningsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_driver_earnings, container, false)
             lineChart = view.findViewById(R.id.lineChart)
+            tvEarnings = view.findViewById(R.id.tvEarnings)
+            tvLife = view.findViewById(R.id.tvLife)
+            tvTrip = view.findViewById(R.id.tvTrip)
+            tvTotal = view.findViewById(R.id.tvTotal)
+
+
             initLineChart()
             setDataToLineChart()
         return view
