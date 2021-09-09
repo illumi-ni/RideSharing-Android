@@ -9,17 +9,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.SignInActivity
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import com.ujjallamichhane.ridesharing.repository.DriverRepository
 import com.ujjallamichhane.ridesharing.ui.customer.customerFragment.ProfileFragment
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.IOException
 
 
 class SettingsFragment : Fragment() {
@@ -28,7 +34,7 @@ class SettingsFragment : Fragment() {
     private lateinit var tvEditProfile: TextView
     private lateinit var customerName: TextView
     private lateinit var customerPhone: TextView
-    private lateinit var tvNotification: TextView
+    private lateinit var imgCustProfile: CircleImageView
     private lateinit var tvPayment: TextView
     private lateinit var tvShareLocation: TextView
 
@@ -49,9 +55,8 @@ class SettingsFragment : Fragment() {
         tvEditProfile = view.findViewById(R.id.tvEditProfile)
         customerName = view.findViewById(R.id.customerName)
         customerPhone = view.findViewById(R.id.customerPhone)
-        tvNotification = view.findViewById(R.id.tvNotification)
-        tvPayment = view.findViewById(R.id.tvPayment)
         tvShareLocation = view.findViewById(R.id.tvShareLocation)
+        imgCustProfile = view.findViewById(R.id.imgCustProfile)
         tvLogout = view.findViewById(R.id.tvLogout)
 
         tvEditProfile.setOnClickListener {
@@ -68,8 +73,36 @@ class SettingsFragment : Fragment() {
 
         customerName.setText(ServiceBuilder.customer!!.fullname)
         customerPhone.setText(ServiceBuilder.customer!!.contact)
+        loadImage()
 
         return view
+    }
+
+    private fun loadImage() {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val customerRepository = CustomerRepository()
+                val response = customerRepository.getCustomerDetails()
+                withContext(Dispatchers.Main) {
+                    if (ServiceBuilder.customer!!.photo.equals("")) {
+                        Glide.with(requireContext())
+                            .load(R.drawable.noimg)
+                            .into(imgCustProfile)
+                    } else {
+//
+                        val imagePath = ServiceBuilder.BASE_URL + response.customerData!!.photo
+                        Glide.with(requireContext())
+                            .load(imagePath)
+                            .fitCenter()
+                            .into(imgCustProfile)
+                    }
+                }
+            } catch (ex: IOException) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     fun logout() {

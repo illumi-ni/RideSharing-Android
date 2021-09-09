@@ -5,7 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -14,8 +16,11 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.google.android.material.appbar.AppBarLayout
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.entity.Earning
+import com.ujjallamichhane.ridesharing.ui.customer.rides.RidesFragment
+import com.ujjallamichhane.ridesharing.ui.driver.driverSettings.DriverSettingsFragment
 
 class DriverEarningsFragment : Fragment() {
 
@@ -24,6 +29,8 @@ class DriverEarningsFragment : Fragment() {
     private lateinit var tvTrip: TextView
     private lateinit var tvTotal: TextView
     private lateinit var tvLife: TextView
+    private lateinit var appBar: AppBarLayout
+    private lateinit var imgBack: ImageView
 
     private var earnings = ArrayList<Earning>()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +49,17 @@ class DriverEarningsFragment : Fragment() {
             tvLife = view.findViewById(R.id.tvLife)
             tvTrip = view.findViewById(R.id.tvTrip)
             tvTotal = view.findViewById(R.id.tvTotal)
+            appBar = view.findViewById(R.id.appBar)
+            imgBack = view.findViewById(R.id.imgBack)
 
+            imgBack.setOnClickListener {
+                val ft = requireView().context as AppCompatActivity
+                ft.supportFragmentManager.beginTransaction()
+                    .replace(R.id.earningsContainer, DriverSettingsFragment())
+                    .addToBackStack(null)
+                    .commit();
+                appBar.visibility = View.GONE
+            }
 
             initLineChart()
             setDataToLineChart()
@@ -76,7 +93,7 @@ class DriverEarningsFragment : Fragment() {
         xAxis.valueFormatter = MyAxisFormatter()
         xAxis.setDrawLabels(true)
         xAxis.granularity = 1f
-        xAxis.labelRotationAngle = +90f
+        xAxis.labelRotationAngle = 90f
 
     }
 
@@ -116,11 +133,13 @@ class DriverEarningsFragment : Fragment() {
     // simulate api call
     // we are initialising it directly
     private fun getEarnings(): ArrayList<Earning> {
-        earnings.add(Earning("John", 56))
-        earnings.add(Earning("Rey", 75))
-        earnings.add(Earning("Kev", 45))
-        earnings.add(Earning("Stiles", 78))
-        earnings.add(Earning("Harry", 88))
+        earnings.add(Earning("Sunday", 56))
+        earnings.add(Earning("Monday", 75))
+        earnings.add(Earning("Tuesday", 45))
+        earnings.add(Earning("Wednesday", 78))
+        earnings.add(Earning("Thursday", 88))
+        earnings.add(Earning("Friday", 56))
+        earnings.add(Earning("Saturday", 40))
 
         return earnings
     }

@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#fff"
     tools:context=".ui.customer.settings.SettingsFragment">
 
     <RelativeLayout
@@ -18,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="20dp">
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgCustProfile"
                 android:layout_width="70dp"
                 android:layout_height="70dp"
@@ -91,18 +92,18 @@
         android:layout_marginBottom="10dp"/>
 
     <ImageView
-        android:id="@+id/imgBell"
+        android:id="@+id/imgShareLoc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_bell"
+        android:src="@drawable/ic_share"
         android:layout_below="@+id/view1"
         android:layout_margin="10dp"/>
     <TextView
-        android:id="@+id/tvNotification"
+        android:id="@+id/tvShareLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="Notifications"
+        android:text="Share Location"
         android:layout_below="@id/view1"
         android:layout_toEndOf="@+id/imgInfo"
         android:textSize="20sp"
@@ -112,75 +113,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_next"
         android:layout_below="@+id/view1"
-        android:layout_alignEnd="@id/tvNotification"
-        android:layout_margin="10dp"
-        android:layout_alignParentEnd="true"/>
-    <View
-        android:id="@+id/view2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tvNotification"
-        android:background="#aaa"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <ImageView
-        android:id="@+id/imgPayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_payment"
-        android:layout_below="@+id/view2"
-        android:layout_margin="10dp"/>
-    <TextView
-        android:id="@+id/tvPayment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Payment Options"
-        android:layout_below="@id/view2"
-        android:layout_toEndOf="@+id/imgInfo"
-        android:textSize="20sp"
-        android:textColor="#232323"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_next"
-        android:layout_below="@+id/view2"
-        android:layout_alignEnd="@id/tvPayment"
-        android:layout_margin="10dp"
-        android:layout_alignParentEnd="true"/>
-    <View
-        android:id="@+id/view3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/tvPayment"
-        android:background="#aaa"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"/>
-
-    <ImageView
-        android:id="@+id/imgShareLoc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_share"
-        android:layout_below="@+id/view3"
-        android:layout_margin="10dp"/>
-    <TextView
-        android:id="@+id/tvShareLocation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="Share Location"
-        android:layout_below="@id/view3"
-        android:layout_toEndOf="@+id/imgInfo"
-        android:textSize="20sp"
-        android:textColor="#232323"/>
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_next"
-        android:layout_below="@+id/view3"
-        android:layout_alignEnd="@id/tvPayment"
+        android:layout_alignEnd="@id/tvShareLocation"
         android:layout_margin="10dp"
         android:layout_alignParentEnd="true"/>
     <View
@@ -214,7 +147,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_next"
         android:layout_below="@+id/view4"
-        android:layout_alignEnd="@id/tvPayment"
+        android:layout_alignEnd="@id/tvLogout"
         android:layout_margin="10dp"
         android:layout_alignParentEnd="true"/>
     <View

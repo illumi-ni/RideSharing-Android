@@ -5,19 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import android.widget.SimpleAdapter
 import com.ujjallamichhane.ridesharing.R
 import android.icu.number.Precision.currency
-import android.widget.LinearLayout
-
-import android.widget.AdapterView
 
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
@@ -30,14 +22,18 @@ import android.content.Context
 import android.content.DialogInterface
 
 import android.content.Intent
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import com.ujjallamichhane.ridesharing.SignInActivity
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
+import com.ujjallamichhane.ridesharing.fragments.DriverEarningsFragment
 import com.ujjallamichhane.ridesharing.repository.DriverRepository
 //import com.ujjallamichhane.ridesharing.ui.driver.DriverEarningsFragment
 import com.ujjallamichhane.ridesharing.ui.driver.DriverProfileFragment
 import com.ujjallamichhane.ridesharing.ui.driver.DriverVehiclesfragment
+import com.ujjallamichhane.ridesharing.ui.driver.driverHome.DriverMapsFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -53,8 +49,6 @@ class DriverSettingsFragment : Fragment() {
         "Personal Information",
         "Vehicles Details",
         "Earnings",
-        "Notifications",
-        "Rate & Reviews",
         "Logout"
     )
 
@@ -67,6 +61,8 @@ class DriverSettingsFragment : Fragment() {
     private lateinit var tvDriversName: TextView
     private lateinit var tvDriversPhone: TextView
     private lateinit var listView: ListView
+    private lateinit var appBar: AppBarLayout
+    private lateinit var imgBack: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,13 +74,15 @@ class DriverSettingsFragment : Fragment() {
         imgProfile = view.findViewById(R.id.imgProfile)
         tvDriversName = view.findViewById(R.id.tvDriversName)
         tvDriversPhone = view.findViewById(R.id.tvDriversPhone)
+//        appBar = view.findViewById(R.id.appBar)
+//        imgBack = view.findViewById(R.id.imgBack)
         listView = view.findViewById(R.id.listView)
 
         loadImage()
 
         // Each row in the list stores icon and Title
         val aList: MutableList<HashMap<String, String>> = ArrayList()
-        for (i in 0..5) {
+        for (i in 0..3) {
             val hm = HashMap<String, String>()
             hm["listview_image"] = listviewImage[i].toString()
             hm["listview_title"] = listviewTitle[i]
@@ -142,19 +140,11 @@ class DriverSettingsFragment : Fragment() {
                     .replace(R.id.driver_setting, DriverVehiclesfragment()).addToBackStack(null)
                     .commit();
 
-//                2 -> ft.supportFragmentManager.beginTransaction()
-//                    .replace(R.id.driverHostFragment, DriverEarningsFragment()).addToBackStack(null)
-//                    .commit();
-
-                3 -> ft.supportFragmentManager.beginTransaction()
-                    .replace(R.id.driverHostFragment, DriverProfileFragment()).addToBackStack(null)
+                2 -> ft.supportFragmentManager.beginTransaction()
+                    .replace(R.id.driver_setting, DriverEarningsFragment()).addToBackStack(null)
                     .commit();
 
-                4 -> ft.supportFragmentManager.beginTransaction()
-                    .replace(R.id.driverHostFragment, DriverProfileFragment()).addToBackStack(null)
-                    .commit();
-
-                5 -> logout()
+                3 -> logout()
 
             }
         }

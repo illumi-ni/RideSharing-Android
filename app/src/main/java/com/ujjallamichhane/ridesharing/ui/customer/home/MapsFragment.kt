@@ -816,6 +816,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         val rating = ratingBar.getRating().toString()
                         Toast.makeText(context, "$totalStars and $rating", Toast.LENGTH_SHORT).show()
                         updateRating(data,rating)
+                        currentDialog!!.dismiss()
                     }
                     //        ratingBar.setRating()
 
@@ -849,7 +850,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                 val response = driverRepository.updateDriver(driver._id!!, driver)
                 if (response.success == true) {
                     withContext(Dispatchers.Main) {
-                        Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Ratings Submitted", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (ex: Exception) {

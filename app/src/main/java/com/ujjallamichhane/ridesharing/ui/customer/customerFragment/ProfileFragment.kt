@@ -14,13 +14,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder.customer
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder.email
 import com.ujjallamichhane.ridesharing.entity.Customer
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
+import com.ujjallamichhane.ridesharing.ui.customer.settings.SettingsFragment
+import com.ujjallamichhane.ridesharing.ui.driver.driverSettings.DriverSettingsFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +47,8 @@ class ProfileFragment : Fragment() {
     private lateinit var etCustomerEmail: EditText
     private lateinit var etCustomerPhone: EditText
     private lateinit var etCustomerGender: EditText
+    private lateinit var appBar: AppBarLayout
+    private lateinit var imgBack: ImageView
     private lateinit var btnUpdateCProfile: Button
 
     private var REQUEST_GALLERY_CODE = 0
@@ -60,23 +66,35 @@ class ProfileFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_profile, container, false)
-            imgProfileCustomer = view.findViewById(R.id.imgProfileCustomer)
-            imgBtnUpload= view.findViewById(R.id.imgBtnUpload)
-            etCustomerFullname= view.findViewById(R.id.etCustomerFullname)
-            etCustomerEmail= view.findViewById(R.id.etCustomerEmail)
-            etCustomerPhone= view.findViewById(R.id.etCustomerPhone)
-            etCustomerGender= view.findViewById(R.id.etCustomerGender)
-            btnUpdateCProfile= view.findViewById(R.id.btnUpdateCProfile)
+        imgProfileCustomer = view.findViewById(R.id.imgProfileCustomer)
+        imgBtnUpload = view.findViewById(R.id.imgBtnUpload)
+        etCustomerFullname = view.findViewById(R.id.etCustomerFullname)
+        etCustomerEmail = view.findViewById(R.id.etCustomerEmail)
+        etCustomerPhone = view.findViewById(R.id.etCustomerPhone)
+        etCustomerGender = view.findViewById(R.id.etCustomerGender)
+        appBar = view.findViewById(R.id.appBar)
+        imgBack = view.findViewById(R.id.imgBack)
+        btnUpdateCProfile = view.findViewById(R.id.btnUpdateCProfile)
 
-            customerDetails()
+        customerDetails()
 
-            imgBtnUpload.setOnClickListener{
-                loadPopUpMenu()
-            }
+        imgBtnUpload.setOnClickListener {
+            loadPopUpMenu()
+        }
 //            getProfileImage()
-            btnUpdateCProfile.setOnClickListener {
-                updateCustomerProfile()
-            }
+        btnUpdateCProfile.setOnClickListener {
+            updateCustomerProfile()
+        }
+
+        imgBack.setOnClickListener {
+            val ft = requireView().context as AppCompatActivity
+            ft.supportFragmentManager.beginTransaction()
+                .replace(R.id.profile, SettingsFragment())
+                .addToBackStack(null)
+                .commit();
+            appBar.visibility = View.GONE
+        }
+
         return view
     }
 //    private fun getProfileImage() {
@@ -111,7 +129,7 @@ class ProfileFragment : Fragment() {
 //        }
 //    }
 
-    private fun customerDetails(){
+    private fun customerDetails() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
 
@@ -127,7 +145,7 @@ class ProfileFragment : Fragment() {
                         Glide.with(requireContext())
                             .load(R.drawable.noimg)
                             .into(imgProfileCustomer)
-                    }else{
+                    } else {
 //
                         val imagePath = ServiceBuilder.BASE_URL + response.customerData.photo
                         Glide.with(requireContext())
@@ -144,7 +162,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun updateCustomerProfile(){
+    private fun updateCustomerProfile() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val customerRepository = CustomerRepository()
@@ -283,6 +301,7 @@ class ProfileFragment : Fragment() {
             file // it will return null
         }
     }
+
     // Load pop up menu
     private fun loadPopUpMenu() {
         val popupMenu = PopupMenu(context, imgProfileCustomer)

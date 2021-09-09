@@ -13,12 +13,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.material.appbar.AppBarLayout
 import com.ujjallamichhane.ridesharing.R
 import com.ujjallamichhane.ridesharing.api.ServiceBuilder
 import com.ujjallamichhane.ridesharing.entity.Driver
 import com.ujjallamichhane.ridesharing.repository.CustomerRepository
 import com.ujjallamichhane.ridesharing.repository.DriverRepository
+import com.ujjallamichhane.ridesharing.ui.driver.driverSettings.DriverSettingsFragment
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +50,8 @@ class DriverProfileFragment : Fragment() {
     private lateinit var etGender: EditText
     private lateinit var etLicense: EditText
     private lateinit var etCitizenship: EditText
+    private lateinit var appBar: AppBarLayout
+    private lateinit var imgBack: ImageView
     private lateinit var btnUpdate: Button
 
     private var REQUEST_GALLERY_CODE = 0
@@ -70,6 +75,8 @@ class DriverProfileFragment : Fragment() {
         etGender = view.findViewById(R.id.etGender)
         etLicense = view.findViewById(R.id.etLicence)
         etCitizenship = view.findViewById(R.id.etCitizenship)
+        appBar = view.findViewById(R.id.appBar)
+        imgBack = view.findViewById(R.id.imgBack)
         btnUpdate = view.findViewById(R.id.btnUpdate)
 
         showUserDetails()
@@ -80,6 +87,15 @@ class DriverProfileFragment : Fragment() {
 
         btnUpdate.setOnClickListener{
             updateUserDetails()
+        }
+
+        imgBack.setOnClickListener {
+            val ft = requireView().context as AppCompatActivity
+            ft.supportFragmentManager.beginTransaction()
+                .replace(R.id.driver_profile, DriverSettingsFragment())
+                .addToBackStack(null)
+                .commit();
+            appBar.visibility = View.GONE
         }
 
         return view

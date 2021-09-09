@@ -400,6 +400,7 @@ class DriverMapsFragment : Fragment() {
 
         btnEnd.setOnClickListener {
             insertRide(data)
+            currentDialog!!.dismiss()
         }
     }
 

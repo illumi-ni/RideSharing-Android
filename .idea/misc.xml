@@ -23,10 +23,12 @@
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/activity_cutomer_bottom_nav.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/activity_driver_buttom_nav.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/activity_sign_in.xml" value="0.25416666666666665" />
+        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/activity_signup.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/app_bar_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/available_rides.xml" value="0.264" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/connected_passengers.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/customer_history_layout.xml" value="0.25416666666666665" />
+        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/driver_online_status.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/driver_ride_history.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/driver_setting_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/end_ride.xml" value="0.25416666666666665" />
@@ -36,13 +38,15 @@
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_customer_schedule_ride.xml" value="0.264" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_customer_scheduled_ride.xml" value="0.2" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_customer_settings.xml" value="0.25416666666666665" />
-        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_earnings.xml" value="0.12360688956433637" />
+        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_customer_sign_in.xml" value="0.25416666666666665" />
+        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_earnings.xml" value="0.2" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_maps.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_profile.xml" value="0.24087591240875914" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_rides.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_settings.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_sign_in.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_driver_vehiclesfragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_earnings.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_profile.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/fragment_update_ride.xml" value="0.25416666666666665" />
         <entry key="..\:/Stage 3 - 2nd sem/RideSharing-Android/app/src/main/res/layout/invite_passengers.xml" value="0.25416666666666665" />
