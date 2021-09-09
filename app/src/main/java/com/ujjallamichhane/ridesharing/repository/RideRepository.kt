@@ -26,6 +26,12 @@ class RideRepository: RideSharingApiRequest() {
         return apiRequest {
             rideshareApi.getAllBookings(token)
         }
+    }
+
+    suspend fun getDriverBookings(token: String): GetAllRidesResponse {
+        return apiRequest {
+            rideshareApi.getDriverBookings(token)
+        }
 
     }
 }

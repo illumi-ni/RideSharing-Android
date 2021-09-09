@@ -64,19 +64,27 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/ic_star"
-                        android:layout_below="@+id/tvDriversNme"
+                        android:layout_below="@+id/tvPhone"
                         android:layout_toRightOf="@+id/imgDriver"
                         android:layout_marginLeft="10dp"/>
-
+                    <TextView
+                        android:id="@+id/tvRating"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/tvPhone"
+                        android:layout_toRightOf="@+id/imgRating"
+                        android:text="0"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="18sp" />
                     <TextView
                         android:id="@+id/tvPhone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="4.75"
-                        android:textSize="18sp"
-                        android:layout_toRightOf="@+id/imgRating"
                         android:layout_below="@+id/tvDriversNme"
-                        android:layout_marginLeft="5dp"/>
+                        android:layout_toRightOf="@+id/imgDriver"
+                        android:text="4.75"
+                        android:layout_marginLeft="10dp"
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/tvFare"

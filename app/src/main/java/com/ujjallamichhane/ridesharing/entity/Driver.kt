@@ -12,5 +12,6 @@ data class Driver(
     val licence: String? = null,
     val gender: String? = null,
     val vechileNo: String? = null,
-    val model: String? = null
+    val model: String? = null,
+    val rating: String? = null
 )

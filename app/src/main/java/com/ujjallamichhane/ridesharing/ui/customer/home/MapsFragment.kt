@@ -1,6 +1,7 @@
 package com.ujjallamichhane.ridesharing.ui.customer.home
 
 import android.Manifest
+import android.R.attr
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.app.ProgressDialog
@@ -74,6 +75,17 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.google.android.gms.maps.*
 import com.ujjallamichhane.ridesharing.NotificationChannels
+import android.R.attr.name
+
+import android.widget.RatingBar
+import android.widget.Toast
+
+import androidx.test.core.app.ApplicationProvider.getApplicationContext
+
+import android.R.attr.name
+import androidx.test.core.app.ApplicationProvider
+import com.ujjallamichhane.ridesharing.repository.DriverRepository
+
 
 class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, RoutingListener {
 
@@ -100,9 +112,12 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
     private lateinit var tvFare: TextView
     private lateinit var tvCarNo: TextView
     private lateinit var tvColor: TextView
+    private lateinit var tvRating: TextView
     private lateinit var toggle: RadioGroup
     private lateinit var off: RadioButton
     private lateinit var on: RadioButton
+    private lateinit var ratingBar: RatingBar
+    private lateinit var btnSubmit: Button
 
     lateinit var mSocket: Socket;
     var gson: Gson = Gson();
@@ -189,9 +204,10 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
         mSocket.on("ridejoined" + ServiceBuilder.customer!!._id.toString(), connectedPassengers)
         mSocket.on("drCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
         mSocket.on("driverCanceled" + ServiceBuilder.customer!!._id.toString(), showNotification)
+        mSocket.on("rateDriver" + ServiceBuilder.customer!!._id.toString(), rateDriver)
 
         val bundle: Bundle? = arguments
-        if(bundle != null){
+        if (bundle != null) {
             val data: RideRequest = requireArguments().getSerializable("rideRequest") as RideRequest
             currentLocation = latLngFromAddress(data.from!!)
             cameraPos = latLngFromAddress(data.to!!)
@@ -217,8 +233,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
             val location: Address = addresses!![0]
             latLng = LatLng(location.latitude, location.longitude)
-        }
-        catch (ex:Exception){
+        } catch (ex: Exception) {
 
         }
         return latLng!!
@@ -542,6 +557,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         tvPhone = view.findViewById(R.id.tvPhone)
                         tvCarNo = view.findViewById(R.id.tvCarNo)
                         tvColor = view.findViewById(R.id.tvColor)
+                        tvRating = view.findViewById(R.id.tvRating)
                         btnInvite = view.findViewById(R.id.btnInvite)
                         btnCancel = view.findViewById(R.id.btnCancel)
 //                                    Log.d("Request Ride", data.toString())
@@ -549,6 +565,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                         tvPhone.text = data.phone
                         tvCarNo.text = data.vechileNo
                         tvColor.text = data.model
+                        tvRating.text = data.rating
                         tvFare.text = calculatePrice(distance).toString()
                         Glide.with(requireContext())
                             .load(ServiceBuilder.BASE_URL + data.photo)
@@ -582,7 +599,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                             (currentDialog as ProgressDialog).setMessage("Waiting for other passengers to join in the ride...")
                             (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_NEGATIVE, "Cancel"
-                            ) { dialog, which ->  }
+                            ) { dialog, which -> }
                             (currentDialog as ProgressDialog).setButton(
                                 DialogInterface.BUTTON_POSITIVE, "Ready to go"
                             ) { dialog, which ->
@@ -684,9 +701,11 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
                                             customer = ServiceBuilder.customer,
                                             driver = data.driver
                                         )
+
                                     )
                                     mSocket.emit("join", data2)
                                     currentDialog!!.dismiss()
+
                                 }
 
                                 btnDecline.setOnClickListener {
@@ -764,7 +783,7 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     private fun calculatePrice(distance: Double): Double {
         var price = 60.0
-        if(distance >=1 ) {
+        if (distance >= 1) {
             price = distance * 50
         }
         price = Math.round(price * 100.0) / 100.0
@@ -773,6 +792,72 @@ class MapsFragment : Fragment(), GoogleApiClient.OnConnectionFailedListener, Rou
 
     companion object {
         private const val NORMAL_CLOSURE_STATUS = 1000
+    }
+
+    private var rateDriver =  Emitter.Listener {
+
+        try {
+            CoroutineScope(Dispatchers.IO).launch {
+                val counter = it[0] as JSONObject
+                val data = gson.fromJson(counter.toString(), Driver::class.java)
+
+                withContext(Dispatchers.Main) {
+                    currentDialog!!.dismiss()
+                    currentDialog = Dialog(requireContext(), R.style.FullHeightDialog)
+                    currentDialog!!.setContentView(R.layout.rank_dialog)
+                    currentDialog!!.setTitle("How was the ride?")
+                    currentDialog!!.setCancelable(true)
+                    ratingBar = currentDialog!!.findViewById(R.id.ratingbar) as RatingBar
+                    btnSubmit = currentDialog!!.findViewById(R.id.btnSubmit)
+
+                    btnSubmit.setOnClickListener {
+                        // get values and then displayed in a toast
+                        val totalStars = "Total Stars:: " + ratingBar.getNumStars()
+                        val rating = ratingBar.getRating().toString()
+                        Toast.makeText(context, "$totalStars and $rating", Toast.LENGTH_SHORT).show()
+                        updateRating(data,rating)
+                    }
+                    //        ratingBar.setRating()
+
+                    currentDialog!!.show()
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun updateRating(data: Driver,rating:String){
+        val fullname = data.fullname
+        val username = data.username
+        val email = data.email
+        val phone = data.phone
+        val gender = data.gender
+        val license = data.licence
+        val citizenship = data.citizenship
+        val vehicleNo = data.vechileNo
+        val model = data.model
+
+
+        val driver = Driver(_id= data._id,fullname = fullname,username = username, email = email, phone = phone,
+            gender = gender, licence = license, citizenship = citizenship, vechileNo= vehicleNo, model=model,
+                    rating = rating)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val driverRepository = DriverRepository()
+                val response = driverRepository.updateDriver(driver._id!!, driver)
+                if (response.success == true) {
+                    withContext(Dispatchers.Main) {
+                        Toast.makeText(context, "hello", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (ex: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, ex.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 }
 

@@ -21,4 +21,9 @@ interface RideApi {
     suspend fun getAllBookings(
         @Header("Authorization") token: String
     ): Response<GetAllRidesResponse>
+
+    @GET("driver/get/myBookings")
+    suspend fun getDriverBookings(
+        @Header("Authorization") token: String
+    ): Response<GetAllRidesResponse>
 }
